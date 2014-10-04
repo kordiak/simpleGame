@@ -1,0 +1,4 @@
+strategicGame
+=============
+
+Simple startegic game
