@@ -1,9 +1,3 @@
---require("code.otherLibrary.console")
---log = logging.console()
---logTable = logging.logTable
---shallowLogTable = logging.shallowLogTable
---traceback = logging.traceback
-
 application = {
 	content = {
 		width = 640,
