@@ -23,7 +23,7 @@ properties.mainBoard2HexesInRow = 20  --- was 5
 
 properties.firstRow = 0
 properties.lastRow = 0
-properties.textInHexesAlpha = 0
+properties.textInHexesAlpha = 1
 
 properties.numberOfForests= 3
 
@@ -45,7 +45,7 @@ properties.lastPickedHexForEnvironmentForestGenerator = 1
 properties.currentLevel = 1
 properties.saveFile = "saveFile.txt"
 
-properties.enemiesNumber  = 1
+properties.enemiesNumber  = 0
 properties.miniDistanceHandler = properties.width + properties.height
 
 properties.heroTransTime = 750
