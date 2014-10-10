@@ -18,11 +18,12 @@ properties.directionRight = "right"
 
 properties.sceneTitleColor = { r = 1, g = 1, b = 1, a = 1 }
 
-properties.mainBoard2Rows = 18
+properties.mainBoard2Rows = 36 --- was 18
+properties.mainBoard2HexesInRow = 20  --- was 5
 
 properties.firstRow = 0
 properties.lastRow = 0
-properties.textInHexesAlpha =0
+properties.textInHexesAlpha = 0
 
 properties.numberOfForests= 3
 
@@ -39,7 +40,7 @@ properties.enemy={"graphicsRaw/enemies/enemy3.png","graphicsRaw/enemies/enemy4.p
 properties.levelGoal = "graphicsRaw/items/levelGoal4.png"
 properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 
-properties.forestSize = 14
+properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
 properties.currentLevel = 1
 properties.saveFile = "saveFile.txt"
