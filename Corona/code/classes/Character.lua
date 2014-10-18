@@ -9,16 +9,17 @@
 local Character = {};
 
 --[[
-    --skin --width --height --type --xPostion --yPosition
+    --skin --width --height --type --xPostion --yPosition --currentHex
 --]]
 Character.new = function(params)
-    local skin = params.skin or nil;
+
+    local skin = params.skin or nil ;
     local width = params.width or 90;
     local height = params.width or 90;
     local type = params.type or "empty";
     local xPosition = params.xPosition or 0;
     local yPosition = params.yPosition or 0;
-
+    local currentHex = params.currentHex or 0;
 
     local object = display.newImageRect(skin, width, height);
     object.x = xPosition;
@@ -27,7 +28,7 @@ Character.new = function(params)
 
     object.removeMe = function()
         object:removeSelf();
-        --//todo:Consider if it is necessary
+    --//todo:Consider if it is necessary
     end
 
 
