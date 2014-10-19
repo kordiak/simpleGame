@@ -25,6 +25,7 @@ Character.new = function(params)
     object.x = xPosition;
     object.y = yPosition;
     object.type = type;
+    object.currentHex=currentHex;
 
     object.removeMe = function()
         object:removeSelf();

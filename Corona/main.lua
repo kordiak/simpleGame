@@ -12,6 +12,7 @@ display.setStatusBar(display.HiddenStatusBar)
 local saveFile = require("code.global.saveAndLoad")
 local boardCreator = require("code.boardLibrary.boardCreator")
 local properties = require("code.global.properties")
+local Enemy = require("code.classes.Enemy");
 local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe
 local functions = {}
 local enemiesTable = {}
@@ -162,16 +163,19 @@ functions.startGame = function()
             while q do
                 local i = math.random(1, #mainBoard - 5)
                 if mainBoard[i].isFree then
-                    local enIndi = math.random(1, 3)
-                    local img = properties.enemy[enIndi]
-                    local enemy = display.newImageRect(img, 90, 90)
-                    enemy.x = mainBoard[i].x
-                    enemy.y = mainBoard[i].y
-                    enemy.boardPositiong = i
-                    enemy.type = "simpleMeleeGhost"
+
+                    local params = {};
+                    params.xPosition = mainBoard[i].x;
+                    params.yPosition = mainBoard[i].y;
+                    params.currentHex = i;
+                    params.type = "simpleMeleeGhost";
+                    local enemy=Enemy.new(params);
+
                     mainBoard[i].isFree = false
                     mainBoard[i].isWalkAble = false
                     mainBoard[i].content = enemy
+
+
                     table.insert(simpleGhostEnemiesTable, enemy)
                     table.insert(enemiesTable, enemy)
 
@@ -250,9 +254,9 @@ functions.simpleGhostEnemiesMove = function()
         --TODO enemy movement
 
         --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-        for j = 1, #mainBoard[simpleGhostEnemiesTable[i].boardPositiong].coherentHexes do
-            local a = mainBoard[simpleGhostEnemiesTable[i].boardPositiong].coherentHexes[j]
-            print("Board Position", mainBoard[simpleGhostEnemiesTable[i].boardPositiong].coherentHexes[j])
+        for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do
+            local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
+            print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
             distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
             print("Distance", distanceEnemyAndHero)
             if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
@@ -277,15 +281,15 @@ functions.simpleGhostEnemiesMove = function()
             -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
             --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
 
-            mainBoard[simpleGhostEnemiesTable[i].boardPositiong].isFree = true
-            mainBoard[simpleGhostEnemiesTable[i].boardPositiong].isWalkAble = true
-            mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].boardPositiong].content
-            mainBoard[simpleGhostEnemiesTable[i].boardPositiong].content = nil
-            simpleGhostEnemiesTable[i].boardPositiong = miniDistanceEnemyAndHero.hexNumber
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
+            mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
+            simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
             mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-            mainBoard[simpleGhostEnemiesTable[i].boardPositiong].isWalkAble = false
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
 
-            transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].boardPositiong].x, y = mainBoard[simpleGhostEnemiesTable[i].boardPositiong].y, onComplete = functions.enemyTransCompleted })
+            transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
 
             functions.distanceForEnemyReset()
         end
@@ -301,9 +305,9 @@ functions.advencedGhostEnemiesMove = function()
 
 
     for i = 1, #simpleGhostEnemiesTable do --- FOR EACH ENEMY IN TABLE
-    --TODO enemy movement
+    -- TODO enemy movement
 
-        startingEnemyPos = simpleGhostEnemiesTable[i].boardPositiong
+        startingEnemyPos = simpleGhostEnemiesTable[i].currentHex
 
         --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
         for j = 1, #mainBoard[startingEnemyPos].coherentHexes do
@@ -322,23 +326,20 @@ functions.advencedGhostEnemiesMove = function()
                 end
             end
         end
-      if possibleEnemyHex then
-            print (possibleEnemyHex)
+        if possibleEnemyHex then
+            print(possibleEnemyHex)
         end
-
     end
 
 
 
 
-    print (#advencedMoveCheckerTable)
-
-
+    print(#advencedMoveCheckerTable)
 end
 functions.enemyMove = function()
 
- --functions.simpleGhostEnemiesMove()
-   functions.advencedGhostEnemiesMove()
+--functions.simpleGhostEnemiesMove()
+    functions.advencedGhostEnemiesMove()
 end
 functions.hexPressed = function(params)
 --  print (params.hexNumber)
