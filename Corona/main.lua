@@ -13,6 +13,7 @@ local saveFile = require("code.global.saveAndLoad")
 local boardCreator = require("code.boardLibrary.boardCreator")
 local properties = require("code.global.properties")
 local Enemy = require("code.classes.Enemy");
+local Player = require("code.classes.Player");
 local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe
 local functions = {}
 local enemiesTable = {}
@@ -153,6 +154,7 @@ functions.startGame = function()
             for i = 1, #simpleGhostEnemiesTable do
                 simpleGhostEnemiesTable[i]:toFront()
             end
+            print(mainHero)
             mainHero:toFront()
         end
     end
@@ -169,7 +171,7 @@ functions.startGame = function()
                     params.yPosition = mainBoard[i].y;
                     params.currentHex = i;
                     params.type = "simpleMeleeGhost";
-                    local enemy=Enemy.new(params);
+                    local enemy = Enemy.new(params);
 
                     mainBoard[i].isFree = false
                     mainBoard[i].isWalkAble = false
@@ -187,10 +189,23 @@ functions.startGame = function()
     end
     functions.mainHeroCreator = function()
         if not mainHero then
+            --[[
+                --skin --width --height --type --xPostion --yPosition --currentHex
+            --]]
 
-            mainHero = display.newImageRect(properties.mainCharacterSkin, 90, 90)
-            mainHero.x = mainBoard[#mainBoard].x
-            mainHero.y = mainBoard[#mainBoard].y
+
+
+            local params = {};
+            params.skin = properties.mainCharacterSkin;
+            params.xPosition = mainBoard[#mainBoard].x;
+            params.yPosition = mainBoard[#mainBoard].y;
+            params.currentHex = #mainBoard;
+            mainHero=Player.new(params);
+
+
+            --mainHero = display.newImageRect(properties.mainCharacterSkin, 90, 90)
+            --mainHero.x = mainBoard[#mainBoard].x
+            --mainHero.y = mainBoard[#mainBoard].y
             mainBoard[#mainBoard].isFree = false
             mainBoard[#mainBoard].isWalkAble = false
             mainHero.currentHex = #mainBoard
