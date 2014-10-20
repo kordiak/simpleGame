@@ -3,7 +3,7 @@ local properties = require("code.global.properties")
 
 local mainBoard = {}
 --for i = 1, 70 do
-mainBoard.new = function ()
+--mainBoard.new = function ()
 local function mainBoardSettings ()
     for i =1, #mainBoard do
         mainBoard[i].isWalkAble = true;
@@ -252,7 +252,7 @@ mainBoardGenerator()
 setText()
 touchListener()
 
-return mainBoard
-end
+--return mainBoard
+--end
 
 return mainBoard

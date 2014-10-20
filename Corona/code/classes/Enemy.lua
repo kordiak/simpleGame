@@ -21,6 +21,7 @@ local Enemy = {}
 --]]
 Enemy.new = function(params)
     params.skin = params.skin or getRandom();
+    params.type= params.type or "enemy";
     local object=Character.new(params);
     return object;
 end
