@@ -42,7 +42,7 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 1
+properties.currentLevel = 30
 properties.saveFile = "saveFile.txt"
 
 properties.enemiesNumber  = 0
