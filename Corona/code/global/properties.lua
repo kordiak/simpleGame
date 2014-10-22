@@ -36,7 +36,7 @@ properties.numberOfForests= 3
 
 properties.hexTexturePath = "graphicsRaw/mainBoard/emptyHexWoodTexture.png"
 properties.environment = {"graphicsRaw/environment/envi1.png","graphicsRaw/environment/envi2.png","graphicsRaw/environment/envi3.png"}
-properties.enemy={"graphicsRaw/enemies/enemy3.png","graphicsRaw/enemies/enemy4.png","graphicsRaw/enemies/enemy5.png"}
+properties.enemy={"graphicsRaw/enemies/enemy3.png","graphicsRaw/enemies/enemy4.png","graphicsRaw/enemies/enemy5.png","graphicsRaw/enemies/enemy3_nerd.png"}
 properties.levelGoal = "graphicsRaw/items/levelGoal4.png"
 properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 
