@@ -344,7 +344,7 @@ composer.gotoScene("code.scenes.gameScene");
 --                end
 --            end
 --        end
---        if possibleEnemyHex then
+--        if possibleEnemyHex theną
 --            print(possibleEnemyHex)
 --        end
 --    end
