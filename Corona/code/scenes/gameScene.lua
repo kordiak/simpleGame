@@ -469,9 +469,9 @@ function scene:create(event)
     end
     functions.enemyMove = function()
 
-      --  functions.simpleGhostEnemiesMove()
+       functions.simpleGhostEnemiesMove()
       --  functions.aBitMoreComplicatedGhostEnemiesMove()
-        functions.roflmaoGhostEnemiesMove()
+      --  functions.roflmaoGhostEnemiesMove()
     --functions.advencedGhostEnemiesMove()
     end
     functions.hexPressed = function(params)
