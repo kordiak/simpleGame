@@ -20,7 +20,7 @@ Character.new = function(params)
     local xPosition = params.xPosition or 0;
     local yPosition = params.yPosition or 0;
     local currentHex = params.currentHex or 0;
-    local characterLevel = params.characterLeve or 0;
+    local characterLevel = params.characterLevel or 0;
 
     local object = display.newImageRect(skin, width, height);
     object.x = xPosition;
