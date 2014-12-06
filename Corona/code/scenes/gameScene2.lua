@@ -124,27 +124,34 @@ function scene:create(event)
 
     functions.startGame = function()
 
---        functions.environmentGenerator = function()
---
---            for i = 1, properties.numberOfForests do
---                local r = math.random(1, 3)
---                local q = true
---                while q do
---                    local i = math.random(1, #mainBoard)
---                    if mainBoard[i].isFree then
---                        local smallForest = display.newImageRect(properties.environment[r], 90, 90)
---                        smallForest.x = mainBoard[i].x
---                        smallForest.y = mainBoard[i].y
---                        mainBoard[i].isFree = false
---                        mainBoard[i].isWalkAble = false
---                        mainBoard[i].content = smallForest
---                        properties.lastPickedHexForEnvironmentForestGenerator = i
---                        --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
---                        q = false
---                        local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
---                        if eviCount < 3 then
---                            eviCount = 3
---                        end
+        functions.environmentGenerator = function()
+
+            for i = 1, properties.numberOfForests do
+                local r = math.random(1, 3)
+                local q = true
+             --   while q do
+                --    local i = i + 5 --math.random(1, #mainBoard)
+                if i == 1 then
+                    i = 68
+                    elseif i == 2 then
+                    i = 63
+                    elseif i == 3 then
+                    i = 66
+                end
+                    if mainBoard[i].isFree then
+                        local smallForest = display.newImageRect(properties.environment[r], 90, 90)
+                        smallForest.x = mainBoard[i].x
+                        smallForest.y = mainBoard[i].y
+                        mainBoard[i].isFree = false
+                        mainBoard[i].isWalkAble = false
+                        mainBoard[i].content = smallForest
+                        properties.lastPickedHexForEnvironmentForestGenerator = i
+                        --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
+                        q = false
+                        local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
+                        if eviCount < 3 then
+                            eviCount = 3
+                        end
 --                        for j = 1, eviCount do
 --                            local o = true
 --                            local whileCounter = 0
@@ -169,15 +176,15 @@ function scene:create(event)
 --                                end
 --                            end
 --                        end
---                    end
---                end
---                for i = 1, #simpleGhostEnemiesTable do
---                    simpleGhostEnemiesTable[i]:toFront()
---                end
---                print(mainHero)
---                mainHero:toFront()
---            end
---        end
+                    end
+              --  end
+                for i = 1, #simpleGhostEnemiesTable do
+                    simpleGhostEnemiesTable[i]:toFront()
+                end
+             --   print(mainHero)
+                mainHero:toFront()
+            end
+        end
 
 
         elementCreator.new(mainBoard,functions.environmentGenerator,simpleGhostEnemiesTable,enemiesTable);
@@ -240,11 +247,18 @@ function scene:create(event)
         --                mainBoard[1].content = levelGoal
         --            end
         --            functions.enemyCreator()
---        --        end
---        mainHero=elementCreator.mainHeroCreator(mainHero,levelGoal)
---        elementCreator.enemyCreator()
---        --functions.mainHeroCreator()
---        functions.HUDCreator()
+        --        end
+        mainHero=elementCreator.mainHeroCreator(mainHero,levelGoal)
+        elementCreator.enemyCreator()
+        --functions.mainHeroCreator()
+        functions.HUDCreator()
+        functions.testingAlgo()
+    end
+
+    functions.testingAlgo = function ()
+    local startingHex = mainHero.currentHex
+        print (startingHex)
+
     end
 
     functions.newLevel = function()
@@ -543,6 +557,7 @@ function scene:create(event)
         --  functions.roflmaoGhostEnemiesMove()
         --functions.advencedGhostEnemiesMove()
     end
+
     functions.hexPressed = function(params)
         --  print (params.hexNumber)
 
@@ -559,7 +574,7 @@ function scene:create(event)
                         heroCanMove = false
                         transition.to(mainHero, { time = properties.heroTransTime, delay = 100, x = mainBoard[tonumber(params.hexNumber)].x, y = mainBoard[tonumber(params.hexNumber)].y, onComplete = functions.transCompleted })
                         --mainHero.x =  mainBoard[tonumber(params.hexNumber)].x
-                        --  mainHero.y =  mainBoard[tonumber(params.hexNumber)].y
+                        --mainHero.y =  mainBoard[tonumber(params.hexNumber)].y
 
                         mainBoard[tonumber(params.hexNumber)].isWalkAble = false
                         mainBoard[tonumber(params.hexNumber)].isFree = false
