@@ -567,7 +567,7 @@ function scene:create(event)
 
 
 
-                    elseif mainBoard[tonumber(params.hexNumber)].content == levelGoal then
+                    elseif mainBoard[tonumber(params.hexNumber)].content == levelGoal or tonumber(params.hexNumber) == 1 then
                         transition.to(mainHero, { time = properties.heroTransTime, delay = 100, x = mainBoard[tonumber(params.hexNumber)].x, y = mainBoard[tonumber(params.hexNumber)].y, onComplete = functions.newLevel })
 
                         heroCanMove = false
