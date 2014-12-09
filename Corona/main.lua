@@ -11,7 +11,7 @@ display.setStatusBar(display.HiddenStatusBar)
 --======================================
 
 local composer = require("composer")
-composer.gotoScene("code.scenes.bossScene");
+composer.gotoScene("code.scenes.bossScene2");
 --
 --local saveFile = require("code.global.saveAndLoad")
 --local boardCreator = require("code.boardLibrary.boardCreator")
