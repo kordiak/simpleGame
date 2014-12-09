@@ -14,6 +14,12 @@ local started = false
 
 local scene = composer.newScene()
 
+local function gameOver()
+    audio.stop()
+    media.stopSound()
+    composer.removeScene("code.scenes.bossScene")
+    composer.gotoScene("code.scenes.bossScene")
+end
 local function close()
     composer.gotoScene("")
     composer.removeScene("")
@@ -108,7 +114,7 @@ end
 functions.dead = function ()
     touchRect.isHitTestable = false
     local heroSmash = function ()
-        transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2})
+        transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2, onComplete = gameOver})
     end
     timer.cancel( shootTimer )
     for i=1 , #missleTab do
@@ -116,7 +122,8 @@ functions.dead = function ()
         missleTab[i]:removeSelf()
     end
     missleTab = {}
-    timer.cancel( hero )
+   -- timer.cancel( hero )
+    transition.pause(hero)
     transition.to ( boss, { time = 1500, rotation = 0, y = hero.y, x = hero.x ,xScale = 0.2, yScale =0.2, alpha = 0.5, onComplete = heroSmash})
 
 end
@@ -166,7 +173,24 @@ functions.touchHandler = function( event )
     return true
         end
 end
+functions.win = function()
+    local function afterAniCallback()
+        media.stopSound()
+        touchRect.isHitTestable = false
+        media.playSound( "sounds/boss1Win.mp3" )
 
+        ---TODO what to do after we killed the boss?
+    end
+    ---BOOM BOOM DIE of GHOST ANIMATION
+    local ghostTrap =  display.newImageRect("graphicsRaw/bosses/ghostTrap.png", 269/1.5, 312/1.5);
+    ghostTrap.anchorX = -1
+    ghostTrap.x = properties.x
+    ghostTrap.y = properties.height - ghostTrap.height
+    sceneGroup:insert  ( ghostTrap )
+    transition.to ( boss, { time = 1500, xScale = 0.01, yScale = 0.01, rotation =1400, y = ghostTrap.y-ghostTrap.height/2 + ghostTrap.height/10, x = ghostTrap.x+ghostTrap.width - ghostTrap.width/10, onComplete =afterAniCallback })
+ --   afterAniCallback()
+
+end
 functions.survived = function ()
     if bossHp > 0 then
     timer.cancel( shootTimer )
@@ -175,7 +199,7 @@ functions.survived = function ()
     missleTab[i]:removeSelf()
     end
     missleTab = {}
-    transition.to ( boss, { time = 2500, rotation = 0, y = properties.center.y -  boss.height/2})
+    transition.to ( boss, { time = 2500, rotation = 0, y = properties.center.y -  boss.height/2, onComplete = functions.win})
         end
 end
 function scene:create(event)
@@ -211,10 +235,12 @@ function scene:create(event)
 end
 
 function scene:show(event)
+    media.playSound()
 end
 
 
 function scene:hide(event)
+    media.pauseSound()
 end
 
 
