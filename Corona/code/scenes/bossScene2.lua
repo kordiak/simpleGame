@@ -6,10 +6,15 @@ local physics = require( "physics" )
 local functions = {}
 
 local wallTab = {}
+local obstacleTab = {}
 
+local obstacleGroup = display.newGroup ()
 local wallGroup = display.newGroup()
+local levelContent = display.newGroup()
 
-local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup
+local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail
+local maxElementCounterValue = 700
+local points = 0
 
 local sceneLoaded = false
 
@@ -31,16 +36,21 @@ functions.generateWall = function (event)
 end
 
 functions.test = function (x)
-    local ball = display.newCircle (x , 0,25)
+    ball = display.newCircle (x , 0,25)
     ball.y = properties.y - ball.height
+    ball.type = "objective"
     physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius=23 } )
+    levelContent:insert   ( ball )
+
    -- sceneGroup:rotate(-(gravityXFactor*15))
  end
 functions.touchHandler = function( event )
     if sceneLoaded == true then
         if event.phase == "moved" then
+            if event.y <properties.height - properties.height/5 then
               if tonumber(text.text) > 0 then
             functions.generateWall(event)
+                  end
             end
 
             --- functions.playerShooting(event)
@@ -55,8 +65,72 @@ functions.textInitation = function (element)
     text:scale(0.7, 0.7)
     text.x, text.y = display.screenOriginX + text.contentWidth * 0.5 + 10, display.screenOriginY + text.height / 2 + 10
     text:setFillColor(1, 1, 1)
+
     return text
 end
+functions.textPInitation = function ()
+    local  pText = display.newText({ text = points, font = properties.font, fontSize = properties.resourcesUsageFont })
+    pText:scale(0.7, 0.7)
+    pText.x, pText.y = properties.width - pText.contentWidth - 10, display.screenOriginY + pText.height / 2 + 10
+    pText:setFillColor(1, 1, 1)
+
+    return pText
+end
+
+
+functions.levelGoal = function ()
+  local  function levelGoalSpiner ()
+      transition.to ( levelGoal, {time = 1500, rotation = levelGoal.rotation + 240, onComplete = levelGoalSpiner})
+    end
+ levelGoal = display.newImageRect ("graphicsRaw/bosses/bucket3.png",  135, 135)
+ levelGoal.x = math.random (properties.x + properties.width/10, properties.width - properties.width/10)
+ levelGoal.y = properties.height - levelGoal.height - levelGoal.height/7
+ levelGoal.type = "objective"
+ physics.addBody( levelGoal, "static", { friction=0.2, bounce=0.3 } )
+ levelContent:insert   ( levelGoal )
+  levelGoalSpiner()
+
+
+ LevelFail = display.newRect (properties.center.x, properties.height + properties.height/5 , properties.width*4, 20)
+ LevelFail.type  = "outOfScreen"
+ physics.addBody( LevelFail, "static", { friction=0.2, bounce=0.3 } )
+ levelContent:insert   ( LevelFail )
+end
+functions.goalCollected = function (failure)
+
+        points = points + 1
+
+
+
+    maxElementCounterValue = maxElementCounterValue - 50
+    functions.levelInitation()
+end
+
+
+local function onCollision( event )
+
+    if ( event.phase == "began" ) then
+        if event.object1.type == "objective" and event.object2.type== "objective" then
+            print ("YOU WOOOON")
+            physics.pause()
+            transition.to ( ball, {time = 500, x = levelGoal.x, y = levelGoal.y, xScale =0.1, yScale = 0.1, onComplete = functions.goalCollected})
+        end
+        if event.object1.type == "outOfScreen" or event.object2.type== "outOfScreen" then
+            points = points - 1
+            physics.pause()
+            timer.performWithDelay(200, function () functions.goalCollected(true) end)
+
+            end
+       -- print( "began: " .. event.object1.myName .. " and " .. event.object2.myName )
+
+    elseif ( event.phase == "ended" ) then
+
+      --  print( "ended: " .. event.object1.myName .. " and " .. event.object2.myName )
+
+    end
+end
+
+
 
 functions.arrowInitation = function (rotation)
     local arrow
@@ -69,8 +143,8 @@ functions.arrowInitation = function (rotation)
            transition.to ( arrow, {time = 350, xScale = 0.9, yScale = 0.9, onComplete = arrowAnimation})
            end
     end
-    arrow = display.newImageRect ("graphicsRaw/bosses/arrow.png",  512/5, 512/5)
-    arrow.x = math.random (properties.x + 10, properties.width - 10)
+    arrow = display.newImageRect ("graphicsRaw/bosses/arrow2.png",  512/5, 512/5)
+    arrow.x = math.random (properties.x + properties.width/10, properties.width - properties.width/10)
     arrow.y = properties.y + arrow.height/2 + 5
 
     print (rotation)
@@ -78,14 +152,65 @@ functions.arrowInitation = function (rotation)
 
     arrowAnimation()
     timer.performWithDelay( 2560, function ()   functions.test(arrow.x) end, 1 )
-
+    functions.levelGoal()
     return arrow
 end
-function scene:create(event)
-    sceneGroup = self.view
+
+functions.obstacleGenerator = function ()
+--local obstacle = display.newImageRect ("graphicsRaw/bosses/wall2.png",  420, 209)
+local obstacle = display.newRect(0,0,properties.width/1.9,properties.height/14)
+local rotate = math.random(1,2)
+local rotate2 = math.random(1,2)
+if rotate == 1 then
+    if rotate2 == 1 then
+        obstacle:rotate (math.random(15,60))
+    else
+        obstacle:rotate (-math.random(15,60))
+        end
+    end
+--obstacle:rotate (math.random(15,60))
+obstacle.x = properties.center.x
+obstacle.y = properties.center.y
+physics.addBody( obstacle, "static", { friction=0.2, bounce=0.3 } )
+
+    obstacleGroup:insert(obstacle)
+end
+functions.levelInitation = function ()
+
+
+    levelContent:removeSelf()
+    wallGroup:removeSelf()
+    obstacleGroup:removeSelf()
+    obstacleGroup = display.newGroup()
+    wallGroup = display.newGroup()
+    levelContent = display.newGroup()
+    wallTab= {}
+
+
     physics.start()
     gravityXFactor = math.random (-2,2)
     physics.setGravity( gravityXFactor, 12 )
+
+    functions.obstacleGenerator ()
+    elementCounter = maxElementCounterValue
+    text = functions.textInitation(elementCounter)
+    pText = functions.textPInitation()
+    levelContent:insert   ( text )
+    levelContent:insert   ( pText )
+    arrow = functions.arrowInitation(gravityXFactor)
+    levelContent:insert   ( arrow )
+    levelContent:insert   ( wallGroup )
+    sceneGroup:insert   ( levelContent )
+end
+
+function scene:create(event)
+
+    sceneGroup = self.view
+    if event.params then
+diffucult = event.params.diff or nil
+maxElementCounterValue = event.params.cValue or 700
+
+end
    -- physics.setDrawMode( "debug" )
     -- physics.setScale( 5 )
     sceneLoaded = true
@@ -93,16 +218,11 @@ function scene:create(event)
     touchRect.isVisible = false
     touchRect.isHitTestable = true
     touchRect:addEventListener( "touch", functions.touchHandler )
-
-    elementCounter = 400
-
-    text = functions.textInitation(elementCounter)
-    sceneGroup:insert   ( text )
-    arrow = functions.arrowInitation(gravityXFactor)
-    sceneGroup:insert   ( arrow )
-    sceneGroup:insert   ( wallGroup )
+    functions.levelInitation()
 
 
+
+    Runtime:addEventListener( "collision", onCollision )
 end
 
 function scene:show(event)
