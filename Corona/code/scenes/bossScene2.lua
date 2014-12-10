@@ -16,6 +16,10 @@ local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, 
 local maxElementCounterValue = 700
 local points = 0
 
+local obstacleYPos = {}
+
+local numOfObstacles = 2
+
 local sceneLoaded = false
 
 local scene = composer.newScene()
@@ -156,22 +160,77 @@ functions.arrowInitation = function (rotation)
     return arrow
 end
 
+functions.posYGerator = function()
+
+    for i =3, math.round((properties.height-300)/100) do
+        local a = i
+        table.insert ( obstacleYPos, a)
+    end
+
+    local rand = math.random
+    local t = obstacleYPos
+    local iterations = #t
+    local j
+
+    for i = iterations, 2 , -1 do
+        j = rand(i)
+        t[i], t[j] = t[j], t[i]
+        end
+
+end
+
 functions.obstacleGenerator = function ()
 --local obstacle = display.newImageRect ("graphicsRaw/bosses/wall2.png",  420, 209)
-local obstacle = display.newRect(0,0,properties.width/1.9,properties.height/14)
+local obstacle = display.newRect(0,0,properties.width/1.9,properties.height/40)
+
+local function posRan9domizator ()
+   local posY
+     posY = obstacleYPos[1]
+   posY = posY*100
+--   print ("PosY", posY)
+--    if table.indexOf (obstacleYPos, posY) then
+--        posYRandom()
+--                else
+--        table.insert ( obstacleYPos, posY)
+--    end
+    local posX
+    local anchor
+    if math.random(1,2) == 1 then
+        posX = properties.x
+        anchor = -1
+    else
+    posX = properties.width
+        anchor = 1
+    end
+
+    return posY, posX, anchor
+end
+
 local rotate = math.random(1,2)
 local rotate2 = math.random(1,2)
+
+local y,x,anchor = posRan9domizator()
+--obstacle:rotate (math.random(15,60))
+obstacle.x =  x - obstacle.width * anchor * -1
+obstacle.anchorX = anchor
+--obstacle.y = properties.center.y
+obstacle.y = y
+physics.addBody( obstacle, "static", { friction=0.2, bounce=0.3 } )
+
+local function obstacleRotation ()
+    local rotationFactor
 if rotate == 1 then
     if rotate2 == 1 then
-        obstacle:rotate (math.random(15,60))
+        rotationFactor =  (math.random(15,60))
     else
-        obstacle:rotate (-math.random(15,60))
-        end
+        rotationFactor = (-math.random(15,60))
     end
---obstacle:rotate (math.random(15,60))
-obstacle.x = properties.center.x
-obstacle.y = properties.center.y
-physics.addBody( obstacle, "static", { friction=0.2, bounce=0.3 } )
+    transition.to(obstacle, {time = 500, rotation = rotationFactor})
+end
+end
+
+transition.to(obstacle, {time = 1500, x = x, onComplete = obstacleRotation})
+
 
     obstacleGroup:insert(obstacle)
 end
@@ -185,13 +244,17 @@ functions.levelInitation = function ()
     wallGroup = display.newGroup()
     levelContent = display.newGroup()
     wallTab= {}
+    obstacleYPos = {}
 
 
     physics.start()
     gravityXFactor = math.random (-2,2)
     physics.setGravity( gravityXFactor, 12 )
-
+for i =1 , numOfObstacles do
     functions.obstacleGenerator ()
+end
+
+    functions.continueInitation = function ()
     elementCounter = maxElementCounterValue
     text = functions.textInitation(elementCounter)
     pText = functions.textPInitation()
@@ -201,6 +264,9 @@ functions.levelInitation = function ()
     levelContent:insert   ( arrow )
     levelContent:insert   ( wallGroup )
     sceneGroup:insert   ( levelContent )
+    end
+
+    functions.continueInitation()
 end
 
 function scene:create(event)
