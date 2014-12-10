@@ -131,7 +131,7 @@ functions.hitChecker = function (event)
 
    -- print (event.x ,boss.x, boss.width*0.6)
     local index = table.indexOf( missleTab, event )
-    if event.x < (hero.x +70) and event.x > (hero.x - 70) then
+    if event.x < (hero.x + 60) and event.x > (hero.x - 60) then
         bossHp = bossHp - 1
         bossHpIndicator.text = "Hp " .. bossHp
         end

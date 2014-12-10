@@ -184,6 +184,7 @@ functions.obstacleGenerator = function ()
 local obstacle = display.newRect(0,0,properties.width/1.9,properties.height/40)
 
 local function posRan9domizator ()
+    functions.posYGerator()
    local posY
      posY = obstacleYPos[1]
    posY = posY*100
