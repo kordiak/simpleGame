@@ -43,7 +43,7 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 1
+properties.currentLevel = 20
 properties.saveFile = "saveFile.json"
 
 properties.enemiesNumber  = 0

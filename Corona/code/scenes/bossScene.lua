@@ -229,7 +229,7 @@ function scene:create(event)
 
     touchRect:addEventListener( "touch", functions.touchHandler )
     shootTimer =  timer.performWithDelay( 60, functions.bossShooting, -1 )
-    timer.performWithDelay ( 1000*60 * 1, functions.survived, 1)
+    timer.performWithDelay ( 1000*12 * 1, functions.survived, 1)
     --- CURRENTLY NOT USED MAIN MENU
 
 end
