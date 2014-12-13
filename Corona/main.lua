@@ -11,7 +11,8 @@ display.setStatusBar(display.HiddenStatusBar)
 --======================================
 
 local composer = require("composer")
-composer.gotoScene("code.scenes.bossScene2");
+math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 6)))
+composer.gotoScene("code.scenes.firstScene");
 --
 --local saveFile = require("code.global.saveAndLoad")
 --local boardCreator = require("code.boardLibrary.boardCreator")

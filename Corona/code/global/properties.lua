@@ -8,6 +8,11 @@ properties.y = display.screenOriginY
 properties.center = { x = properties.x + properties.width / 2, y = properties.y + properties.height / 2 }
 properties.device = system.getInfo("model")
 
+
+properties.cornerSize = 0
+properties.sizeOfButtons = 100
+
+
 properties.font = native.systemFont
 properties.inSquareFont = 60
 properties.resourcesUsageFont = 40
@@ -15,6 +20,14 @@ properties.mainMenuFontSize  = 65
 
 properties.directionLeft = "left"
 properties.directionRight = "right"
+
+
+properties.firstSceneTextColor = {0.78,0.654,0.520};
+properties.firstSceneRectsColor = {0.16,0.55,0.47677};
+
+
+properties.buttonTransTime = 400
+
 
 properties.sceneTitleColor = { r = 1, g = 1, b = 1, a = 1 }
 
@@ -43,7 +56,7 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 20
+properties.currentLevel = 1
 properties.saveFile = "saveFile.json"
 
 properties.enemiesNumber  = 0

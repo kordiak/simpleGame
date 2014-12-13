@@ -72,7 +72,7 @@ elementCreator.mainHeroCreator = function(mainHero,levelGoal)
         mainBoard[1].content = levelGoal
     end
     --elementCreator.enemyCreator();
-    return mainHero;
+    return mainHero, levelGoal;
 end
 
 end

@@ -85,7 +85,7 @@ local function mainBoardSettings ()
     mainBoard[62].coherentHexes = {53,57,65,68,66,58}
     mainBoard[63].coherentHexes = {54,58,66,69,67,59}
     mainBoard[64].coherentHexes = {55,59,67,60}
-    mainBoard[65].coherentHexes = {57,61,62}
+    mainBoard[65].coherentHexes = {57,61,62,68}
     mainBoard[66].coherentHexes = {58,62,68,70,69,63}
     mainBoard[67].coherentHexes = {59,63,69,64}
     mainBoard[68].coherentHexes = {62,65,70,66}
@@ -203,17 +203,17 @@ local function touchControl (event)
         display.getCurrentStage():setFocus( event.target )
         event.target.isFocus = true
 
-      --  event.target:setFillColor (0.255,0.64,0.42,0.5)
---        for i =1 , #event.target.coherentHexes do
---            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,0,0,0.2)
---        end
+        event.target:setFillColor (0.255,0.64,0.42,0.5)
+        for i =1 , #event.target.coherentHexes do
+            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,0,0,0.2)
+        end
 
 
     elseif event.target.isFocus then
         if event.phase =="ended" then
         display.getCurrentStage():setFocus( nil )
         event.target.isFocus = nil
-     --   event.target:setFillColor( 1,1,1)
+        event.target:setFillColor( 1,1,1)
 
         for i =1 , #event.target.coherentHexes do
             -- event.target.coherentHexes[i]

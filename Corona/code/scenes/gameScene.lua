@@ -18,7 +18,7 @@ local properties = require("code.global.properties")
 local Enemy = require("code.classes.Enemy");
 local Player = require("code.classes.Player");
 local elementCreator = require("code.classes.elementCreator");
-local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe
+local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart
 local functions = {}
 local enemiesTable = {}
 
@@ -29,7 +29,7 @@ local maxDistanceEnemyAndHero = {}
 local miniDistanceEnemyAndHero = {}
 miniDistanceEnemyAndHero.distance = properties.miniDistanceHandler
 maxDistanceEnemyAndHero.distance = 0
-local overlay, play, load, exit
+local overlay, play, load, exit, sceneGroup
 
 table.insert(enemiesTable, simpleGhostEnemiesTable)
 table.insert(enemiesTable, advencedGhostEnemiesTable)
@@ -51,7 +51,7 @@ end
 
 function scene:create(event)
     --local state = event.params.state
-    local sceneGroup = self.view
+     sceneGroup = self.view
 
 
 
@@ -60,11 +60,13 @@ function scene:create(event)
     myText:scale(0.7, 0.7)
     myText.x, myText.y = display.screenOriginX + myText.contentWidth * 0.5, display.contentHeight + display.screenOriginY * -1 - myText.contentHeight * 0.5
     myText:setFillColor(1, 1, 1)
+    sceneGroup:insert(myText)
 
     local levelIndicator = display.newText({ text = "Level " .. properties.currentLevel, font = properties.font, fontSize = properties.resourcesUsageFont })
     levelIndicator:scale(0.7, 0.7)
     levelIndicator.x, levelIndicator.y = display.screenOriginX + levelIndicator.contentWidth * 0.5 + 10, display.screenOriginY + levelIndicator.height / 2 + 10
     levelIndicator:setFillColor(1, 1, 1)
+    sceneGroup:insert(levelIndicator)
 
 
 --- CURRENTLY NOT USED MAIN MENU
@@ -121,10 +123,29 @@ function scene:create(event)
         overlay:addEventListener("touch", functions.mainMenuTouch)
         functions.startingMenuContent()
     end
+functions.insertingIntoScenegroup = function()
+    for i=1,#mainBoard do
+        sceneGroup:insert(mainBoard[i])
+        sceneGroup:insert(mainBoard[i].text)
+        mainBoard[i].text:toBack()
+       mainBoard[i]:toBack()
+end
+        for i = 1, #simpleGhostEnemiesTable do
+            sceneGroup:insert(simpleGhostEnemiesTable[i])
+        end
+        sceneGroup:insert(levelGoal)
+        sceneGroup:insert(mainHero)
+        sceneGroup:insert(hexAxe)
+        sceneGroup:insert(hexAxe.backGround)
+        sceneGroup:insert(hexRestart)
+
+    end
 
     functions.startGame = function()
 
         functions.environmentGenerator = function()
+
+
 
             for i = 1, properties.numberOfForests do
                 local r = math.random(1, 3)
@@ -141,6 +162,7 @@ function scene:create(event)
                         properties.lastPickedHexForEnvironmentForestGenerator = i
                         --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
                         q = false
+                        sceneGroup:insert(smallForest)
                         local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
                         if eviCount < 3 then
                             eviCount = 3
@@ -155,6 +177,7 @@ function scene:create(event)
                                     --  print ("C",c)
                                     --   print ( mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c])
                                     local smallForest = display.newImageRect(properties.environment[r], 90, 90)
+                                    sceneGroup:insert(smallForest)
                                     smallForest.x = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].x
                                     smallForest.y = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].y
                                     mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree = false
@@ -175,7 +198,7 @@ function scene:create(event)
                     simpleGhostEnemiesTable[i]:toFront()
                 end
                 print(mainHero)
-                mainHero:toFront()
+                        mainHero:toFront()
             end
         end
 
@@ -241,10 +264,12 @@ function scene:create(event)
 --            end
 --            functions.enemyCreator()
 --        end
-       mainHero=elementCreator.mainHeroCreator(mainHero,levelGoal)
+       mainHero,levelGoal=elementCreator.mainHeroCreator(mainHero,levelGoal)
        elementCreator.enemyCreator()
         --functions.mainHeroCreator()
         functions.HUDCreator()
+
+        functions.insertingIntoScenegroup()
     end
 
     functions.newLevel = function()
@@ -603,19 +628,19 @@ function scene:create(event)
             hexAxe.x = properties.width - hexAxe.width / 2
             hexAxe.y = mainBoard[#mainBoard].y + hexAxe.height * 1.5
             hexAxe.name = "hexAxe"
-            local hexContent = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
-            hexContent.x = hexAxe.x
-            hexContent.y = hexAxe.y
+            hexAxe.backGround = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
+            hexAxe.backGround.x = hexAxe.x
+            hexAxe.backGround.y = hexAxe.y
             hexAxe:addEventListener("touch", functions.HUDtouch)
 
 
 
-            local hex = display.newImageRect(properties.hexTexturePath, 88, 77)
-            hex.name = "restart"
-            hex.x = properties.x + hex.width / 2
-            hex.y = mainBoard[#mainBoard].y + hex.height * 1.5
+            hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
+            hexRestart.name = "restart"
+            hexRestart.x = properties.x + hexRestart.width / 2
+            hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
 
-            hex:addEventListener("touch", functions.HUDtouch)
+            hexRestart:addEventListener("touch", functions.HUDtouch)
         end
     end
 
