@@ -128,7 +128,7 @@ functions.insertingIntoScenegroup = function()
         sceneGroup:insert(mainBoard[i])
         sceneGroup:insert(mainBoard[i].text)
         mainBoard[i].text:toBack()
-       mainBoard[i]:toBack()
+        mainBoard[i]:toBack()
 end
         for i = 1, #simpleGhostEnemiesTable do
             sceneGroup:insert(simpleGhostEnemiesTable[i])
