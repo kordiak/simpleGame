@@ -195,7 +195,7 @@ functions.bossShooting = function()
     if started == true then
         local shoot = math.random(1,100)
         if shoot > 60 then
-    if #missleTab < 2 then
+    if #missleTab < 15 then
         local tablePos = math.random(1,7)
         local x = ScreenPosition[tablePos]
     local missle = display.newImageRect (properties.missleBone,  properties.width/10, 41)
@@ -312,7 +312,7 @@ function scene:create(event)
 
     touchRect:addEventListener( "touch", functions.touchHandler )
     shootTimer =  timer.performWithDelay( 60, functions.bossShooting, -1 )
-    timer.performWithDelay ( 1000*20 * 1, functions.survived, 1)
+    timer.performWithDelay ( 1000* 60 * 1, functions.survived, 1)
 
     local function test()
     for i=1, #ScreenPosition do
