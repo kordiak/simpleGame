@@ -13,9 +13,15 @@ properties.cornerSize = 0
 properties.sizeOfButtons = 100
 
 
-properties.font = native.systemFont
+--properties.font = "Comic Sans MS"
+--properties.font = "Debbie-Alternate Regular"
+if "Win" == system.getInfo( "platformName" ) then
+    properties.font = "Debbie"
+elseif "Android" == system.getInfo( "platformName" ) then
+    properties.font = "DebbieAlternate"
+end
 properties.inSquareFont = 60
-properties.resourcesUsageFont = 40
+properties.resourcesUsageFont = properties.width/8
 properties.mainMenuFontSize  = 65
 
 properties.directionLeft = "left"
@@ -65,5 +71,49 @@ properties.miniDistanceHandler = properties.width + properties.height
 properties.heroTransTime = 750
 properties.enemyTransTime = 750
 
+
+--- IMG SHEETS
+
+local options =
+{
+    width = 64,
+    height = 39,
+    numFrames = 10
+}
+properties.boneSheet = graphics.newImageSheet( "graphicsRaw/spirites/boneSheet2.png", options )
+
+properties.boneSequenceData =
+{
+    name="explode",
+    start=1,
+    count=10,
+    time=700,
+    loopCount = 1,   -- Optional ; default is 0 (loop indefinitely)
+    loopDirection = "forward"    -- Optional ; values include "forward" or "bounce"
+}
+
+
+
+local options =
+{
+    width = 533,
+    height = 522,
+    numFrames = 8
+}
+properties.ghostSheet = graphics.newImageSheet( "graphicsRaw/spirites/ghostBossSheet.png", options )
+
+properties.ghostSequenceData =
+{
+    name="explode",
+    start=1,
+    count=8,
+    time=1050,
+    loopCount = 1,   -- Optional ; default is 0 (loop indefinitely)
+    loopDirection = "forward"    -- Optional ; values include "forward" or "bounce"
+}
+
+
+
+-----
 
 return properties

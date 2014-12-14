@@ -9,7 +9,7 @@ local textCOLOR = {0.8,0.498039,0.372549 }
 local goNextSceneFlag = false
 local transCompleted = false
 
-local gameScene = "code.scenes.gameScene"
+local gameScene = "code.scenes.bossScene"
 
 local creators = display.newGroup()
 local function remover ()
@@ -73,11 +73,11 @@ function scene:create( event )
     local size = properties.sizeOfButtons
     local corners = properties.cornerSize -- SIZE OF CORNERS
 
---    sceneGroup.tittle = display.newText ("Pétanque", properties.center.x, -100, native.systemFont, 90)
+--    sceneGroup.tittle = display.newText ("Pétanque", properties.center.x, -100, properties.font, 90)
 --    transition.to( sceneGroup.tittle, { time=1500, alpha=1.0, y = 115, transition=easing.outQuint} )
   --  sceneGroup:insert(sceneGroup.tittle)
 
---    sceneGroup.company = display.newText ("Cluain", properties.x - 100, properties.height - 250, native.systemFont, 65)
+--    sceneGroup.company = display.newText ("Cluain", properties.x - 100, properties.height - 250, properties.font, 65)
 --    transition.to(   sceneGroup.company, { time=2500, alpha=1.0, y = properties.height - 125, x =  properties.center.x - properties.width/4 , transition=easing.inOutBounce} )
 --    sceneGroup:insert(sceneGroup.company)
 
@@ -116,13 +116,13 @@ function scene:create( event )
     sceneGroup.tittleBackGround.isHitTestable = true
 
     sceneGroup:insert( sceneGroup.tittleBackGround)
-    sceneGroup.tittle1 = display.newText ("Ghost", -135, 115, native.systemFont, 90)
+    sceneGroup.tittle1 = display.newText ("Ghost", -135, 115, properties.font, 90)
 
     transition.to( sceneGroup.tittle1, { time=2500, alpha=1.0, x = properties.center.x - 100, transition=easing.outBounce} )
     sceneGroup:insert(sceneGroup.tittle1)
 
 
-    sceneGroup.tittle2 = display.newText ("War",properties.width+135, 115, native.systemFont, 90)
+    sceneGroup.tittle2 = display.newText ("War",properties.width+135, 115, properties.font, 90)
 
      transition.to( sceneGroup.tittle2, { time=2500, alpha=1.0, x = properties.center.x + 100, transition=easing.outBounce} )
     sceneGroup:insert(sceneGroup.tittle2)
@@ -143,10 +143,10 @@ function scene:create( event )
     sceneGroup.rect4=display.newRoundedRect(properties.center.x,properties.center.y+size*4, size*3.2,     size*1.5,corners)
 
 
-    sceneGroup.rect1nap = display.newText("Nowa Gra", properties.center.x,properties.center.y-size*2, native.systemFont, size )
-    sceneGroup.rect2nap = display.newText("opcja2", properties.center.x,properties.center.y, native.systemFont, size)
-    sceneGroup.rect3nap = display.newText("opcja3", properties.center.x,properties.center.y+size*2, native.systemFont, size)
-    sceneGroup.rect4nap = display.newText("Wczytaj", properties.center.x,properties.center.y+size*4, native.systemFont, size*0.86)
+    sceneGroup.rect1nap = display.newText("Nowa Gra", properties.center.x,properties.center.y-size*2, properties.font, size )
+    sceneGroup.rect2nap = display.newText("opcja2", properties.center.x,properties.center.y, properties.font, size)
+    sceneGroup.rect3nap = display.newText("opcja3", properties.center.x,properties.center.y+size*2, properties.font, size)
+    sceneGroup.rect4nap = display.newText("Wczytaj", properties.center.x,properties.center.y+size*4, properties.font, size*0.86)
 
 
 

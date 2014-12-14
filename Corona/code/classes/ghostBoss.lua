@@ -17,7 +17,8 @@ Boss.new = function(params)
     local currentHex = params.currentHex or 0;
     local BossLevel = params.BossLevel or 0;
 
-    local object = display.newImageRect(skin, width, height);
+
+    local object = display.newImageRect(properties.ghostSheet,1, width, height);
     object.x = xPosition;
     object.y = yPosition;
     object.type = type;
