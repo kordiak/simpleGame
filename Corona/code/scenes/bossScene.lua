@@ -23,6 +23,8 @@ local generalShootGeneratorEnded = true
 local leftToRightShowerTransitionAllowed = true
 local rightToLeftShowerTransitionAllowed = true
 
+local shootTimerLeft, shootTimerRight
+
 local ScreenPosition = {}
 
 local scene = composer.newScene()
@@ -225,7 +227,7 @@ functions.leftToRightShower = function()
     end
     shootFunctionsState[1] = false
 
-       timer.performWithDelay( 120, function () shotPos = shotPos + 1; shoot()   end,#ScreenPosition  )
+    shootTimerLeft=  timer.performWithDelay( 120, function () shotPos = shotPos + 1; shoot()   end,#ScreenPosition  )
 end
 
 functions.rightToLeftShower = function()
@@ -253,7 +255,7 @@ functions.rightToLeftShower = function()
     end
 
     shootFunctionsState[2] = false
-    timer.performWithDelay( 120, function () shotPos = shotPos - 1; shoot()   end,#ScreenPosition  )
+    shootTimerRight=  timer.performWithDelay( 120, function () shotPos = shotPos - 1; shoot()   end,#ScreenPosition  )
 end
 
 functions.functionInsertingTab = function ()
@@ -271,6 +273,7 @@ end
 
 functions.advencedBossShootingHanlder = function ()
     if started == true and generalShootGeneratorEnded == true then
+        local mode = math.random(1,2)
 
         if shootFunctionsState[1] == true and generalShootGeneratorEnded == true then
             generalShootGeneratorEnded = false
@@ -364,6 +367,8 @@ end
 functions.survived = function ()
     if bossHp > 0 then
     timer.cancel( shootTimer )
+    timer.cancel( shootTimerRight )
+    timer.cancel( shootTimerLeft )
     for i=1 , #missleTab do
         functions.spriteGenerator(missleTab[i])
     transition.cancel( missleTab[i] )
