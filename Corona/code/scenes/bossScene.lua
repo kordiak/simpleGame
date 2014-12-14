@@ -6,12 +6,22 @@ local firstBoss = require("code.classes.ghostBoss")
 local Player = require("code.classes.Player");
 local functions = {}
 
+local shootFunctions = {}
+local shootFunctionsState = {}
+
+local shootGroup = display.newGroup()
+
 local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect
 local bossHp = 10
 local hpTab = {}
 local missleTab = {}
 local started = false
 local heroCanMove = true
+
+local generalShootGeneratorEnded = true
+
+local leftToRightShowerTransitionAllowed = true
+local rightToLeftShowerTransitionAllowed = true
 
 local ScreenPosition = {}
 
@@ -190,6 +200,91 @@ functions.hitChecker = function (event)
  --   event.target = nil
 end
 
+functions.leftToRightShower = function()
+    local shotPos = 0
+    local shootRemoved = math.random(1,#ScreenPosition)
+    local function shoot()
+
+        if shotPos == #ScreenPosition then
+            timer.performWithDelay ( 2000, function () shootFunctionsState[1] = true end )
+            timer.performWithDelay ( 1000, function () generalShootGeneratorEnded = true end )
+        end
+        if shotPos == shootRemoved then
+            return
+            else
+        local x = ScreenPosition[shotPos]
+        local missle = display.newImageRect (properties.missleBone,  properties.width/10, 41)
+        missle.x = x
+        missle.pos = shotPos
+        missle.y = properties.y - 10
+        sceneGroup:insert(missle)
+        table.insert (missleTab, missle)
+        transition.to ( missle, {time = 4500, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+            end
+
+    end
+    shootFunctionsState[1] = false
+
+       timer.performWithDelay( 120, function () shotPos = shotPos + 1; shoot()   end,#ScreenPosition  )
+end
+
+functions.rightToLeftShower = function()
+    local shotPos = #ScreenPosition + 1
+    local shootRemoved = math.random(1,#ScreenPosition)
+    local function shoot()
+
+        if shotPos == 1 then
+            timer.performWithDelay ( 2000, function () shootFunctionsState[2] = true end )
+            timer.performWithDelay ( 1000, function () generalShootGeneratorEnded = true end )
+        end
+        if shotPos == shootRemoved then
+            return
+        else
+            local x = ScreenPosition[shotPos]
+            local missle = display.newImageRect (properties.missleBone,  properties.width/10, 41)
+            missle.x = x
+            missle.pos = shotPos
+            missle.y = properties.y - 10
+            sceneGroup:insert(missle)
+            table.insert (missleTab, missle)
+            transition.to ( missle, {time = 4500, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+        end
+
+    end
+
+    shootFunctionsState[2] = false
+    timer.performWithDelay( 120, function () shotPos = shotPos - 1; shoot()   end,#ScreenPosition  )
+end
+
+functions.functionInsertingTab = function ()
+
+    --- INSERTING FUNCTIONS IN TABLE FOR EASIER RANDOMIZATION IN  ' advencedBossShootingHanlder '
+
+    table.insert(shootFunctions,functions.leftToRightShower)
+    table.insert(shootFunctions,functions.rightToLeftShower)
+
+
+    for i=1,#shootFunctions do
+        table.insert(shootFunctionsState,true)
+        end
+end
+
+functions.advencedBossShootingHanlder = function ()
+    if started == true and generalShootGeneratorEnded == true then
+
+        if shootFunctionsState[1] == true and generalShootGeneratorEnded == true then
+            generalShootGeneratorEnded = false
+            shootFunctions[1]()
+        end
+         if shootFunctionsState[2] == true and generalShootGeneratorEnded == true then
+             generalShootGeneratorEnded = false
+             shootFunctions[2]()
+            end
+
+
+end
+
+end
 
 functions.bossShooting = function()
     if started == true then
@@ -202,7 +297,7 @@ functions.bossShooting = function()
         missle.x = x
         missle.pos = tablePos
         missle.y = properties.y - 10
-    sceneGroup:insert(missle)
+        shootGroup:insert(missle)
     table.insert (missleTab, missle)
         transition.to ( missle, {time = 4500, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
     end
@@ -283,6 +378,7 @@ function scene:create(event)
      sceneGroup = self.view
     functions.screenPosGenerator()
 
+    functions.functionInsertingTab()
 
     local boss = firstBoss.new()
     boss.x = properties.center.x
@@ -308,10 +404,11 @@ function scene:create(event)
     sceneGroup:insert   ( touchRect )
     sceneGroup:insert(boss)
     sceneGroup:insert   ( bossHpIndicator )
+    sceneGroup:insert   ( shootGroup )
 
 
     touchRect:addEventListener( "touch", functions.touchHandler )
-    shootTimer =  timer.performWithDelay( 60, functions.bossShooting, -1 )
+    shootTimer =  timer.performWithDelay( 100, functions.advencedBossShootingHanlder, -1 )
     timer.performWithDelay ( 1000* 60 * 1, functions.survived, 1)
 
     local function test()
