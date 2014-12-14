@@ -14,6 +14,7 @@ local gameScene = "code.scenes.bossScene"
 local creators = display.newGroup()
 local function remover ()
     transition.cancel()
+    composer.removeScene( "code.scenes.firstScene" )
     --[[
     scene.view.rect1:removeSelf()
     scene.view.rect2:removeSelf()
