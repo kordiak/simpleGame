@@ -87,7 +87,7 @@ properties.boneSequenceData =
     name="explode",
     start=1,
     count=10,
-    time=700,
+    time=400,
     loopCount = 1,   -- Optional ; default is 0 (loop indefinitely)
     loopDirection = "forward"    -- Optional ; values include "forward" or "bounce"
 }
@@ -107,7 +107,7 @@ properties.ghostSequenceData =
     name="explode",
     start=1,
     count=8,
-    time=850,
+    time=450,
     loopCount = 1,   -- Optional ; default is 0 (loop indefinitely)
     loopDirection = "forward"    -- Optional ; values include "forward" or "bounce"
 }

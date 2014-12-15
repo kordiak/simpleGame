@@ -17,6 +17,7 @@ local movedTimers = {}
 
 local shootTimers = {}
 
+local missleDestination
 
 local shootGroup = display.newGroup()
 
@@ -67,7 +68,9 @@ functions.timerCancel = function ()
     local function callback()
         for i=1 , #missleTab do
             transition.cancel( missleTab[i] )
+            if missleTab[i] then
             missleTab[i]:removeSelf()
+                end
         end
         end
 
@@ -81,6 +84,8 @@ hero.pos = 4
 hero.y = properties.height - hero.height/2 - hero.height/10
 transition.to ( hero, { time = 450 , alpha = 1, onComplete = functions.levelReady})
     sceneGroup:insert(hero)
+
+missleDestination = hero.y
 end
 functions.screenPosGenerator = function ()
 for i=1, 7 do
@@ -292,7 +297,7 @@ functions.gapInTheMissles = function ()
             timer.performWithDelay ( timeOfShoots + 500, function () shootFunctionsState[3] = true end )
             timer.performWithDelay ( timeOfShoots/4.2, function () generalShootGeneratorEnded = true end )
             end
-            transition.to ( missle, {time = timeOfShoots, x = missle.x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+            transition.to ( missle, {time = timeOfShoots, x = missle.x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
             end
             end
 
@@ -339,7 +344,7 @@ functions.leftToRightShower = function(callback, numbToDisable,counter)
         missle.y = properties.y - 10
         sceneGroup:insert(missle)
         table.insert (missleTab, missle)
-        transition.to ( missle, {time = timeOfShoots, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
             end
 
     end
@@ -393,7 +398,7 @@ functions.rightToLeftShower = function(callback, numbToDisable,counter)
             missle.y = properties.y - 10
             sceneGroup:insert(missle)
             table.insert (missleTab, missle)
-            transition.to ( missle, {time = timeOfShoots, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+            transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
         end
 
     end
@@ -497,7 +502,7 @@ functions.bossShooting = function()
         missle.y = properties.y - 10
         shootGroup:insert(missle)
     table.insert (missleTab, missle)
-        transition.to ( missle, {time = timeOfShoots, x = x, y = hero.y - hero.height/2 + missle.height/2 , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(580,1150), onComplete = functions.hitChecker})
   end
  local basicShootTimer = timer.performWithDelay (timeOfShoots/20, function() shootCounter=shootCounter+1 shootDaMissle() end,shoot )
         table.insert (shootTimers, basicShootTimer)
@@ -644,6 +649,8 @@ function scene:create(event)
     touchRect.x, touchRect.y =   properties.center.x, properties.center.y
     -- touchRect.isVisible = false
     touchRect.canGetTouch = true
+
+
 --    local myText = display.newText({ text = 0, font = properties.font, fontSize = properties.resourcesUsageFont })
 --    myText:scale(0.7, 0.7)
 --    myText.x, myText.y = display.screenOriginX + myText.contentWidth * 0.5, display.contentHeight + display.screenOriginY * -1 - myText.contentHeight * 0.5

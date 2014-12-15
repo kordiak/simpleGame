@@ -1,3 +1,8 @@
+require("code.otherLibrary.console")
+log = logging.console()
+logTable = logging.logTable
+shallowLogTable = logging.shallowLogTable
+
 --=============================================================================
 -- hiding status bar
 --=============================================================================
