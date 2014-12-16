@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 local properties = require("code.global.properties")
+local waves = require ("code.classes.waves")
 
 local colorAnimator = require ("code.classes.colorAnimator")
 
@@ -45,7 +46,17 @@ function scene:create( event )
     timer.performWithDelay (12000,  colorAnimator.cancel)
 
 
+    local params2 = {
+        type = "wave", -- or fish or boat or random
+        time = 4050, -- time for 1 wave
+        x = properties.center.x,
+        y = properties.center.y
 
+    }
+
+    waves.new(params2)
+
+    timer.performWithDelay (1200,  waves.remove)
 
 
 
