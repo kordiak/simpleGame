@@ -33,8 +33,17 @@ settings = {
 	--[[
 	-- Android permissions
 
+	  android =
+        {
+            usesPermissions =
+            {
+                "com.android.vending.CHECK_LICENSE"
+            },
+        },
+
 	androidPermissions = {
   		"android.permission.INTERNET",
+  		 "android.permission.VIBRATE",
   	},
 
 	]]--

@@ -66,10 +66,12 @@ functions.timerCancel = function ()
     end
 
     local function callback()
-        for i=1 , #missleTab do
+        for i=#missleTab , 1 do
             transition.cancel( missleTab[i] )
             if missleTab[i] then
             missleTab[i]:removeSelf()
+            missleTab[i] = nil
+                table.remove (missleTab, i)
                 end
         end
         end
@@ -235,6 +237,7 @@ functions.hitChecker = function (event)
    -- print (event.x ,boss.x, boss.width*0.6)
     local index = table.indexOf( missleTab, event )
     if event.pos == hero.pos or event.pos == hero.prevPos then
+        system.vibrate()
         bossHp = bossHp - 1
         bossHpIndicator.text = "Hp " .. bossHp
     end
