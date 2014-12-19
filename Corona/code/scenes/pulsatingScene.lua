@@ -2,7 +2,7 @@ local composer = require( "composer" )
 local properties = require("code.global.properties")
 local waves = require ("code.classes.waves")
 
-local colorAnimator = require ("code.classes.colorAnimator")
+--local colorAnimator = require ("code.classes.colorAnimator")
 
 local scene = composer.newScene()
 
@@ -31,32 +31,40 @@ function scene:create( event )
     sceneGroup.tittle1 = display.newText ("Ghost", properties.center.x, 115, properties.font, 90)
     sceneGroup.tittle1:setFillColor (0.125,0.213,0.133)
     sceneGroup:insert(sceneGroup.tittle1)
+--
+--    local params = {
+--        object = sceneGroup.tittle1,
+--        startingColor = {0,1,0},
+--        desiredColor = {1,0,0},
+--        onCancelColor = {1,1,1},
+--        time = 5000,
+--        callback = nil
+--
+--    }
+--    colorAnimator.new(params)
+--
+--    timer.performWithDelay (12000,  colorAnimator.cancel)
 
-    local params = {
-        object = sceneGroup.tittle1,
-        startingColor = {0,1,0},
-        desiredColor = {1,0,0},
-        onCancelColor = {1,1,1},
-        time = 5000,
-        callback = nil
+--
+--    local params2 = {
+--        type = "wave", -- or fish or boat or random
+--        time = 4050, -- time for 1 wave
+--        x = properties.center.x,
+--        y = properties.center.y
+--
+--    }
+--
+--    waves.new(params2)
+--
+--    timer.performWithDelay (1200,  waves.remove)
 
-    }
-    colorAnimator.new(params)
+    local a = display.newRect (properties.center.x, properties.center.y, 580, properties.height - 50)
+    a:setFillColor (1,0,0)
 
-    timer.performWithDelay (12000,  colorAnimator.cancel)
+    local mask = graphics.newMask("graphicsRaw/maskTest/mask-progress.png")
+    a:setMask(mask)
 
-
-    local params2 = {
-        type = "wave", -- or fish or boat or random
-        time = 4050, -- time for 1 wave
-        x = properties.center.x,
-        y = properties.center.y
-
-    }
-
-    waves.new(params2)
-
-    timer.performWithDelay (1200,  waves.remove)
+    a.maskX = 0
 
 
 
