@@ -17,7 +17,7 @@ display.setStatusBar(display.HiddenStatusBar)
 
 local composer = require("composer")
 math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 6)))
-composer.gotoScene("code.scenes.pulsatingScene");
+composer.gotoScene("code.scenes.gameScene");
 --
 --local saveFile = require("code.global.saveAndLoad")
 --local boardCreator = require("code.boardLibrary.boardCreator")

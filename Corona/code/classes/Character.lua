@@ -21,12 +21,14 @@ Character.new = function(params)
     local yPosition = params.yPosition or 0;
     local currentHex = params.currentHex or 0;
     local characterLevel = params.characterLevel or 0;
+    local characterDiff = params.diff or nil;
 
     local object = display.newImageRect(skin, width, height);
     object.x = xPosition;
     object.y = yPosition;
     object.type = type;
     object.currentHex=currentHex;
+    object.diff = characterDiff
 
     object.removeMe = function()
         object:removeSelf();

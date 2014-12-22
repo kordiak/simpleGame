@@ -9,8 +9,7 @@ local properties = require("code.global.properties")
 
 local getRandom = function()
     local i = math.random(1,#properties.enemy);
-    local img = properties.enemy[i];
-    return img;
+    return i;
 end
 
 local Character = require("code.classes.Character");
@@ -20,8 +19,10 @@ local Enemy = {}
     --skin --width --height --type --xPostion --yPosition --currentHex
 --]]
 Enemy.new = function(params)
-    params.skin = params.skin or getRandom();
+    local rand = getRandom()
+    params.skin = params.skin or properties.enemy[rand];
     params.type= params.type or "enemy";
+    params.diff = rand
     local object=Character.new(params);
     return object;
 end
