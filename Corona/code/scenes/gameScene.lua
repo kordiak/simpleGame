@@ -82,6 +82,15 @@ function scene:create(event)
         return true
     end
 
+    functions.isBlockedChecker = function ()
+
+    --TODO CHECK IF OUR HERO IS BLOCKED IF YES THEN OPEN NEW BOSS SCENE
+
+        -- ON COMPLETE
+    heroCanMove = true
+    end
+
+
     functions.startingMenuContent = function()
         play = display.newText({ text = "Play", font = properties.font, fontSize = properties.mainMenuFontSize })
         play.x, play.y = properties.center.x, display.screenOriginY + play.height * 2
@@ -144,11 +153,11 @@ end
 
     functions.forestGeneratorHelper = function ()
         local forestOccupiedTab = forestGeneratorHelper.new()
-        logTable (forestOccupiedTab )
-        for i =1 ,#forestOccupiedTab[21] do
+
+        for i =1 ,#forestOccupiedTab[#forestOccupiedTab] do
 
 
-                mainBoard[forestOccupiedTab[21][i]]:setFillColor (1,0,0,0.2)
+                mainBoard[forestOccupiedTab[#forestOccupiedTab][i]]:setFillColor (1,0,0,0.2)
 
             end
     end
@@ -322,7 +331,9 @@ end
         maxDistanceEnemyAndHero.distance = 0
     end
     functions.enemyTransCompleted = function()
-        heroCanMove = true
+
+        functions.isBlockedChecker ()
+
     end
     functions.aBitMoreComplicatedGhostEnemiesMove = function()
         for i = 1, #simpleGhostEnemiesTable do
@@ -580,10 +591,12 @@ end
 end
 
 function scene:show(event)
+    heroCanMove = true
 end
 
 
 function scene:hide(event)
+    heroCanMove = false
 end
 
 
