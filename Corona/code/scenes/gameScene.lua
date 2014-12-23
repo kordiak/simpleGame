@@ -145,10 +145,10 @@ end
     functions.forestGeneratorHelper = function ()
         local forestOccupiedTab = forestGeneratorHelper.new()
         logTable (forestOccupiedTab )
-        for i =1 ,#forestOccupiedTab[1] do
+        for i =1 ,#forestOccupiedTab[6] do
 
 
-                mainBoard[forestOccupiedTab[1][i]]:setFillColor (1,0,0,0.2)
+                mainBoard[forestOccupiedTab[6][i]]:setFillColor (1,0,0,0.2)
 
             end
     end
