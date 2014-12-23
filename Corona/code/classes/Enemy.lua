@@ -18,8 +18,12 @@ local Enemy = {}
 --[[
     --skin --width --height --type --xPostion --yPosition --currentHex
 --]]
+
+ -- 4 ma okulary
+ -- 5 jest glupia
 Enemy.new = function(params)
-    local rand = getRandom()
+    local rand =  getRandom()
+
     params.skin = params.skin or properties.enemy[rand];
     params.type= params.type or "enemy";
     params.diff = rand

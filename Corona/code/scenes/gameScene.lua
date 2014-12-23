@@ -148,7 +148,7 @@ end
         for i =1 ,#forestOccupiedTab[1] do
 
 
-                mainBoard[forestOccupiedTab[1][i]]:setFillColor (1,0,0,0.2)
+                mainBoard[forestOccupiedTab[2][i]]:setFillColor (1,0,0,0.2)
 
             end
     end
@@ -337,6 +337,7 @@ end
                 if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
                     if mainBoard[a].isFree == true then
                         if simpleGhostEnemiesTable[i].beforeHex then
+                            logTable (simpleGhostEnemiesTable[i].beforeHex)
                             for i=1 ,#simpleGhostEnemiesTable[i].beforeHex do
                                 if simpleGhostEnemiesTable[i].beforeHex[i] ~= a then
                                     maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
@@ -385,14 +386,14 @@ end
         end
     end
 
-    functions.simpleGhostEnemiesMove = function()
-        for i = 1, #simpleGhostEnemiesTable do
+    functions.simpleGhostEnemiesMove = function(monster)
+
             --TODO enemy movement
 
             --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-            for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do
-                local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
-                print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
+            for j = 1, #mainBoard[monster.currentHex].coherentHexes do
+                local a = mainBoard[monster.currentHex].coherentHexes[j]
+                print("Board Position", mainBoard[monster.currentHex].coherentHexes[j])
                 distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
                 print("Distance", distanceEnemyAndHero)
                 if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
@@ -417,33 +418,28 @@ end
                 -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
                 --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
 
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
-                simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
+                mainBoard[monster.currentHex].isFree = true
+                mainBoard[monster.currentHex].isWalkAble = true
+                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[monster.currentHex].content
+                mainBoard[monster.currentHex].content = nil
+                monster.currentHex = miniDistanceEnemyAndHero.hexNumber
                 mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
+                mainBoard[monster.currentHex].isWalkAble = false
 
-                transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
+                transition.to(monster, { time = properties.enemyTransTime, x = mainBoard[monster.currentHex].x, y = mainBoard[monster.currentHex].y, onComplete = functions.enemyTransCompleted })
 
                 functions.distanceForEnemyReset()
             end
-        end
+
     end
 
-    functions.roflmaoGhostEnemiesMove = function()
-        for i = 1, #simpleGhostEnemiesTable do
-            --TODO enemy movement
-
-
-
+    functions.roflmaoGhostEnemiesMove = function(monster)
             local p = true
             local pcounter = 0
             while p do
                 pcounter = pcounter + 1
-                local randHex = math.random(1,#mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes)
-                local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[randHex]
+                local randHex = math.random(1,#mainBoard[monster.currentHex].coherentHexes)
+                local a = mainBoard[monster.currentHex].coherentHexes[randHex]
                 if mainBoard[a].isFree == true then
                     miniDistanceEnemyAndHero.hexNumber = a
                 end
@@ -455,162 +451,58 @@ end
                 end
 
             if miniDistanceEnemyAndHero.hexNumber then
-
-
                 -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
                 --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
 
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
-                simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
+                mainBoard[monster.currentHex].isFree = true
+                mainBoard[monster.currentHex].isWalkAble = true
+                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[monster.currentHex].content
+                mainBoard[monster.currentHex].content = nil
+                monster.currentHex = miniDistanceEnemyAndHero.hexNumber
                 mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
+                mainBoard[monster.currentHex].isWalkAble = false
 
-                transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
+                transition.to(monster, { time = properties.enemyTransTime, x = mainBoard[monster.currentHex].x, y = mainBoard[monster.currentHex].y, onComplete = functions.enemyTransCompleted })
 
                 functions.distanceForEnemyReset()
             end
-        end
+       
     end
 
-    functions.advencedGhostEnemiesMove = function()
-        local advencedMoveCheckerTable = {}
-        local possibleEnemyHex
-        local startingEnemyPos
-        local whileCounter = 0
-        local o = true
-
-
-
-        for i = 1, #simpleGhostEnemiesTable do --- FOR EACH ENEMY IN TABLE
-        -- TODO enemy movement
-
-            startingEnemyPos = simpleGhostEnemiesTable[i].currentHex
-
-            --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-            for j = 1, #mainBoard[startingEnemyPos].coherentHexes do
-                local a = mainBoard[startingEnemyPos].coherentHexes[j]
-                distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-                if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                        maxDistanceEnemyAndHero.hexNumber = a
-                    end
-                end
-                if miniDistanceEnemyAndHero.distance > distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        miniDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                        possibleEnemyHex = a
-                    end
-                end
-            end
-            if possibleEnemyHex then
-                print(possibleEnemyHex)
-            end
-        end
-
-
-
-
-        print(#advencedMoveCheckerTable)
-    end
-    
-    -- functions.finalEnemyMovment = function()
-        
-    --     local tempEnTab = {}
-        
-    --      for i = 1, #simpleGhostEnemiesTable do   --- Dla kolejnych wrogow w tablicy
-    --         --TODO enemy movement
-            
-    --         local enemyHex = simpleGhostEnemiesTable[i].currentHex   --- Hex na ktorym obecnie jest enemy
-
-    --         --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-    --         for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do --- Dla wszystkich sasiadujacych hexow z enemy
-    --             local mainHeroNotFound = true
-    --             while mainHeroNotFound do --- dopoki nie dojdzie do mainHero
-    --                 local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
-    --             for firstHexStep = 1, #mainBoard[enemyHex]
-                
-             
-   
-    --             distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-           
-    --             if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
-    --                 if mainBoard[a].isFree == true then
-    --                     maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
-    --                     maxDistanceEnemyAndHero.hexNumber = a
-    --                 end
-    --             end
-    --             if miniDistanceEnemyAndHero.distance > distanceEnemyAndHero then
-    --                 if mainBoard[a].isFree == true then
-    --                     miniDistanceEnemyAndHero.distance = distanceEnemyAndHero
-    --                     miniDistanceEnemyAndHero.hexNumber = a
-    --                 end
-    --         end
-    --         end
-    --         end
-    --         print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
-
-    --         print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
-    --         if miniDistanceEnemyAndHero.hexNumber then
-
-
-    --             -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
-    --             --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-
-    --             mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
-    --             mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
-    --             mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
-    --             mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
-    --             simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
-    --             mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-    --             mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
-
-    --             transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
-
-    --             functions.distanceForEnemyReset()
-    --         end
-    --     end
-    -- end
 
     functions.enemyMove = function()
-
-       functions.simpleGhostEnemiesMove()
-      --  functions.aBitMoreComplicatedGhostEnemiesMove()
-      --  functions.roflmaoGhostEnemiesMove()
-    --functions.advencedGhostEnemiesMove()
+        for i = 1, #simpleGhostEnemiesTable do
+          if simpleGhostEnemiesTable[i].diff  == 4 then
+       functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
+              elseif simpleGhostEnemiesTable[i].diff  == 5 then
+              functions.roflmaoGhostEnemiesMove(simpleGhostEnemiesTable[i])
+              else
+              local randomizer = math.random ( 1, 10)
+              if randomizer < 3 then
+                  functions.roflmaoGhostEnemiesMove(simpleGhostEnemiesTable[i])
+              else
+                  functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
+                  end
+              end
+        end
     end
     functions.hexPressed = function(params)
-    --  print (params.hexNumber)
-
         if heroCanMove == true then
-
             for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
                 if mainBoard[mainHero.currentHex].coherentHexes[i] == tonumber(params.hexNumber) then
                     if mainBoard[tonumber(params.hexNumber)].isWalkAble == true then
-
                         mainBoard[mainHero.currentHex].isFree = true
                         mainBoard[mainHero.currentHex].isWalkAble = true
                         mainHero.currentHex = tonumber(params.hexNumber)
-
                         heroCanMove = false
                         transition.to(mainHero, { time = properties.heroTransTime, delay = 100, x = mainBoard[tonumber(params.hexNumber)].x, y = mainBoard[tonumber(params.hexNumber)].y, onComplete = functions.transCompleted })
                         --mainHero.x =  mainBoard[tonumber(params.hexNumber)].x
                         --  mainHero.y =  mainBoard[tonumber(params.hexNumber)].y
-
                         mainBoard[tonumber(params.hexNumber)].isWalkAble = false
                         mainBoard[tonumber(params.hexNumber)].isFree = false
-
-
-
-
                     elseif mainBoard[tonumber(params.hexNumber)].content == levelGoal or tonumber(params.hexNumber) == 1 then
                         transition.to(mainHero, { time = properties.heroTransTime, delay = 100, x = mainBoard[tonumber(params.hexNumber)].x, y = mainBoard[tonumber(params.hexNumber)].y, onComplete = functions.newLevel })
-
                         heroCanMove = false
-
                         -- mainBoard.new()
                     end
                 end
@@ -646,25 +538,16 @@ end
             hexAxe.backGround.x = hexAxe.x
             hexAxe.backGround.y = hexAxe.y
             hexAxe:addEventListener("touch", functions.HUDtouch)
-
-
-
             hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
             hexRestart.name = "restart"
             hexRestart.x = properties.x + hexRestart.width / 2
             hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
-
             hexRestart:addEventListener("touch", functions.HUDtouch)
         end
     end
 
     --functions.startingMenu()
     functions.startGame()
-
-
-
-
-
 
     local frames = 0
     local function getFps()
@@ -694,8 +577,6 @@ end
     timer.performWithDelay(1000, updateText, 0)
     Runtime:addEventListener("enterFrame", enterframeFunc)
     Runtime:addEventListener("hexPressed", functions.hexPressed)
-
-
 
 end
 
