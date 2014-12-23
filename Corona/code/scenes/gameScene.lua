@@ -622,7 +622,9 @@ end
 
 
 function scene:hide(event)
+    if ( event.phase == "did" ) then
     heroCanMove = false
+        end
 end
 
 

@@ -83,7 +83,7 @@ hero  = display.newImageRect(properties.mainCharacterSkin, 90, 90);
 hero.alpha = 0
 hero.x = ScreenPosition[4]
 hero.pos = 4
-hero.y = properties.height - hero.height/2 - hero.height/10
+hero.y = properties.height - hero.height/2 - hero.height/10 + properties.y
 transition.to ( hero, { time = 450 , alpha = 1, onComplete = functions.levelReady})
     sceneGroup:insert(hero)
 
