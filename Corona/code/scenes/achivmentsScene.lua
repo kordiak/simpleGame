@@ -189,6 +189,11 @@ function scene:create(event)
         popUpBackground:addEventListener("touch", rectTouch)
         popUpBackground:addEventListener("touch", rectTouch)
         popUpBackground:addEventListener("tap", rectTouch)
+
+        local prevScene = composer.getSceneName( "previous" )
+        local currScene = composer.getSceneName( "current" )
+        composer.setVariable( "ghostToKill", 1 )
+        timer.performWithDelay ( 3500, function()     composer.gotoScene(prevScene) composer.removeScene(currScene)  end, 1)
     end
 
     GeneratePopup()

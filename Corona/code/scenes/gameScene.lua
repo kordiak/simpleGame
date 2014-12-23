@@ -19,7 +19,8 @@ local Enemy = require("code.classes.Enemy");
 local Player = require("code.classes.Player");
 local elementCreator = require("code.classes.elementCreator");
 local forestGeneratorHelper = require ("code.boardLibrary.forestGeneratorHelper")
-local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart
+local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart, forestRandomizer , forestOccupiedTab
+local isBlocked = false
 local functions = {}
 local enemiesTable = {}
 
@@ -83,6 +84,17 @@ function scene:create(event)
     end
 
     functions.isBlockedChecker = function ()
+        isBlocked = true
+        for i =1, #mainBoard[mainHero.currentHex].coherentHexes do
+            if mainBoard[mainBoard[mainHero.currentHex].coherentHexes[i]].isFree then
+                isBlocked = false
+                       end
+        end
+
+        if isBlocked == true then
+            composer.gotoScene("code.scenes.achivmentsScene")
+
+        end
 
     --TODO CHECK IF OUR HERO IS BLOCKED IF YES THEN OPEN NEW BOSS SCENE
 
@@ -152,12 +164,16 @@ end
     end
 
     functions.forestGeneratorHelper = function ()
-        local forestOccupiedTab = forestGeneratorHelper.new()
+         forestOccupiedTab = forestGeneratorHelper.new()
 
-        for i =1 ,#forestOccupiedTab[#forestOccupiedTab] do
+         forestRandomizer = math.random (1, #forestOccupiedTab)
+
+        for i =1 ,#forestOccupiedTab[forestRandomizer] do
 
 
-                mainBoard[forestOccupiedTab[#forestOccupiedTab][i]]:setFillColor (1,0,0,0.2)
+            ---    mainBoard[forestOccupiedTab[forestRandomizer][i]]:setFillColor (1,0,0,0.2)
+                mainBoard[forestOccupiedTab[forestRandomizer][i]].isFree = false
+
 
             end
     end
@@ -222,6 +238,14 @@ end
                 end
                 print(mainHero)
                         mainHero:toFront()
+            end
+            for i =1 ,#forestOccupiedTab[forestRandomizer] do
+
+        if not mainBoard[forestOccupiedTab[forestRandomizer][i]].content then
+              ---  mainBoard[forestOccupiedTab[forestRandomizer][i]]:setFillColor (1,1,1)
+                mainBoard[forestOccupiedTab[forestRandomizer][i]].isFree = true
+
+end
             end
         end
 
@@ -591,6 +615,8 @@ end
 end
 
 function scene:show(event)
+    local playerName = composer.getVariable( "ghostToKill" )
+    print ("LALSLROORORO", playerName)
     heroCanMove = true
 end
 
