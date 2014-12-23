@@ -145,10 +145,10 @@ end
     functions.forestGeneratorHelper = function ()
         local forestOccupiedTab = forestGeneratorHelper.new()
         logTable (forestOccupiedTab )
-        for i =1 ,#forestOccupiedTab[1] do
+        for i =1 ,#forestOccupiedTab[6] do
 
 
-                mainBoard[forestOccupiedTab[2][i]]:setFillColor (1,0,0,0.2)
+                mainBoard[forestOccupiedTab[6][i]]:setFillColor (1,0,0,0.2)
 
             end
     end
@@ -337,7 +337,6 @@ end
                 if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
                     if mainBoard[a].isFree == true then
                         if simpleGhostEnemiesTable[i].beforeHex then
-                            logTable (simpleGhostEnemiesTable[i].beforeHex)
                             for i=1 ,#simpleGhostEnemiesTable[i].beforeHex do
                                 if simpleGhostEnemiesTable[i].beforeHex[i] ~= a then
                                     maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
