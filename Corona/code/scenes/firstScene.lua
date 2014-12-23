@@ -58,11 +58,11 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect4) then
---            goNextSceneFlag = true
---            display.getCurrentStage():setFocus( event.target )
---            options={effect="crossFade",time=properties.firstSceneFadeTime}
---            composer.gotoScene("loadScene",options)
---            display.getCurrentStage():setFocus(nil)
+            goNextSceneFlag = true
+            display.getCurrentStage():setFocus( event.target )
+            options={effect="crossFade",time=properties.firstSceneFadeTime}
+            composer.gotoScene("code.scenes.bossScene2",options)
+            display.getCurrentStage():setFocus(nil)
         end
     end
     end
