@@ -35,27 +35,27 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus( event.target )
             options={effect="crossFade",time=1500,params={ } }
             remover()
-            composer.gotoScene(gameScene,options)
+            composer.gotoScene("code.scenes.gameScene",options)
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect2) then
-      --      goNextSceneFlag = true
+            goNextSceneFlag = true
 --
---            display.getCurrentStage():setFocus( event.target )
---            options={effect="crossFade",time=properties.firstSceneFadeTime,params={} }
---            remover()
---            composer.gotoScene("gameScene")
---            display.getCurrentStage():setFocus(nil)
+            display.getCurrentStage():setFocus( event.target )
+            options={effect="crossFade",time=properties.firstSceneFadeTime,params={} }
+            remover()
+            composer.gotoScene("code.scenes.achivmentsScene")
+            display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect3) then
---            goNextSceneFlag = true
---
---
---            display.getCurrentStage():setFocus( event.target )
---            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
---            remover()
---            composer.gotoScene("gameScene",options)
---            display.getCurrentStage():setFocus(nil)
+            goNextSceneFlag = true
+
+
+            display.getCurrentStage():setFocus( event.target )
+            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
+            remover()
+            composer.gotoScene("code.scenes.bossScene",options)
+            display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect4) then
 --            goNextSceneFlag = true

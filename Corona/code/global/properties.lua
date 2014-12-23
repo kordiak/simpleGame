@@ -8,6 +8,8 @@ properties.y = display.screenOriginY
 properties.center = { x = properties.x + properties.width / 2, y = properties.y + properties.height / 2 }
 properties.device = system.getInfo("model")
 
+properties.loadSceneFontSize = 30
+
 
 properties.cornerSize = 0
 properties.sizeOfButtons = 100
