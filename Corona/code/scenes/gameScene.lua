@@ -18,6 +18,7 @@ local properties = require("code.global.properties")
 local Enemy = require("code.classes.Enemy");
 local Player = require("code.classes.Player");
 local elementCreator = require("code.classes.elementCreator");
+local forestGeneratorHelper = require ("code.boardLibrary.forestGeneratorHelper")
 local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart
 local functions = {}
 local enemiesTable = {}
@@ -141,11 +142,24 @@ end
 
     end
 
+    functions.forestGeneratorHelper = function ()
+        local forestOccupiedTab = forestGeneratorHelper.new()
+        logTable (forestOccupiedTab )
+        for i =1 ,#forestOccupiedTab[1] do
+
+
+                mainBoard[forestOccupiedTab[1][i]]:setFillColor (1,0,0,0.2)
+
+            end
+    end
+
     functions.startGame = function()
+
+
 
         functions.environmentGenerator = function()
 
-
+            functions.forestGeneratorHelper()
 
             for i = 1, properties.numberOfForests do
                 local r = math.random(1, 3)
