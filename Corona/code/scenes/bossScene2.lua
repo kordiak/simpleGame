@@ -12,13 +12,15 @@ local obstacleGroup = display.newGroup ()
 local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
-local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail
+local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive
 local maxElementCounterValue = 700
 local points = 0
 
+local hardCore = false   ---- SET TO TRUE FOR HARDCORE MODE when every obstacle kills you
+
 local obstacleYPos = {}
 
-local numOfObstacles = 2
+local numOfObstacles = math.random(4,6)  -- 7 is max
 
 local sceneLoaded = false
 
@@ -32,15 +34,17 @@ end
 
 functions.generateWall = function (event)
 
-    local wallElement = display.newRect (event.x , event.y,5,5)
+    local wallElement = display.newCircle (event.x , event.y,5)
+    wallElement:setFillColor(0.85,0.76,0.33)
     table.insert (wallTab, wallElement)
     text.text = elementCounter - #wallTab
-    physics.addBody( wallElement, "static", { friction=0.2, bounce=0.3 } )
+    physics.addBody( wallElement, "static", { friction=0.2, bounce=0.3, radius =5 } )
     wallGroup:insert( wallElement )
 end
 
 functions.test = function (x)
     ball = display.newCircle (x , 0,25)
+    ball:setFillColor (0.67,0.25,0.75)
     ball.y = properties.y - ball.height
     ball.type = "objective"
     physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius=23 } )
@@ -51,7 +55,7 @@ functions.test = function (x)
 functions.touchHandler = function( event )
     if sceneLoaded == true then
         if event.phase == "moved" then
-            if event.y <properties.height - properties.height/5 then
+            if event.y <properties.height - properties.height/10 + properties.y then
               if tonumber(text.text) > 0 then
             functions.generateWall(event)
                   end
@@ -65,7 +69,7 @@ functions.touchHandler = function( event )
 end
 
 functions.textInitation = function (element)
-   local  text = display.newText({ text = "" .. element, font = properties.font, fontSize = properties.resourcesUsageFont })
+   local  text = display.newText({ text = "" .. element, font = properties.font, fontSize = properties.resourcesUsageFont + 15 })
     text:scale(0.7, 0.7)
     text.x, text.y = display.screenOriginX + text.contentWidth * 0.5 + 10, display.screenOriginY + text.height / 2 + 10
     text:setFillColor(1, 1, 1)
@@ -73,7 +77,7 @@ functions.textInitation = function (element)
     return text
 end
 functions.textPInitation = function ()
-    local  pText = display.newText({ text = points, font = properties.font, fontSize = properties.resourcesUsageFont })
+    local  pText = display.newText({ text = points, font = properties.font, fontSize = properties.resourcesUsageFont + 15 })
     pText:scale(0.7, 0.7)
     pText.x, pText.y = properties.width - pText.contentWidth - 10, display.screenOriginY + pText.height / 2 + 10
     pText:setFillColor(1, 1, 1)
@@ -87,8 +91,9 @@ functions.levelGoal = function ()
       transition.to ( levelGoal, {time = 1500, rotation = levelGoal.rotation + 240, onComplete = levelGoalSpiner})
     end
  levelGoal = display.newImageRect ("graphicsRaw/bosses/bucket3.png",  135, 135)
+  levelGoal.alpha = 0.8
  levelGoal.x = math.random (properties.x + properties.width/10, properties.width - properties.width/10)
- levelGoal.y = properties.height - levelGoal.height - levelGoal.height/7
+ levelGoal.y = properties.y + properties.height - levelGoal.height/2
  levelGoal.type = "objective"
  physics.addBody( levelGoal, "static", { friction=0.2, bounce=0.3 } )
  levelContent:insert   ( levelGoal )
@@ -119,6 +124,10 @@ local function onCollision( event )
             physics.pause()
             transition.to ( ball, {time = 500, x = levelGoal.x, y = levelGoal.y, xScale =0.1, yScale = 0.1, onComplete = functions.goalCollected})
         end
+        if event.object1.isDeadly or event.object2.isDeadly then
+            physics.pause()
+            transition.to ( ball, {time = 500, xScale =0.1, yScale = 0.1, alpha = 0.2, onComplete =  functions.goalNotCollected})
+            end
         if event.object1.type == "outOfScreen" or event.object2.type== "outOfScreen" then
             points = points - 1
             physics.pause()
@@ -148,6 +157,7 @@ functions.arrowInitation = function (rotation)
            end
     end
     arrow = display.newImageRect ("graphicsRaw/bosses/arrow2.png",  512/5, 512/5)
+    arrow.alpha = 0.8
     arrow.x = math.random (properties.x + properties.width/10, properties.width - properties.width/10)
     arrow.y = properties.y + arrow.height/2 + 5
 
@@ -162,10 +172,7 @@ end
 
 functions.posYGerator = function()
 
-    for i =3, math.round((properties.height-300)/100) do
-        local a = i
-        table.insert ( obstacleYPos, a)
-    end
+
 
     local rand = math.random
     local t = obstacleYPos
@@ -179,43 +186,38 @@ functions.posYGerator = function()
 
 end
 
-functions.obstacleGenerator = function ()
+functions.obstacleGenerator = function (isDeadly)
 --local obstacle = display.newImageRect ("graphicsRaw/bosses/wall2.png",  420, 209)
-local obstacle = display.newRect(0,0,properties.width/1.9,properties.height/40)
-
-local function posRan9domizator ()
-    functions.posYGerator()
-   local posY
-     posY = obstacleYPos[1]
-   posY = posY*100
---   print ("PosY", posY)
---    if table.indexOf (obstacleYPos, posY) then
---        posYRandom()
---                else
---        table.insert ( obstacleYPos, posY)
---    end
-    local posX
-    local anchor
-    if math.random(1,2) == 1 then
-        posX = properties.x
-        anchor = -1
-    else
-    posX = properties.width
-        anchor = 1
+local obstacle
+obstacle = display.newRect(0,0,properties.height/15,properties.height/15)
+if isDeadly then
+obstacle.isDeadly = true
+obstacle:setFillColor (1,0,0, 0.9)
+else
+    obstacle.isDeadly = false
+    obstacle:setFillColor (1,0.46,0, 0.9)
     end
 
-    return posY, posX, anchor
-end
+
 
 local rotate = math.random(1,2)
 local rotate2 = math.random(1,2)
 
-local y,x,anchor = posRan9domizator()
+
 --obstacle:rotate (math.random(15,60))
-obstacle.x =  x - obstacle.width * anchor * -1
-obstacle.anchorX = anchor
+functions.posYGerator()
+logTable (obstacleYPos)
+local xRand = math.random(1,2)
+if xRand == 1 then
+obstacle.x = properties.x - obstacle.width
+else
+obstacle.x = properties.width + obstacle.width
+end
 --obstacle.y = properties.center.y
-obstacle.y = y
+local yRand = math.random(1 ,#obstacleYPos)
+
+obstacle.y = obstacleYPos[yRand] * 100
+table.remove (obstacleYPos,yRand)
 physics.addBody( obstacle, "static", { friction=0.2, bounce=0.3 } )
 
 local function obstacleRotation ()
@@ -230,13 +232,24 @@ if rotate == 1 then
 end
 end
 
-transition.to(obstacle, {time = 1500, x = x, onComplete = obstacleRotation})
+transition.to(obstacle, {time = 1500, x = math.random(properties.x,properties.width), onComplete = obstacleRotation})
 
 
     obstacleGroup:insert(obstacle)
 end
+functions.goalNotCollected = function ()
+
+
+
+
+    maxElementCounterValue = maxElementCounterValue - 50
+    functions.levelInitation()
+end
 functions.levelInitation = function ()
 
+    if timerInactive then
+        timer.cancel( timerInactive )
+        end
 
     levelContent:removeSelf()
     wallGroup:removeSelf()
@@ -247,24 +260,46 @@ functions.levelInitation = function ()
     wallTab= {}
     obstacleYPos = {}
 
+    for i =2, (properties.height-200)/100 do
+        local a = i
+        table.insert ( obstacleYPos, a)
+    end
+
 
     physics.start()
     gravityXFactor = math.random (-2,2)
     physics.setGravity( gravityXFactor, 12 )
+    local flag
 for i =1 , numOfObstacles do
-    functions.obstacleGenerator ()
+
+    if i == 1 then
+        flag = true
+    else
+    flag = false
+    end
+
+    if hardCore then
+        flag = true
+        end
+
+    functions.obstacleGenerator (flag)
 end
 
     functions.continueInitation = function ()
     elementCounter = maxElementCounterValue
     text = functions.textInitation(elementCounter)
     pText = functions.textPInitation()
+
+    arrow = functions.arrowInitation(gravityXFactor)
+
+    levelContent:insert   ( arrow )
     levelContent:insert   ( text )
     levelContent:insert   ( pText )
-    arrow = functions.arrowInitation(gravityXFactor)
-    levelContent:insert   ( arrow )
+
     levelContent:insert   ( wallGroup )
     sceneGroup:insert   ( levelContent )
+
+       timerInactive = timer.performWithDelay ( 12000, functions.goalNotCollected)
     end
 
     functions.continueInitation()
@@ -281,11 +316,14 @@ end
    -- physics.setDrawMode( "debug" )
     -- physics.setScale( 5 )
     sceneLoaded = true
-    touchRect = display.newRect (properties.center.x, properties.center.y, properties.width, properties.height)
-    touchRect.isVisible = false
+    touchRect = display.newImageRect ("graphicsRaw/backGrounds/bgBoss3.png", properties.width, properties.height)
+    touchRect.x,touchRect.y =  properties.center.x, properties.center.y
+  ---  touchRect.isVisible = false
     touchRect.isHitTestable = true
+    sceneGroup:insert(touchRect)
     touchRect:addEventListener( "touch", functions.touchHandler )
     functions.levelInitation()
+
 
 
 
