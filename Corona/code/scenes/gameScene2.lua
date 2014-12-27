@@ -7,6 +7,7 @@
 --
 display.setStatusBar(display.HiddenStatusBar)
 
+local PriorityQueueCreator = require("code.global.PriorityQueue")
 
 local composer = require("composer")
 local properties = require("code.global.properties")
@@ -129,65 +130,65 @@ function scene:create(event)
             for i = 1, properties.numberOfForests do
                 local r = math.random(1, 3)
                 local q = true
-             --   while q do
+                --   while q do
                 --    local i = i + 5 --math.random(1, #mainBoard)
                 if i == 1 then
                     i = 68
-                    elseif i == 2 then
+                elseif i == 2 then
                     i = 63
-                    elseif i == 3 then
+                elseif i == 3 then
                     i = 66
                 end
-                    if mainBoard[i].isFree then
-                        local smallForest = display.newImageRect(properties.environment[r], 90, 90)
-                        smallForest.x = mainBoard[i].x
-                        smallForest.y = mainBoard[i].y
-                        mainBoard[i].isFree = false
-                        mainBoard[i].isWalkAble = false
-                        mainBoard[i].content = smallForest
-                        properties.lastPickedHexForEnvironmentForestGenerator = i
-                        --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
-                        q = false
-                        local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
-                        if eviCount < 3 then
-                            eviCount = 3
-                        end
---                        for j = 1, eviCount do
---                            local o = true
---                            local whileCounter = 0
---                            while o do
---                                local c = math.random(1, #mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes)
---                                whileCounter = whileCounter + 1
---                                if mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree then
---                                    --  print ("C",c)
---                                    --   print ( mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c])
---                                    local smallForest = display.newImageRect(properties.environment[r], 90, 90)
---                                    smallForest.x = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].x
---                                    smallForest.y = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].y
---                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree = false
---                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isWalkAble = false
---                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].content = smallForest
---                                    properties.lastPickedHexForEnvironmentForestGenerator = mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]
---                                    o = false
---                                end
---                                if whileCounter > 2500 then
---                                    o = false
---                                    print("EXCEDED MAX NUMBER OF SiMULATiONS")
---                                end
---                            end
---                        end
+                if mainBoard[i].isFree then
+                    local smallForest = display.newImageRect(properties.environment[r], 90, 90)
+                    smallForest.x = mainBoard[i].x
+                    smallForest.y = mainBoard[i].y
+                    mainBoard[i].isFree = false
+                    mainBoard[i].isWalkAble = false
+                    mainBoard[i].content = smallForest
+                    properties.lastPickedHexForEnvironmentForestGenerator = i
+                    --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
+                    q = false
+                    local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
+                    if eviCount < 3 then
+                        eviCount = 3
                     end
-              --  end
+                    --                        for j = 1, eviCount do
+                    --                            local o = true
+                    --                            local whileCounter = 0
+                    --                            while o do
+                    --                                local c = math.random(1, #mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes)
+                    --                                whileCounter = whileCounter + 1
+                    --                                if mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree then
+                    --                                    --  print ("C",c)
+                    --                                    --   print ( mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c])
+                    --                                    local smallForest = display.newImageRect(properties.environment[r], 90, 90)
+                    --                                    smallForest.x = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].x
+                    --                                    smallForest.y = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].y
+                    --                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree = false
+                    --                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isWalkAble = false
+                    --                                    mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].content = smallForest
+                    --                                    properties.lastPickedHexForEnvironmentForestGenerator = mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]
+                    --                                    o = false
+                    --                                end
+                    --                                if whileCounter > 2500 then
+                    --                                    o = false
+                    --                                    print("EXCEDED MAX NUMBER OF SiMULATiONS")
+                    --                                end
+                    --                            end
+                    --                        end
+                end
+                --  end
                 for i = 1, #simpleGhostEnemiesTable do
                     simpleGhostEnemiesTable[i]:toFront()
                 end
-             --   print(mainHero)
+                --   print(mainHero)
                 mainHero:toFront()
             end
         end
 
 
-        elementCreator.new(mainBoard,functions.environmentGenerator,simpleGhostEnemiesTable,enemiesTable);
+        elementCreator.new(mainBoard, functions.environmentGenerator, simpleGhostEnemiesTable, enemiesTable);
 
         --elementCreator.enemyCreator();
         --        functions.enemyCreator = function()
@@ -248,17 +249,16 @@ function scene:create(event)
         --            end
         --            functions.enemyCreator()
         --        end
-        mainHero=elementCreator.mainHeroCreator(mainHero,levelGoal)
+        mainHero = elementCreator.mainHeroCreator(mainHero, levelGoal)
         elementCreator.enemyCreator()
         --functions.mainHeroCreator()
         functions.HUDCreator()
         functions.testingAlgo()
     end
 
-    functions.testingAlgo = function ()
-    local startingHex = mainHero.currentHex
-        print (startingHex)
-
+    functions.testingAlgo = function()
+        local startingHex = mainHero.currentHex
+        print(startingHex)
     end
 
     functions.newLevel = function()
@@ -306,13 +306,13 @@ function scene:create(event)
             --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
             for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do
                 local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
-                print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
+                -- print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
                 distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
                 print("Distance", distanceEnemyAndHero)
                 if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
                     if mainBoard[a].isFree == true then
                         if simpleGhostEnemiesTable[i].beforeHex then
-                            for i=1 ,#simpleGhostEnemiesTable[i].beforeHex do
+                            for i = 1, #simpleGhostEnemiesTable[i].beforeHex do
                                 if simpleGhostEnemiesTable[i].beforeHex[i] ~= a then
                                     maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
                                     maxDistanceEnemyAndHero.hexNumber = a
@@ -342,7 +342,7 @@ function scene:create(event)
 
                 -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
                 --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-                table.insert ( simpleGhostEnemiesTable[i].beforeHex,miniDistanceEnemyAndHero.hexNumber)
+                table.insert(simpleGhostEnemiesTable[i].beforeHex, miniDistanceEnemyAndHero.hexNumber)
                 -- simpleGhostEnemiesTable[i].beforeHex = miniDistanceEnemyAndHero.hexNumber
 
                 mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
@@ -361,49 +361,76 @@ function scene:create(event)
     end
 
     functions.simpleGhostEnemiesMove = function()
+
+        local heuristic = function(goal, begin)
+
+            local goalP = mainBoard[goal];
+            local beginP = mainBoard[begin];
+
+            return math.abs(goalP.x - 10 - beginP.x) + math.abs(goalP.y - 10 - beginP.y)
+        end
+        local getNextPosition = function(numberOfEnemy)
+            local pq = PriorityQueueCreator.new()
+            local numberOfRect = simpleGhostEnemiesTable[numberOfEnemy].currentHex
+            pq.put(numberOfRect, 0);
+            local kolejne = {}
+            local came_from = {}
+            local cost_so_far = {}
+            local goal = mainHero.currentHex
+
+            came_from[numberOfRect] = nil
+            cost_so_far[numberOfRect] = 0
+
+            local goTo
+            local nearest
+            while pq.length > 0 do
+                local current;
+                current = pq.get()
+                if current.value == goal then break end
+
+                local neighbors = mainBoard[current.value].coherentHexes;
+
+                local checkNext
+                checkNext = function(neighbors)
+                    for i = 1, #neighbors do
+                        local nextHex = neighbors[i];
+                        local cost = 1;
+                        if not mainBoard[nextHex].isFree then
+                        else
+                            local new_cost = cost_so_far[current.value] + 1;
+                            if (cost_so_far[nextHex] == nil) or new_cost < cost_so_far[nextHex]
+                            then
+                                cost_so_far[nextHex] = new_cost
+                                local priority = new_cost + heuristic(goal, nextHex);
+                                nearest = current.value
+                                pq.put(nextHex, priority);
+
+                                if (nearest ~= numberOfRect) then
+                                    table.insert(kolejne, current.value)
+                                end
+                            end
+                        end
+                    end
+                end
+                checkNext(neighbors);
+            end
+            print(kolejne[1])
+
+            return (kolejne[1])
+        end
         for i = 1, #simpleGhostEnemiesTable do
-            --TODO enemy movement
 
-            --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-            for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do
-                local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
-                print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
-                distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-                print("Distance", distanceEnemyAndHero)
-                if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                        maxDistanceEnemyAndHero.hexNumber = a
-                    end
-                end
-                if miniDistanceEnemyAndHero.distance > distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        miniDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                        miniDistanceEnemyAndHero.hexNumber = a
-                    end
-                end
-            end
-            print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
+            local hexNumber = getNextPosition(i)
 
-            print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
-            if miniDistanceEnemyAndHero.hexNumber then
-
-
-                -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
-                --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
-                simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
-
-                transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
-
-                functions.distanceForEnemyReset()
-            end
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
+            mainBoard[hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
+            simpleGhostEnemiesTable[i].currentHex = hexNumber
+            mainBoard[hexNumber].isFree = false
+            mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
+            transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
+            functions.distanceForEnemyReset()
         end
     end
 
@@ -417,7 +444,7 @@ function scene:create(event)
             local pcounter = 0
             while p do
                 pcounter = pcounter + 1
-                local randHex = math.random(1,#mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes)
+                local randHex = math.random(1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes)
                 local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[randHex]
                 if mainBoard[a].isFree == true then
                     miniDistanceEnemyAndHero.hexNumber = a
@@ -426,7 +453,6 @@ function scene:create(event)
                 if pcounter > 1500 then
                     p = false
                 end
-
             end
 
             if miniDistanceEnemyAndHero.hexNumber then
@@ -670,9 +696,6 @@ function scene:create(event)
     timer.performWithDelay(1000, updateText, 0)
     Runtime:addEventListener("enterFrame", enterframeFunc)
     Runtime:addEventListener("hexPressed", functions.hexPressed)
-
-
-
 end
 
 function scene:show(event)
