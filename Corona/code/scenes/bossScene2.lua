@@ -12,7 +12,7 @@ local obstacleGroup = display.newGroup ()
 local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
-local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive
+local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic
 local maxElementCounterValue = 700
 local points = 0
 
@@ -43,11 +43,14 @@ functions.generateWall = function (event)
 end
 
 functions.test = function (x)
-    ball = display.newCircle (x , 0,25)
-    ball:setFillColor (0.67,0.25,0.75)
+  --  display.newImageRect ("graphicsRaw/environment/ghostPill.png",  50, 50)
+    ball =  display.newCircle (x , 0,25)
+ --   ball = display.newImageRect ("graphicsRaw/environment/ghostPill.png",  80, 80) -- display.newCircle (x , 0,25)
+  ball.x = x
+   ball:setFillColor (0.67,0.25,0.75)
     ball.y = properties.y - ball.height
     ball.type = "objective"
-    physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius=23 } )
+    physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius = 25 } )
     levelContent:insert   ( ball )
 
    -- sceneGroup:rotate(-(gravityXFactor*15))
@@ -88,15 +91,21 @@ end
 
 functions.levelGoal = function ()
   local  function levelGoalSpiner ()
-      transition.to ( levelGoal, {time = 1500, rotation = levelGoal.rotation + 240, onComplete = levelGoalSpiner})
-    end
- levelGoal = display.newImageRect ("graphicsRaw/bosses/bucket3.png",  135, 135)
-  levelGoal.alpha = 0.8
+      transition.to ( levelGoalGraphic, {time = 1500, rotation = levelGoalGraphic.rotation + 240, onComplete = levelGoalSpiner})
+  end
+
+ levelGoal = display.newCircle (0,0, 45)
+  levelGoal.alpha = 0
  levelGoal.x = math.random (properties.x + properties.width/10, properties.width - properties.width/10)
  levelGoal.y = properties.y + properties.height - levelGoal.height/2
+
+  levelGoalGraphic = display.newImageRect ("graphicsRaw/bosses/bucket3.png",  135, 135)
+  levelGoalGraphic.x , levelGoalGraphic.y = levelGoal.x, levelGoal.y
+  levelGoalGraphic.alpha = 0.8
  levelGoal.type = "objective"
- physics.addBody( levelGoal, "static", { friction=0.2, bounce=0.3 } )
+ physics.addBody( levelGoal, "static", { friction=0.2, bounce=0.3, radius =45 } )
  levelContent:insert   ( levelGoal )
+ levelContent:insert   ( levelGoalGraphic )
   levelGoalSpiner()
 
 
@@ -189,7 +198,9 @@ end
 functions.obstacleGenerator = function (isDeadly)
 --local obstacle = display.newImageRect ("graphicsRaw/bosses/wall2.png",  420, 209)
 local obstacle
-obstacle = display.newRect(0,0,properties.height/15,properties.height/15)
+obstacle = display.newRect(0,0,math.round(properties.height/15),math.round(properties.height/15))
+--skyMountain
+print (math.round(properties.height/15))
 if isDeadly then
 obstacle.isDeadly = true
 obstacle:setFillColor (1,0,0, 0.9)
@@ -247,6 +258,8 @@ functions.goalNotCollected = function ()
 end
 functions.levelInitation = function ()
 
+
+
     if timerInactive then
         timer.cancel( timerInactive )
         end
@@ -259,6 +272,10 @@ functions.levelInitation = function ()
     levelContent = display.newGroup()
     wallTab= {}
     obstacleYPos = {}
+
+    if maxElementCounterValue <=0 then
+return true
+    end
 
     for i =2, (properties.height-200)/100 do
         local a = i

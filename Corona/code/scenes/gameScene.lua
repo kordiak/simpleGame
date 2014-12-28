@@ -320,6 +320,7 @@ end
     end
 
     functions.newLevel = function()
+        transition.cancel( mainHero )
         heroCanMove = true
         mainBoard[mainHero.currentHex].isFree = true
         mainBoard[mainHero.currentHex].isWalkAble = true
