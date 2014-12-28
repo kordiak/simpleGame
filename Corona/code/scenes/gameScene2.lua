@@ -127,7 +127,7 @@ function scene:create(event)
 
         functions.environmentGenerator = function()
 
-            for i = 1, properties.numberOfForests do
+            for i = 1, 7 do
                 local r = math.random(1, 3)
                 local q = true
                 --   while q do
@@ -138,6 +138,14 @@ function scene:create(event)
                     i = 63
                 elseif i == 3 then
                     i = 66
+                elseif i == 4 then
+                    i = 59
+                elseif i == 5 then
+                    i = 55
+                elseif i == 6 then
+                    i = 46
+                elseif i == 7 then
+                    i = 37
                 end
                 if mainBoard[i].isFree then
                     local smallForest = display.newImageRect(properties.environment[r], 90, 90)
