@@ -1,10 +1,11 @@
 local composer = require("composer")
 local properties = require("code.global.properties")
 
-local functions = {}
+local popupCreator = {}
 
 
-functions.newPopUp1 = function(params)
+popupCreator.newPopUp1 = function(params)
+    
     local callback, cancelcallback, fillcolor, text, textcolor, tapToContinue, twoLines, text2
 
     text = params.text or "No Text In Params"
@@ -92,6 +93,10 @@ functions.newPopUp1 = function(params)
         if text2 then
             transition.cancel(text2)
         end
+
+
+        popUpBg:removeEventListener("touch",popUpBgTouch)
+        frameFill:removeEventListener("touch",frameFillTouch)
         group:removeSelf()
         group = nil
     end
@@ -101,4 +106,4 @@ end
 
 
 
-return functions
+return popupCreator

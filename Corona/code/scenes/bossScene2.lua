@@ -403,6 +403,7 @@ end
 
 
 function scene:destroy(event)
+    Runtime:removeEventListener("collision",onCollision)
 end
 
 
