@@ -18,6 +18,10 @@ local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, 
 local maxElementCounterValue = 50
 local points = 0
 
+local onCollision
+
+local timer1,timer2,timer3,timer4
+
 local maxPoints = math.round(maxElementCounterValue/50)
 
 local ended = false
@@ -33,6 +37,15 @@ local scene = composer.newScene()
 
 local function close()
     physics.stop()
+    transition.cancel()
+    Runtime:removeEventListener( "collision", onCollision )
+    timer.cancel( timerInactive )
+    if timer1 then
+    timer.cancel( timer1 )
+    end
+    if timer2 then
+    timer.cancel( timer2 )
+    end
     local prevScene = composer.getSceneName( "previous" )
     local currScene = composer.getSceneName( "current" )
     local options = {
@@ -49,10 +62,13 @@ functions.endGamePopup = function ()
     ended = true
     local function popUpCallBack()
         popUpOne.removeMe()
-        popUpOne:removeSelf()
-        popUpOne = nil
-    close()
+
+       -- functions.endGamePopup()
+      --  popUpOne = nil
+close()
     end
+
+
 local params = {
 
    text = "You got "..points.." points",
@@ -169,7 +185,7 @@ functions.goalCollected = function (failure)
 end
 
 
-local function onCollision( event )
+ function onCollision( event )
 
     if ( event.phase == "began" ) then
         if event.object1.type == "objective" and event.object2.type== "objective" then
@@ -184,7 +200,7 @@ local function onCollision( event )
         if event.object1.type == "outOfScreen" or event.object2.type== "outOfScreen" then
             points = points - 1
             physics.pause()
-            timer.performWithDelay(200, function () functions.goalCollected(true) end)
+            timer1 =   timer.performWithDelay(200, function () functions.goalCollected(true) end)
 
             end
        -- print( "began: " .. event.object1.myName .. " and " .. event.object2.myName )
@@ -218,7 +234,7 @@ functions.arrowInitation = function (rotation)
           arrow:rotate(-(rotation*15))
 
     arrowAnimation()
-    timer.performWithDelay( 2560, function ()   functions.test(arrow.x) end, 1 )
+    timer2 =  timer.performWithDelay( 2560, function ()   functions.test(arrow.x) end, 1 )
     functions.levelGoal()
     return arrow
 end

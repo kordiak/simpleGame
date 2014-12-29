@@ -1,12 +1,11 @@
 local composer = require("composer")
 local properties = require("code.global.properties")
 
-local popupCreator = {}
+local functions = {}
 
 
-popupCreator.newPopUp1 = function(params)
-    
-    local callback, cancelcallback, fillcolor, text, textcolor, tapToContinue, twoLines, text2
+functions.newPopUp1 = function(params)
+    local callback, cancelcallback, fillcolor, text, textcolor, tapToContinue, twoLines, text2, popUpBg
 
     text = params.text or "No Text In Params"
     text2 = params.text2 or "No Text2 In Params"
@@ -17,9 +16,9 @@ popupCreator.newPopUp1 = function(params)
     tapToContinue = params.tapToContinue or false
     twoLines = params.twoLines or false
 
+     local group = display.newGroup()
 
-    local group = display.newGroup()
-    local popUpBg = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
+    popUpBg = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
     popUpBg:setFillColor(0, 0, 0, 0.4)
     group:insert(popUpBg)
 
@@ -66,7 +65,7 @@ popupCreator.newPopUp1 = function(params)
             else
                 alpha = 1
             end
-            transition.to(text2, { time = 500, alpha = alpha, onComplete = transFunction })
+           transition.to(text2, { time = 500, alpha = alpha, onComplete = transFunction })
         end
         transFunction()
         group:insert(text2)
@@ -90,15 +89,16 @@ popupCreator.newPopUp1 = function(params)
     popUpBg:addEventListener("touch", popUpBgTouch)
 
     group.removeMe = function()
+        popUpBg:removeSelf()
+        frameFill:removeSelf()
+        print ("Removal")
         if text2 then
             transition.cancel(text2)
         end
-
-
-        popUpBg:removeEventListener("touch",popUpBgTouch)
-        frameFill:removeEventListener("touch",frameFillTouch)
+        frameFill:removeEventListener( "touch", frameFillTouch )
+        popUpBg:removeEventListener( "touch", popUpBgTouch )
         group:removeSelf()
-        group = nil
+
     end
     return group
 end
@@ -106,4 +106,4 @@ end
 
 
 
-return popupCreator
+return functions
