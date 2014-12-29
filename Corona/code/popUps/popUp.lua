@@ -65,7 +65,7 @@ functions.newPopUp1 = function(params)
              else
                  alpha = 1
                  end
-          --  transition.to( text2, { time=500, alpha=alpha, onComplete=transFunction } )
+          transition.to( text2, { time=500, alpha=alpha, onComplete=transFunction } )
         end
         transFunction()
         group:insert(text2)
