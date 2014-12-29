@@ -42,13 +42,13 @@ functions.newPopUp1 = function(params)
     group:insert(text1)
 
     if twoLines then
-    local text3 = display.newText({ text = text2, font = properties.font, fontSize = 65 })
-    text3:setFillColor(unpack(textcolor))
-    text3.x = frame.x
-    text3.y =   text1.y + text1.height + 8
+        local text3 = display.newText({ text = text2, font = properties.font, fontSize = 65 })
+        text3:setFillColor(unpack(textcolor))
+        text3.x = frame.x
+        text3.y = text1.y + text1.height + 8
 
 
-    group:insert(text3)
+        group:insert(text3)
     end
 
     if tapToContinue then
@@ -59,17 +59,17 @@ functions.newPopUp1 = function(params)
         text2.x = frame.x
         text2.y = frame.y + frameFill.height / 2 - text1.height * 1.5
 
-         transFunction = function ()
-             if alpha == 1 then
-                 alpha = 0.5
-             else
-                 alpha = 1
-                 end
-          transition.to( text2, { time=500, alpha=alpha, onComplete=transFunction } )
+        transFunction = function()
+            if alpha == 1 then
+                alpha = 0.5
+            else
+                alpha = 1
+            end
+            transition.to(text2, { time = 500, alpha = alpha, onComplete = transFunction })
         end
         transFunction()
         group:insert(text2)
-        end
+    end
 
     local popUpBgTouch = function(event)
         return true
@@ -79,8 +79,8 @@ functions.newPopUp1 = function(params)
         if tapToContinue then
             if event.phase == "ended" or event.phase == "cancelled" then
                 if callback then
-                callback()
-                    end
+                    callback()
+                end
             end
         end
     end
@@ -88,12 +88,12 @@ functions.newPopUp1 = function(params)
     frameFill:addEventListener("touch", frameFillTouch)
     popUpBg:addEventListener("touch", popUpBgTouch)
 
-    group.removeMe = function ()
-    if text2 then
-        transition.cancel (text2)
-    end
-    group:removeSelf()
-    group = nil
+    group.removeMe = function()
+        if text2 then
+            transition.cancel(text2)
+        end
+        group:removeSelf()
+        group = nil
     end
     return group
 end
