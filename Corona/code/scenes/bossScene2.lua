@@ -2,6 +2,8 @@ local composer = require("composer")
 local properties = require("code.global.properties")
 local physics = require( "physics" )
 
+local popUp = require ("code.popUps.popUp")
+
 
 local functions = {}
 
@@ -13,9 +15,12 @@ local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
 local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic
-local maxElementCounterValue = 700
+local maxElementCounterValue = 50
 local points = 0
 
+local maxPoints = math.round(maxElementCounterValue/50)
+
+local ended = false
 local hardCore = false   ---- SET TO TRUE FOR HARDCORE MODE when every obstacle kills you
 
 local obstacleYPos = {}
@@ -28,8 +33,45 @@ local scene = composer.newScene()
 
 local function close()
     physics.stop()
-    composer.gotoScene("")
-    composer.removeScene("")
+    local prevScene = composer.getSceneName( "previous" )
+    local currScene = composer.getSceneName( "current" )
+    local options = {
+        effect = "crossFade",
+        time = 1000,
+        params = { score=points }
+    }
+    composer.gotoScene(prevScene, options)
+    composer.removeScene(currScene)
+end
+
+functions.endGamePopup = function ()
+    local popUpOne
+    ended = true
+    local function popUpCallBack()
+        popUpOne.removeMe()
+        popUpOne:removeSelf()
+        popUpOne = nil
+    close()
+    end
+local params = {
+
+   text = "You got "..points.." points",
+   text2 = "Max was "..maxPoints,
+  fillColor =  { 1, 1, 1, 0.8 },
+    callBack = popUpCallBack,
+   cancelCallBack = nil,
+   textColor = { 0, 0, 0 },
+    tapToContinue = true,
+   twoLines = true,
+
+}
+
+
+    popUpOne = popUp.newPopUp1( params)
+   sceneGroup:insert(popUpOne)
+
+
+
 end
 
 functions.generateWall = function (event)
@@ -50,7 +92,7 @@ functions.test = function (x)
    ball:setFillColor (0.67,0.25,0.75)
     ball.y = properties.y - ball.height
     ball.type = "objective"
-    physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius = 25 } )
+    physics.addBody( ball, { density=0.8, friction=0.1, bounce=0.3, radius = 22 } )
     levelContent:insert   ( ball )
 
    -- sceneGroup:rotate(-(gravityXFactor*15))
@@ -59,10 +101,12 @@ functions.touchHandler = function( event )
     if sceneLoaded == true then
         if event.phase == "moved" then
             if event.y <properties.height - properties.height/10 + properties.y then
+                if not ended then
               if tonumber(text.text) > 0 then
             functions.generateWall(event)
                   end
-            end
+                end
+                end
 
             --- functions.playerShooting(event)
 
@@ -80,7 +124,7 @@ functions.textInitation = function (element)
     return text
 end
 functions.textPInitation = function ()
-    local  pText = display.newText({ text = points, font = properties.font, fontSize = properties.resourcesUsageFont + 15 })
+    local  pText = display.newText({ text = points .. "/" .. maxPoints, font = properties.font, fontSize = properties.resourcesUsageFont + 15 })
     pText:scale(0.7, 0.7)
     pText.x, pText.y = properties.width - pText.contentWidth - 10, display.screenOriginY + pText.height / 2 + 10
     pText:setFillColor(1, 1, 1)
@@ -274,6 +318,9 @@ functions.levelInitation = function ()
     obstacleYPos = {}
 
     if maxElementCounterValue <=0 then
+
+        functions.endGamePopup()
+
 return true
     end
 
