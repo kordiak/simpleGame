@@ -203,10 +203,10 @@ local function touchControl (event)
         display.getCurrentStage():setFocus( event.target )
         event.target.isFocus = true
 
-        event.target:setFillColor (0.255,0.64,0.42,0.5)
-        for i =1 , #event.target.coherentHexes do
-            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,0,0,0.2)
-        end
+        event.target:setFillColor( 0.54,0.32,0.28)
+--        for i =1 , #event.target.coherentHexes do
+--            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,0,0,0.2)
+--        end
 
 
     elseif event.target.isFocus then
@@ -215,11 +215,11 @@ local function touchControl (event)
         event.target.isFocus = nil
         event.target:setFillColor( 1,1,1)
 
-        for i =1 , #event.target.coherentHexes do
-            -- event.target.coherentHexes[i]
-            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,1,1)
-
-        end
+--        for i =1 , #event.target.coherentHexes do
+--            -- event.target.coherentHexes[i]
+--            mainBoard[event.target.coherentHexes[i]]:setFillColor (1,1,1)
+--
+--        end
 
         Runtime:dispatchEvent({
             name = "hexPressed",

@@ -60,9 +60,10 @@ local function rectTouch( event )
         elseif (event.target == scene.view.rect4) then
             goNextSceneFlag = true
             display.getCurrentStage():setFocus( event.target )
-            options={effect="crossFade",time=properties.firstSceneFadeTime}
-            composer.gotoScene("code.scenes.bossScene2",options)
+--            options={effect="crossFade",time=properties.firstSceneFadeTime}
+--            composer.gotoScene("code.scenes.bossScene2",options)
             display.getCurrentStage():setFocus(nil)
+            native.requestExit()
         end
     end
     end
@@ -144,10 +145,10 @@ function scene:create( event )
     sceneGroup.rect4=display.newRoundedRect(properties.center.x,properties.center.y+size*4, size*3.2,     size*1.5,corners)
 
 
-    sceneGroup.rect1nap = display.newText("Nowa Gra", properties.center.x,properties.center.y-size*2, properties.font, size )
+    sceneGroup.rect1nap = display.newText("Play", properties.center.x,properties.center.y-size*2, properties.font, size )
     sceneGroup.rect2nap = display.newText("opcja2", properties.center.x,properties.center.y, properties.font, size)
     sceneGroup.rect3nap = display.newText("opcja3", properties.center.x,properties.center.y+size*2, properties.font, size)
-    sceneGroup.rect4nap = display.newText("Wczytaj", properties.center.x,properties.center.y+size*4, properties.font, size*0.86)
+    sceneGroup.rect4nap = display.newText("Exit", properties.center.x,properties.center.y+size*4, properties.font, size*0.86)
 
 
 
@@ -220,6 +221,7 @@ end
 
 function scene:show(event)
     goNextSceneFlag = false
+    properties.started = false
 end
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )

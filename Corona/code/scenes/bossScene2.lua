@@ -15,7 +15,7 @@ local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
 local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic
-local maxElementCounterValue = 50
+local maxElementCounterValue = 500
 local points = 0
 
 local onCollision
@@ -53,6 +53,9 @@ local function close()
         time = 1000,
         params = { score=points }
     }
+
+    properties.bossScene2Score = points
+
     composer.gotoScene(prevScene, options)
     composer.removeScene(currScene)
 end
@@ -82,7 +85,7 @@ local params = {
 
 }
 
-
+    media.stopSound()
     popUpOne = popUp.newPopUp1( params)
    sceneGroup:insert(popUpOne)
 
@@ -390,9 +393,12 @@ function scene:create(event)
     sceneGroup = self.view
     if event.params then
 diffucult = event.params.diff or nil
-maxElementCounterValue = event.params.cValue or 700
+maxElementCounterValue = event.params.cValue or 500
 
-end
+    end
+
+
+    media.playSound( "sounds/boss2Sound.mp3" )
    -- physics.setDrawMode( "debug" )
     -- physics.setScale( 5 )
     sceneLoaded = true
@@ -411,10 +417,16 @@ end
 end
 
 function scene:show(event)
+    if (event.phase == "did") then
+    media.playSound()
+        end
 end
 
 
 function scene:hide(event)
+    if (event.phase == "did") then
+    media.pauseSound()
+        end
 end
 
 

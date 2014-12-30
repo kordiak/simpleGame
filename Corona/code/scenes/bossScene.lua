@@ -1,5 +1,7 @@
 display.setStatusBar(display.HiddenStatusBar)
 
+local popUp = require ("code.popUps.popUp")
+
 local composer = require("composer")
 local properties = require("code.global.properties")
 local firstBoss = require("code.classes.ghostBoss")
@@ -10,6 +12,8 @@ local shootFunctions = {}
 local shootFunctionsState = {}
 
 local basicShootEnded = true
+
+local deadFunctionInvoked = false
 
 local beganTimers = {}
 local movedTimers = {}
@@ -23,6 +27,7 @@ local shootGroup = display.newGroup()
 
 local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect
 local bossHp = 10
+local bossHpMax = bossHp
 local hpTab = {}
 local missleTab = {}
 local started = false
@@ -48,35 +53,72 @@ local function stopAllAudio()
     audio.stop()
     media.stopSound()
 end
+
+functions.endGamePopup = function (win)
+    local popUpOne
+  --  ended = true
+    local function popUpCallBack()
+        popUpOne.removeMe()
+
+        -- functions.endGamePopup()
+        --  popUpOne = nil
+        local win = win
+        audio.stop()
+        media.stopSound()
+        composer.removeScene("code.scenes.bossScene")
+        composer.gotoScene("code.scenes.firstScene")
+    end
+
+
+    local params = {
+
+        text = "You got "..bossHp.." points",
+        text2 = "Max was "..bossHpMax,
+        fillColor =  { 1, 1, 1, 0.8 },
+        callBack = popUpCallBack,
+        cancelCallBack = nil,
+        textColor = { 0, 0, 0 },
+        tapToContinue = true,
+        twoLines = true,
+
+    }
+
+
+    popUpOne = popUp.newPopUp1( params)
+    sceneGroup:insert(popUpOne)
+
+
+
+end
+
 local function gameOver(win)
-    local win = win
-    audio.stop()
-    media.stopSound()
-    composer.removeScene("code.scenes.bossScene")
-    composer.gotoScene("code.scenes.firstScene")
+    functions.endGamePopup(win)
 end
 local function close()
     composer.gotoScene("")
     composer.removeScene("")
 end
 functions.timerCancel = function ()
+
+    print ("TIMER CANCEL")
     touchRect.canGetTouch = false
     for i=1, #shootTimers do
         timer.cancel( shootTimers[i] )
     end
 
     local function callback()
-        for i=#missleTab , 1 do
-            transition.cancel( missleTab[i] )
-            if missleTab[i] then
+
+        transition.cancel( "missleTrans" )
+        print ("XAXAXAA", #missleTab)
+        for i=1 , #missleTab do
             missleTab[i]:removeSelf()
             missleTab[i] = nil
-                table.remove (missleTab, i)
+             --   table.remove (missleTab, i)
                 end
-        end
+
         end
 
-        timer.performWithDelay ( 150,callback )
+       callback()
 end
 functions.mainHero = function (boss)
 hero  = display.newImageRect(properties.mainCharacterSkin, 90, 90);
@@ -174,6 +216,7 @@ functions.playSound = function()
 
 end
 functions.dead = function ()
+    deadFunctionInvoked = true
 local nextDeathStep = function ()
     local function audioCompleted()
         gameOver()
@@ -189,6 +232,7 @@ end
         transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2, onComplete = nextDeathStep})
     end
     functions.timerCancel()
+    bossHp = 0
 
 
    -- timer.cancel( hero )
@@ -250,7 +294,11 @@ functions.hitChecker = function (event)
     table.remove( missleTab, index )
 
    if bossHp <= 0 then
+       bossHp = 0
+       bossHpIndicator.text = "Hp " .. bossHp
+       if deadFunctionInvoked == false then
        functions.dead()
+           end
        end
  --   event.target = nil
 end
@@ -300,7 +348,7 @@ functions.gapInTheMissles = function ()
             timer.performWithDelay ( timeOfShoots + 500, function () shootFunctionsState[3] = true end )
             timer.performWithDelay ( timeOfShoots/4.2, function () generalShootGeneratorEnded = true end )
             end
-            transition.to ( missle, {time = timeOfShoots, x = missle.x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+            transition.to ( missle, {time = timeOfShoots, x = missle.x, y = missleDestination , rotation = math.random(780,1150),tag = "missleTrans", onComplete = functions.hitChecker})
             end
             end
 
@@ -347,7 +395,7 @@ functions.leftToRightShower = function(callback, numbToDisable,counter)
         missle.y = properties.y - 10
         sceneGroup:insert(missle)
         table.insert (missleTab, missle)
-        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150), tag = "missleTrans", onComplete = functions.hitChecker})
             end
 
     end
@@ -401,7 +449,7 @@ functions.rightToLeftShower = function(callback, numbToDisable,counter)
             missle.y = properties.y - 10
             sceneGroup:insert(missle)
             table.insert (missleTab, missle)
-            transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150), onComplete = functions.hitChecker})
+            transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(780,1150),tag = "missleTrans", onComplete = functions.hitChecker})
         end
 
     end
@@ -505,7 +553,7 @@ functions.bossShooting = function()
         missle.y = properties.y - 10
         shootGroup:insert(missle)
     table.insert (missleTab, missle)
-        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(580,1150), onComplete = functions.hitChecker})
+        transition.to ( missle, {time = timeOfShoots, x = x, y = missleDestination , rotation = math.random(580,1150), tag = "missleTrans", onComplete = functions.hitChecker})
   end
  local basicShootTimer = timer.performWithDelay (timeOfShoots/20, function() shootCounter=shootCounter+1 shootDaMissle() end,shoot )
         table.insert (shootTimers, basicShootTimer)
@@ -687,12 +735,16 @@ function scene:create(event)
 end
 
 function scene:show(event)
+    if (event.phase == "did") then
     media.playSound()
+        end
 end
 
 
 function scene:hide(event)
+    if (event.phase == "did") then
     media.pauseSound()
+        end
 end
 
 

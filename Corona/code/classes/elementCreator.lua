@@ -32,6 +32,7 @@ elementCreator.enemyCreator = function()
                 mainBoard[i].isFree = false
                 mainBoard[i].isWalkAble = false
                 mainBoard[i].content = enemy
+                mainBoard[i].contentType ="enemy"
 
 
                 table.insert(simpleGhostEnemiesTable, enemy)

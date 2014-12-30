@@ -44,7 +44,7 @@ properties.mainBoard2HexesInRow = 20  --- was 5
 
 properties.firstRow = 0
 properties.lastRow = 0
-properties.textInHexesAlpha = 1
+properties.textInHexesAlpha = 0  --- SET to 0 for game mode
 
 properties.numberOfForests= 3
 
@@ -64,7 +64,7 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 1
+properties.currentLevel = 25
 properties.saveFile = "saveFile.json"
 
 properties.enemiesNumber  = 0
@@ -117,5 +117,10 @@ properties.ghostSequenceData =
 
 
 -----
+
+properties.started = false
+
+properties.bossScene2Score = 0
+properties.bossScene1Score = 0
 
 return properties
