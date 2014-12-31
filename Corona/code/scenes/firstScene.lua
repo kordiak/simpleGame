@@ -48,14 +48,14 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect3) then
-            goNextSceneFlag = true
-
-
-            display.getCurrentStage():setFocus( event.target )
-            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
-            remover()
-            composer.gotoScene("code.scenes.bossScene",options)
-            display.getCurrentStage():setFocus(nil)
+--           -- goNextSceneFlag = true
+--
+--
+--            display.getCurrentStage():setFocus( event.target )
+--            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
+--            remover()
+--           --- composer.gotoScene("code.scenes.bossScene",options)
+--            display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect4) then
             goNextSceneFlag = true
@@ -146,8 +146,8 @@ function scene:create( event )
 
 
     sceneGroup.rect1nap = display.newText("Play", properties.center.x,properties.center.y-size*2, properties.font, size )
-    sceneGroup.rect2nap = display.newText("opcja2", properties.center.x,properties.center.y, properties.font, size)
-    sceneGroup.rect3nap = display.newText("opcja3", properties.center.x,properties.center.y+size*2, properties.font, size)
+    sceneGroup.rect2nap = display.newText("Options", properties.center.x,properties.center.y, properties.font, size)
+    sceneGroup.rect3nap = display.newText("Trutorial", properties.center.x,properties.center.y+size*2, properties.font, size)
     sceneGroup.rect4nap = display.newText("Exit", properties.center.x,properties.center.y+size*4, properties.font, size*0.86)
 
 
