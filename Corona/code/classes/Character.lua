@@ -22,6 +22,7 @@ Character.new = function(params)
     local currentHex = params.currentHex or 0;
     local characterLevel = params.characterLevel or 0;
     local characterDiff = params.diff or nil;
+    local notHere = false
 
     local object = display.newImageRect(skin, width, height);
     object.x = xPosition;
@@ -29,6 +30,7 @@ Character.new = function(params)
     object.type = type;
     object.currentHex=currentHex;
     object.diff = characterDiff
+    object.notHere =notHere
 
     object.removeMe = function()
         object:removeSelf();

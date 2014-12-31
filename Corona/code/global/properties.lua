@@ -44,7 +44,7 @@ properties.mainBoard2HexesInRow = 20  --- was 5
 
 properties.firstRow = 0
 properties.lastRow = 0
-properties.textInHexesAlpha = 0  --- SET to 0 for game mode
+properties.textInHexesAlpha = 1  --- SET to 0 for game mode
 
 properties.numberOfForests= 3
 

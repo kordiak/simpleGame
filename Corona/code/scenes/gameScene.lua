@@ -4,7 +4,6 @@ local popUp = require("code.popUps.popUp")
 local composer = require("composer")
 local properties = require("code.global.properties")
 local boardCreator = require("code.boardLibrary.boardCreator")
-
 local saveFile = require("code.global.saveAndLoad")
 local boardCreator = require("code.boardLibrary.boardCreator")
 local properties = require("code.global.properties")
@@ -12,13 +11,14 @@ local Enemy = require("code.classes.Enemy");
 local Player = require("code.classes.Player");
 local elementCreator = require("code.classes.elementCreator");
 local forestGeneratorHelper = require("code.boardLibrary.forestGeneratorHelper")
-local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart, forestRandomizer, forestOccupiedTab
-local isBlocked = false
-local functions = {}
-local enemiesTable = {}
 
+local mainHero, levelGoal, mainBoard, heroCanMove, hexAxe, hexRestart, forestRandomizer, forestOccupiedTab, backGroundOfMainMap, checkingIfMoreGhostsToRemove
+local isBlocked = false
 local popUpShown = false
 
+local ghostPosInTabToRemove = {}
+local functions = {}
+local enemiesTable = {}
 local simpleGhostEnemiesTable = {}
 local advencedGhostEnemiesTable = {}
 local distanceEnemyAndHero = {}
@@ -26,18 +26,13 @@ local maxDistanceEnemyAndHero = {}
 local miniDistanceEnemyAndHero = {}
 miniDistanceEnemyAndHero.distance = properties.miniDistanceHandler
 maxDistanceEnemyAndHero.distance = 0
-local overlay, play, load, exit, sceneGroup
+local overlay, play, load, exit, sceneGroup, removeEnemy
 
 table.insert(enemiesTable, simpleGhostEnemiesTable)
 table.insert(enemiesTable, advencedGhostEnemiesTable)
 
--- print (saveFile.loadFile.level)
 heroCanMove = true
-
 mainBoard = boardCreator;
---boardCreator.new()
-
-
 
 local scene = composer.newScene()
 
@@ -47,25 +42,22 @@ local function close()
 end
 
 function scene:create(event)
-    --local state = event.params.state
     sceneGroup = self.view
-
-
-
-    --
     --    local myText = display.newText({ text = 0, font = properties.font, fontSize = properties.resourcesUsageFont })
     --    myText:scale(0.7, 0.7)
     --    myText.x, myText.y = display.screenOriginX + myText.contentWidth * 0.5, display.contentHeight + display.screenOriginY * -1 - myText.contentHeight * 0.5
     --    myText:setFillColor(1, 1, 1)
     --    sceneGroup:insert(myText)
-
     local levelIndicator = display.newText({ text = "Level " .. properties.currentLevel, font = properties.font, fontSize = properties.resourcesUsageFont })
     levelIndicator:scale(0.7, 0.7)
     levelIndicator.x, levelIndicator.y = display.screenOriginX + levelIndicator.contentWidth * 0.5 + 10, display.screenOriginY + levelIndicator.height / 2 + 10
     levelIndicator:setFillColor(1, 1, 1)
     sceneGroup:insert(levelIndicator)
-
+    functions.afterGhostRemoveCallBack = function()
+        popUpShown = false
+    end
     functions.removeGhosts = function(score)
+        local transCounter = 0
         local GhostToRemove
         if score == 1 then
             GhostToRemove = 1
@@ -73,27 +65,69 @@ function scene:create(event)
             GhostToRemove = math.round(score / 2)
         end
         print("GhostsToRemoveNumber is " .. GhostToRemove)
-
         for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
-            if mainBoard[mainBoard[mainHero.currentHex].coherentHexes[i]] == mainBoard[simpleGhostEnemiesTable[i].currentHex] then
-                print("HEX THAT NEEMY IS ON IS " .. simpleGhostEnemiesTable[i].currentHex)
+            for j = 1, #simpleGhostEnemiesTable do
+                if mainBoard[mainHero.currentHex].coherentHexes[i] == simpleGhostEnemiesTable[j].currentHex then
+                    if not simpleGhostEnemiesTable[j].notHere then
+                        if GhostToRemove > 0 then
+                            GhostToRemove = GhostToRemove - 1
+                            removeEnemy = function(hexToRemove, extraGhost)
+                                local hexNum = simpleGhostEnemiesTable[hexToRemove].currentHex
+                                simpleGhostEnemiesTable[hexToRemove].notHere = true
+                                table.insert(ghostPosInTabToRemove, hexToRemove)
+                                mainBoard[hexNum].isFree = true
+                                mainBoard[hexNum].isWalkAble = true
+                                if mainBoard[hexNum].content then
+                                    mainBoard[hexNum].content:removeSelf()
+                                    mainBoard[hexNum].content = nil
+                                end
+                                transCounter = transCounter - 1
+                                if transCounter == 0 then
+                                    timer.performWithDelay(50, functions.afterGhostRemoveCallBack)
+                                end
+                                if extraGhost then
+                                    functions.ghostToRemoveAgain()
+                                end
+                            end
+                            transCounter = transCounter + 1
+                            transition.to(simpleGhostEnemiesTable[j], { time = 1200, rotation = 960, xScale = 0.1, yScale = 0.1, onComplete = function() removeEnemy(j) end })
+                            --- print("HEX THAT NEEMY IS ON IS " .. simpleGhostEnemiesTable[j].currentHex)
+                        end
+                    end
+                end
             end
         end
-
-        --        for i = 1, #simpleGhostEnemiesTable do
-        --
-        --            end
+        functions.ghostToRemoveAgain = function()
+            local flag = false
+            if GhostToRemove > 0 then
+                print("GhostToRemove", GhostToRemove)
+                local p = math.random(1, #simpleGhostEnemiesTable)
+                if not simpleGhostEnemiesTable[p].notHere then
+                    simpleGhostEnemiesTable[p].notHere = true
+                    GhostToRemove = GhostToRemove - 1
+                    transition.to(simpleGhostEnemiesTable[p], { time = 1200, rotation = 960, xScale = 0.1, yScale = 0.1, onComplete = function() removeEnemy(p, true) end })
+                else
+                    for o = 1, #simpleGhostEnemiesTable do
+                        if not simpleGhostEnemiesTable[o].notHere then
+                            flag = true
+                        end
+                    end
+                    if flag then
+                        functions.ghostToRemoveAgain()
+                    end
+                end
+            end
+        end
+        functions.ghostToRemoveAgain()
     end
     functions.lostGame = function()
         local popUpOne
-        --  ended = true
         local function popUpCallBack()
             popUpOne.removeMe()
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
             composer.gotoScene("code.scenes.firstScene", options)
             composer.removeScene("code.scenes.gameScene")
         end
-
         local params = {
             text = "You lost",
             text2 = "Boss was stronger",
@@ -107,7 +141,6 @@ function scene:create(event)
         popUpOne = popUp.newPopUp1(params)
         sceneGroup:insert(popUpOne)
     end
-
     functions.afterBossFight = function()
         local score
         if properties.started == true then
@@ -122,7 +155,6 @@ function scene:create(event)
             end
         end
         if score then
-            print("SCORE AFTER BOSS FIGHT IS ... " .. score)
             functions.removeGhosts(score)
         end
     end
@@ -137,17 +169,14 @@ function scene:create(event)
         end
         return true
     end
-
     functions.endGamePopup = function()
         local popUpOne
-        --  ended = true
         local function popUpCallBack()
             popUpOne.removeMe()
             popUpShown = false
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
             composer.gotoScene("code.scenes.bossScene2", options)
         end
-
         local params = {
             text = "You got blocked",
             text2 = "Boss fight awaits",
@@ -158,83 +187,35 @@ function scene:create(event)
             tapToContinue = true,
             twoLines = true,
         }
-
-
         popUpOne = popUp.newPopUp1(params)
         sceneGroup:insert(popUpOne)
     end
-
     functions.isBlockedChecker = function()
         isBlocked = true
         for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
             if mainBoard[mainBoard[mainHero.currentHex].coherentHexes[i]].isFree then
                 isBlocked = false
             end
+            if mainBoard[mainBoard[mainHero.currentHex].coherentHexes[i]].content == levelGoal then
+                isBlocked = false
+            end
         end
-
         if isBlocked == true then
             if popUpShown == false then
                 popUpShown = true
                 functions.endGamePopup()
                 media.pauseSound()
             end
-            --  composer.gotoScene("code.scenes.achivmentsScene")
         end
-
-        --TODO CHECK IF OUR HERO IS BLOCKED IF YES THEN OPEN NEW BOSS SCENE
-        -- ON COMPLETE
         heroCanMove = true
     end
-
-    functions.startingMenuContent = function()
-        play = display.newText({ text = "Play", font = properties.font, fontSize = properties.mainMenuFontSize })
-        play.x, play.y = properties.center.x, display.screenOriginY + play.height * 2
-        play:setFillColor(1, 1, 1)
-        play.name = "play"
-        play:addEventListener("touch", functions.mainMenuTouch)
-
-        load = display.newText({ text = "Load", font = properties.font, fontSize = properties.mainMenuFontSize })
-        load.x, load.y = play.x, play.y + load.height * 2
-        load:setFillColor(1, 1, 1)
-        load.name = "load"
-        load:addEventListener("touch", functions.mainMenuTouch)
-
-
-        exit = display.newText({ text = "Exit", font = properties.font, fontSize = properties.mainMenuFontSize })
-        exit.x, exit.y = load.x, load.y + exit.height * 2
-        exit:setFillColor(1, 1, 1)
-        exit.name = "exit"
-        exit:addEventListener("touch", functions.mainMenuTouch)
-    end
-
-    functions.hiddingMainMenu = function()
-        overlay.isVisible = false
-        play.isVisible = false
-        load.isVisible = false
-        exit.isVisible = false
-    end
-
-    functions.revalingMainMenu = function()
-        overlay.isVisible = true
-        play.isVisible = true
-        load.isVisible = true
-        exit.isVisible = true
-    end
-
-    functions.startingMenu = function()
-        overlay = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
-        overlay:setFillColor(0, 0, 0, 1)
-        overlay.name = 'overlay'
-        overlay:addEventListener("touch", functions.mainMenuTouch)
-        functions.startingMenuContent()
-    end
-
     functions.insertingIntoScenegroup = function()
         for i = 1, #mainBoard do
             sceneGroup:insert(mainBoard[i])
             sceneGroup:insert(mainBoard[i].text)
             mainBoard[i].text:toBack()
             mainBoard[i]:toBack()
+            backGroundOfMainMap:toBack()
         end
         for i = 1, #simpleGhostEnemiesTable do
             sceneGroup:insert(simpleGhostEnemiesTable[i])
@@ -245,28 +226,17 @@ function scene:create(event)
         sceneGroup:insert(hexAxe.backGround)
         sceneGroup:insert(hexRestart)
     end
-
     functions.forestGeneratorHelper = function()
         forestOccupiedTab = forestGeneratorHelper.new()
-
         forestRandomizer = math.random(1, #forestOccupiedTab)
-
         for i = 1, #forestOccupiedTab[forestRandomizer] do
-
-
-            --- mainBoard[forestOccupiedTab[forestRandomizer][i]]:setFillColor (1,0,0,0.2)
             mainBoard[forestOccupiedTab[forestRandomizer][i]].isFree = false
         end
     end
-
     functions.startGame = function()
-
-
-
         functions.environmentGenerator = function()
-
             functions.forestGeneratorHelper()
-
+            local numberOfForest = properties.numberOfForests - 1 + math.random(1,6)
             for i = 1, properties.numberOfForests do
                 local r = math.random(1, 3)
                 local q = true
@@ -280,10 +250,9 @@ function scene:create(event)
                         mainBoard[i].isWalkAble = false
                         mainBoard[i].content = smallForest
                         properties.lastPickedHexForEnvironmentForestGenerator = i
-                        --  print ( properties.lastPickedHexForEnvironmentForestGenerator)
                         q = false
                         sceneGroup:insert(smallForest)
-                        local eviCount = math.round(((properties.forestSize - properties.currentLevel)) / properties.numberOfForests)
+                        local eviCount = math.round((((( properties.currentLevel - properties.forestSize)^2)^(1/2))) / properties.numberOfForests)
                         if eviCount < 3 then
                             eviCount = 3
                         end
@@ -294,8 +263,6 @@ function scene:create(event)
                                 local c = math.random(1, #mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes)
                                 whileCounter = whileCounter + 1
                                 if mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].isFree then
-                                    --  print ("C",c)
-                                    --   print ( mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c])
                                     local smallForest = display.newImageRect(properties.environment[r], 90, 90)
                                     sceneGroup:insert(smallForest)
                                     smallForest.x = mainBoard[mainBoard[properties.lastPickedHexForEnvironmentForestGenerator].coherentHexes[c]].x
@@ -308,7 +275,6 @@ function scene:create(event)
                                 end
                                 if whileCounter > 2500 then
                                     o = false
-                                    print("EXCEDED MAX NUMBER OF SiMULATiONS")
                                 end
                             end
                         end
@@ -317,30 +283,26 @@ function scene:create(event)
                 for i = 1, #simpleGhostEnemiesTable do
                     simpleGhostEnemiesTable[i]:toFront()
                 end
-                print(mainHero)
                 mainHero:toFront()
             end
             for i = 1, #forestOccupiedTab[forestRandomizer] do
-
                 if not mainBoard[forestOccupiedTab[forestRandomizer][i]].content then
                     --- mainBoard[forestOccupiedTab[forestRandomizer][i]]:setFillColor (1,1,1)
                     mainBoard[forestOccupiedTab[forestRandomizer][i]].isFree = true
                 end
             end
         end
-
-
         elementCreator.new(mainBoard, functions.environmentGenerator, simpleGhostEnemiesTable, enemiesTable);
-
-
         mainHero, levelGoal = elementCreator.mainHeroCreator(mainHero, levelGoal)
         elementCreator.enemyCreator()
-        --functions.mainHeroCreator()
         functions.HUDCreator()
-
+        if not backGroundOfMainMap then
+            backGroundOfMainMap = display.newImageRect("graphicsRaw/backGrounds/gameBackground.jpg", properties.width, properties.height)
+            backGroundOfMainMap.x, backGroundOfMainMap.y = properties.center.x, properties.center.y
+            sceneGroup:insert(backGroundOfMainMap)
+        end
         functions.insertingIntoScenegroup()
     end
-
     functions.newLevel = function()
         transition.cancel(mainHero)
         heroCanMove = true
@@ -352,7 +314,6 @@ function scene:create(event)
         mainBoard[#mainBoard].isWalkAble = false
         mainHero.currentHex = #mainBoard
         simpleGhostEnemiesTable = {}
-
         for i = 1, #mainBoard do
             if mainBoard[i].content then
                 if mainBoard[i].content ~= levelGoal then
@@ -367,7 +328,6 @@ function scene:create(event)
         functions.startGame()
         levelIndicator.text = "Level " .. properties.currentLevel
     end
-
     functions.transCompleted = function()
         functions.enemyMove()
     end
@@ -378,80 +338,12 @@ function scene:create(event)
         maxDistanceEnemyAndHero.distance = 0
     end
     functions.enemyTransCompleted = function()
-
         functions.isBlockedChecker()
     end
-    functions.aBitMoreComplicatedGhostEnemiesMove = function()
-        for i = 1, #simpleGhostEnemiesTable do
-            --TODO enemy movement
-
-            --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
-            for j = 1, #mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes do
-                local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
-                print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
-                distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-                print("Distance", distanceEnemyAndHero)
-                if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        if simpleGhostEnemiesTable[i].beforeHex then
-                            for i = 1, #simpleGhostEnemiesTable[i].beforeHex do
-                                if simpleGhostEnemiesTable[i].beforeHex[i] ~= a then
-                                    maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                                    maxDistanceEnemyAndHero.hexNumber = a
-                                elseif simpleGhostEnemiesTable[i].beforeHex[i] == a then
-                                    table.remove(simpleGhostEnemiesTable[i].beforeHex, i)
-                                end
-                            end
-
-                        else
-                            maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                            maxDistanceEnemyAndHero.hexNumber = a
-                        end
-                    end
-                end
-                if miniDistanceEnemyAndHero.distance > distanceEnemyAndHero then
-                    if mainBoard[a].isFree == true then
-                        miniDistanceEnemyAndHero.distance = distanceEnemyAndHero
-                        miniDistanceEnemyAndHero.hexNumber = a
-                    end
-                end
-            end
-            print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
-
-            print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
-            if miniDistanceEnemyAndHero.hexNumber then
-
-
-                -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
-                --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-                table.insert(simpleGhostEnemiesTable[i].beforeHex, miniDistanceEnemyAndHero.hexNumber)
-                -- simpleGhostEnemiesTable[i].beforeHex = miniDistanceEnemyAndHero.hexNumber
-
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isFree = true
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = true
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[simpleGhostEnemiesTable[i].currentHex].content
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].content = nil
-                simpleGhostEnemiesTable[i].currentHex = miniDistanceEnemyAndHero.hexNumber
-                mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
-                mainBoard[simpleGhostEnemiesTable[i].currentHex].isWalkAble = false
-
-                transition.to(simpleGhostEnemiesTable[i], { time = properties.enemyTransTime, x = mainBoard[simpleGhostEnemiesTable[i].currentHex].x, y = mainBoard[simpleGhostEnemiesTable[i].currentHex].y, onComplete = functions.enemyTransCompleted })
-
-                functions.distanceForEnemyReset()
-            end
-        end
-    end
-
     functions.simpleGhostEnemiesMove = function(monster)
-
-        --TODO enemy movement
-
-        --- MELEE IS TRYING TO GO TOWARDS YOU!!! ---
         for j = 1, #mainBoard[monster.currentHex].coherentHexes do
             local a = mainBoard[monster.currentHex].coherentHexes[j]
-            print("Board Position", mainBoard[monster.currentHex].coherentHexes[j])
             distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-            print("Distance", distanceEnemyAndHero)
             if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
                 if mainBoard[a].isFree == true then
                     maxDistanceEnemyAndHero.distance = distanceEnemyAndHero
@@ -465,15 +357,7 @@ function scene:create(event)
                 end
             end
         end
-        print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
-
-        print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
         if miniDistanceEnemyAndHero.hexNumber then
-
-
-            -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
-            --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-
             mainBoard[monster.currentHex].isFree = true
             mainBoard[monster.currentHex].isWalkAble = true
             mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[monster.currentHex].content
@@ -481,13 +365,10 @@ function scene:create(event)
             monster.currentHex = miniDistanceEnemyAndHero.hexNumber
             mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
             mainBoard[monster.currentHex].isWalkAble = false
-
             transition.to(monster, { time = properties.enemyTransTime, x = mainBoard[monster.currentHex].x, y = mainBoard[monster.currentHex].y, onComplete = functions.enemyTransCompleted })
-
             functions.distanceForEnemyReset()
         end
     end
-
     functions.roflmaoGhostEnemiesMove = function(monster)
         local p = true
         local pcounter = 0
@@ -498,16 +379,11 @@ function scene:create(event)
             if mainBoard[a].isFree == true then
                 miniDistanceEnemyAndHero.hexNumber = a
             end
-
             if pcounter > 1500 then
                 p = false
             end
         end
-
         if miniDistanceEnemyAndHero.hexNumber then
-            -- enemiesTable[i].x =  mainBoard[miniDistanceEnemyAndHero.hexNumber].x
-            --  enemiesTable[i].y =  mainBoard[miniDistanceEnemyAndHero.hexNumber].y
-
             mainBoard[monster.currentHex].isFree = true
             mainBoard[monster.currentHex].isWalkAble = true
             mainBoard[miniDistanceEnemyAndHero.hexNumber].content = mainBoard[monster.currentHex].content
@@ -515,28 +391,35 @@ function scene:create(event)
             monster.currentHex = miniDistanceEnemyAndHero.hexNumber
             mainBoard[miniDistanceEnemyAndHero.hexNumber].isFree = false
             mainBoard[monster.currentHex].isWalkAble = false
-
             transition.to(monster, { time = properties.enemyTransTime, x = mainBoard[monster.currentHex].x, y = mainBoard[monster.currentHex].y, onComplete = functions.enemyTransCompleted })
-
             functions.distanceForEnemyReset()
         end
     end
-
-
     functions.enemyMove = function()
         for i = 1, #simpleGhostEnemiesTable do
-            if simpleGhostEnemiesTable[i].diff == 4 then
-                functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
-            elseif simpleGhostEnemiesTable[i].diff == 5 then
-                functions.roflmaoGhostEnemiesMove(simpleGhostEnemiesTable[i])
-            else
-                local randomizer = math.random(1, 10)
-                if randomizer < 3 then
+            if not simpleGhostEnemiesTable[i].notHere then
+                if simpleGhostEnemiesTable[i].diff == 4 then
+                    functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
+                elseif simpleGhostEnemiesTable[i].diff == 5 then
                     functions.roflmaoGhostEnemiesMove(simpleGhostEnemiesTable[i])
                 else
-                    functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
+                    local randomizer = math.random(1, 10)
+                    if randomizer < 3 then
+                        functions.roflmaoGhostEnemiesMove(simpleGhostEnemiesTable[i])
+                    else
+                        functions.simpleGhostEnemiesMove(simpleGhostEnemiesTable[i])
+                    end
                 end
             end
+        end
+        local flag = false
+        for o = 1, #simpleGhostEnemiesTable do
+            if simpleGhostEnemiesTable[o].notHere then
+                flag = true
+            end
+        end
+        if flag then
+            heroCanMove = true
         end
     end
     functions.hexPressed = function(params)
@@ -544,6 +427,7 @@ function scene:create(event)
             for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
                 if mainBoard[mainHero.currentHex].coherentHexes[i] == tonumber(params.hexNumber) then
                     if mainBoard[tonumber(params.hexNumber)].isWalkAble == true then
+                        print("MOVING TOOO", params.hexNumber)
                         mainBoard[mainHero.currentHex].isFree = true
                         mainBoard[mainHero.currentHex].isWalkAble = true
                         mainHero.currentHex = tonumber(params.hexNumber)
@@ -562,11 +446,9 @@ function scene:create(event)
             end
         end
     end
-
     functions.nextlevel = function()
         properties.lastPickedHexForEnvironmentForestGenerator = 0
     end
-
     functions.HUDtouch = function(event)
         if event.phase == "ended" then
             if event.target.name == "restart" then
@@ -609,7 +491,6 @@ function scene:create(event)
         media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
     end
 
-    --functions.startingMenu()
     functions.startGame()
 
     --  functions.playSoundRandom()
@@ -628,19 +509,28 @@ function scene:create(event)
     --        myText:toFront()
     --    end
     --
-    --    local function enterframeFunc()
-    --        frames = frames + 1
-    --        --    for i = 1, #mainBoard do
-    --        --        if  mainBoard[i].isWalkAble then
-    --        --            mainBoard[i]:setFillColor (1,0,0,0.2)
-    --        --        else
-    --        --            mainBoard[i]:setFillColor (1,1,1)
-    --        --        end
-    --        --    end
-    --    end
+    local function enterframeFunc()
+        -- frames = frames + 1
+        --    for i = 1, #mainBoard do
+        --        if  mainBoard[i].isWalkAble then
+        --            mainBoard[i]:setFillColor (1,0,0,0.2)
+        --        else
+        --            mainBoard[i]:setFillColor (1,1,1)
+        --        end
+        --    end
+        for i = 1, #mainBoard do
+            if mainBoard[i].isFree then
+                mainBoard[i]:setFillColor(1, 1, 1)
+            else
+                mainBoard[i]:setFillColor(1, 0, 0)
+            end
+        end
+    end
+
     --
     --    timer.performWithDelay(1000, updateText, 0)
-    --    Runtime:addEventListener("enterFrame", enterframeFunc)
+    Runtime:addEventListener("enterFrame", enterframeFunc)
+
     Runtime:addEventListener("hexPressed", functions.hexPressed)
 end
 
