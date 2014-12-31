@@ -175,7 +175,12 @@ function scene:create(event)
             popUpOne.removeMe()
             popUpShown = false
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
-            composer.gotoScene("code.scenes.bossScene2", options)
+            local rand = math.random(1,2)
+            if rand == 1 then
+                composer.gotoScene("code.scenes.bossScene", options)
+                else
+            composer.gotoScene("code.scenes.bossScene", options)
+            end
         end
         local params = {
             text = "You got blocked",

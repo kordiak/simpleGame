@@ -65,8 +65,17 @@ functions.endGamePopup = function (win)
         local win = win
         audio.stop()
         media.stopSound()
-        composer.removeScene("code.scenes.bossScene")
-        composer.gotoScene("code.scenes.firstScene")
+        local prevScene = composer.getSceneName("previous")
+        local currScene = composer.getSceneName("current")
+        local options = {
+            effect = "crossFade",
+            time = 1000,
+        }
+
+        properties.bossSceneScore = bossHp
+
+        composer.gotoScene(prevScene, options)
+        composer.removeScene(currScene)
     end
 
 
@@ -109,7 +118,7 @@ functions.timerCancel = function ()
     local function callback()
 
         transition.cancel( "missleTrans" )
-        print ("XAXAXAA", #missleTab)
+    --    print ("XAXAXAA", #missleTab)
         for i=1 , #missleTab do
             missleTab[i]:removeSelf()
             missleTab[i] = nil
