@@ -179,7 +179,7 @@ function scene:create(event)
             if rand == 1 then
                 composer.gotoScene("code.scenes.bossScene", options)
                 else
-            composer.gotoScene("code.scenes.bossScene", options)
+            composer.gotoScene("code.scenes.bossScene2", options)
             end
         end
         local params = {
