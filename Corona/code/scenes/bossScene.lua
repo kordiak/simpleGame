@@ -51,7 +51,7 @@ local ScreenPosition = {}
 local scene = composer.newScene()
 local function stopAllAudio()
     audio.stop()
-    media.stopSound()
+
 end
 
 functions.endGamePopup = function (win)
@@ -64,7 +64,7 @@ functions.endGamePopup = function (win)
         --  popUpOne = nil
         local win = win
         audio.stop()
-        media.stopSound()
+
         local prevScene = composer.getSceneName("previous")
         local currScene = composer.getSceneName("current")
         local options = {
@@ -72,7 +72,7 @@ functions.endGamePopup = function (win)
             time = 1000,
         }
 
-        properties.bossSceneScore = math.rand(bossHp * 1.5)
+        properties.bossSceneScore = math.round(bossHp * 1.5)
 
         composer.gotoScene(prevScene, options)
         composer.removeScene(currScene)
@@ -109,7 +109,7 @@ local function close()
 end
 functions.timerCancel = function ()
 
-    print ("TIMER CANCEL")
+--    print ("TIMER CANCEL")
     touchRect.canGetTouch = false
     for i=1, #shootTimers do
         timer.cancel( shootTimers[i] )
@@ -221,7 +221,7 @@ end
 
 functions.playSound = function()
    local path  = system.pathForFile( "boss1.mp3" , system.ResourceDirectory )
-    print (path)
+  --  print (path)
 
 end
 functions.dead = function ()
@@ -379,7 +379,7 @@ functions.leftToRightShower = function(callback, numbToDisable,counter)
             timer.performWithDelay ( timeOfShoots/4.5, function () generalShootGeneratorEnded = true end )
             end
             if counter then
-                print ("current COUTNTER STATE IS", counter)
+             --   print ("current COUTNTER STATE IS", counter)
             if counter == 2 then
                 timer.performWithDelay ( timeOfShoots/2, function () shootFunctionsState[numbToDisable] = true end )
                 timer.performWithDelay ( timeOfShoots/3, function () generalShootGeneratorEnded = true end )
@@ -433,7 +433,7 @@ functions.rightToLeftShower = function(callback, numbToDisable,counter)
             timer.performWithDelay ( timeOfShoots/4.5, function () generalShootGeneratorEnded = true end )
                 end
             if counter then
-                print ("current COUTNTER STATE IS", counter)
+             --   print ("current COUTNTER STATE IS", counter)
             if counter == 2 then
                 timer.performWithDelay ( timeOfShoots/2, function () shootFunctionsState[numbToDisable] = true end )
                 timer.performWithDelay ( timeOfShoots/3, function () generalShootGeneratorEnded = true end )
@@ -526,7 +526,7 @@ if specialMode == 1 then
          end
 elseif specialMode == 3 then
         if shootFunctionsState[3] == true and generalShootGeneratorEnded == true then
-            print("XAXAXA", generalShootGeneratorEnded)
+          --  print("XAXAXA", generalShootGeneratorEnded)
             generalShootGeneratorEnded = false
             shootFunctions[3]()
         end
@@ -576,7 +576,7 @@ functions.playerMovment = function (event)
   if heroCanMove == true then
 
     if event.x + hero.width/2 < hero.x then
-        print ("LEFT" ,event.x -hero.width, hero.x)
+     --   print ("LEFT" ,event.x -hero.width, hero.x)
         if (hero.pos-1) > 0 then
             heroCanMove = false
         hero.prevPos = hero.pos
@@ -584,7 +584,7 @@ functions.playerMovment = function (event)
 transition.to(hero, {time= timeOfMainHeroMovment, x = ScreenPosition[hero.pos] , onComplete = clearPrevousPos })
             end
     elseif event.x -hero.width/2 > hero.x then
-        print ("RIGHT" ,event.x +hero.width, hero.x)
+      --  print ("RIGHT" ,event.x +hero.width, hero.x)
     if (hero.pos) < #ScreenPosition  then
         heroCanMove = false
         hero.prevPos = hero.pos
@@ -614,7 +614,7 @@ functions.touchHandler = function( event )
 
     end
     if started == true then
-        print( "Touch : " .. event.x , event.y, event.phase, #beganTimers, #movedTimers )
+     --   print( "Touch : " .. event.x , event.y, event.phase, #beganTimers, #movedTimers )
     if event.phase == "began" then
         display.getCurrentStage():setFocus( event.target )
         event.target.isFocus = true
@@ -651,7 +651,7 @@ functions.win = function()
         local function audioCompleted()
         gameOver(true)
         end
-        media.stopSound()
+        audio.fadeOut( { channel=0, time=2500 } )
 
         functions.timerCancel()
 
@@ -702,7 +702,9 @@ function scene:create(event)
     boss.y = properties.center.y
 
   --  functions.playSound()
-  media.playSound( "sounds/boss1.mp3" )
+    local backgroundMusic = audio.loadStream( "sounds/boss1.mp3" )
+    audio.play( backgroundMusic, { onComplete= functions.playSoundRandom }  )
+--
     functions.initation(boss)
 
  touchRect = display.newImageRect ("graphicsRaw/backGrounds/bgBoss2.png",properties.width, properties.height)
@@ -745,14 +747,14 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-    media.playSound()
+--
         end
 end
 
 
 function scene:hide(event)
     if (event.phase == "did") then
-    media.pauseSound()
+
         end
 end
 

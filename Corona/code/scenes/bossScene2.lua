@@ -15,14 +15,14 @@ local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
 local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic
-local maxElementCounterValue = 500
+local maxElementCounterValue = 550
 local points = 0
 
 local onCollision
 
 local timer1, timer2, timer3, timer4
 
-local maxPoints = math.round(maxElementCounterValue / 50)
+local maxPoints = math.round((maxElementCounterValue-50) / 50)
 
 local ended = false
 local hardCore = false --- - SET TO TRUE FOR HARDCORE MODE when every obstacle kills you
@@ -83,7 +83,7 @@ functions.endGamePopup = function()
         twoLines = true,
     }
 
-    media.stopSound()
+    audio.stop()
     popUpOne = popUp.newPopUp1(params)
     sceneGroup:insert(popUpOne)
 end
@@ -186,7 +186,7 @@ function onCollision(event)
 
     if (event.phase == "began") then
         if event.object1.type == "objective" and event.object2.type == "objective" then
-            print("YOU WOOOON")
+          --  print("YOU WOOOON")
             physics.pause()
             transition.to(ball, { time = 500, x = levelGoal.x, y = levelGoal.y, xScale = 0.1, yScale = 0.1, onComplete = functions.goalCollected })
         end
@@ -226,7 +226,7 @@ functions.arrowInitation = function(rotation)
     arrow.x = math.random(properties.x + properties.width / 10, properties.width - properties.width / 10)
     arrow.y = properties.y + arrow.height / 2 + 5
 
-    print(rotation)
+ --   print(rotation)
     arrow:rotate(-(rotation * 15))
 
     arrowAnimation()
@@ -255,7 +255,7 @@ functions.obstacleGenerator = function(isDeadly)
     local obstacle
     obstacle = display.newRect(0, 0, math.round(properties.height / 15), math.round(properties.height / 15))
     --skyMountain
-    print(math.round(properties.height / 15))
+  --  print(math.round(properties.height / 15))
     if isDeadly then
         obstacle.isDeadly = true
         obstacle:setFillColor(1, 0, 0, 0.9)
@@ -388,8 +388,9 @@ function scene:create(event)
         maxElementCounterValue = event.params.cValue or 500
     end
 
-
-    media.playSound("sounds/boss2Sound.mp3")
+    local backgroundMusic = audio.loadStream( "sounds/boss2Sound.mp3" )
+    audio.play( backgroundMusic)
+ --   media.playSound("sounds/boss2Sound.mp3")
     -- physics.setDrawMode( "debug" )
     -- physics.setScale( 5 )
     sceneLoaded = true
@@ -409,14 +410,13 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        media.playSound()
-    end
+        end
 end
 
 
 function scene:hide(event)
     if (event.phase == "did") then
-        media.pauseSound()
+        audio.pause()
     end
 end
 

@@ -50,7 +50,7 @@ function scene:create(event)
     --    sceneGroup:insert(myText)
     local levelIndicator = display.newText({ text = "Level " .. properties.currentLevel, font = properties.font, fontSize = properties.resourcesUsageFont })
     levelIndicator:scale(0.7, 0.7)
-    levelIndicator.x, levelIndicator.y = display.screenOriginX + levelIndicator.contentWidth * 0.5 + 10, display.screenOriginY + levelIndicator.height / 2 + 10
+    levelIndicator.x, levelIndicator.y = properties.x + levelIndicator.contentWidth * 0.5 + 35, properties.y + levelIndicator.height / 2 + 10
     levelIndicator:setFillColor(1, 1, 1)
     sceneGroup:insert(levelIndicator)
     functions.afterGhostRemoveCallBack = function()
@@ -175,10 +175,14 @@ function scene:create(event)
             popUpOne.removeMe()
             popUpShown = false
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
-            local rand = math.random(1,2)
-            if rand == 1 then
+            local rand = math.random(1,(properties.bossScene1Chance + properties.bossScene2Chance) )
+            if rand < properties.bossScene1Chance then
+                properties.bossScene1Chance = properties.bossScene1Chance + 10
+                properties.bossScene2Chance = properties.bossScene2Chance - 10
                 composer.gotoScene("code.scenes.bossScene", options)
-                else
+            else
+                properties.bossScene1Chance = properties.bossScene1Chance - 10
+                properties.bossScene2Chance = properties.bossScene2Chance + 10
             composer.gotoScene("code.scenes.bossScene2", options)
             end
         end
@@ -209,7 +213,7 @@ function scene:create(event)
             if popUpShown == false then
                 popUpShown = true
                 functions.endGamePopup()
-                media.pauseSound()
+                audio.pause()
             end
         end
         heroCanMove = true
@@ -227,9 +231,9 @@ function scene:create(event)
         end
         sceneGroup:insert(levelGoal)
         sceneGroup:insert(mainHero)
-        sceneGroup:insert(hexAxe)
-        sceneGroup:insert(hexAxe.backGround)
-        sceneGroup:insert(hexRestart)
+      --  sceneGroup:insert(hexAxe)
+       -- sceneGroup:insert(hexAxe.backGround)
+      --  sceneGroup:insert(hexRestart)
     end
     functions.forestGeneratorHelper = function()
         forestOccupiedTab = forestGeneratorHelper.new()
@@ -300,7 +304,7 @@ function scene:create(event)
         elementCreator.new(mainBoard, functions.environmentGenerator, simpleGhostEnemiesTable, enemiesTable);
         mainHero, levelGoal = elementCreator.mainHeroCreator(mainHero, levelGoal)
         elementCreator.enemyCreator()
-        functions.HUDCreator()
+    ---    functions.HUDCreator()
         if not backGroundOfMainMap then
             backGroundOfMainMap = display.newImageRect("graphicsRaw/backGrounds/gameBackground.jpg", properties.width, properties.height)
             backGroundOfMainMap.x, backGroundOfMainMap.y = properties.center.x, properties.center.y
@@ -454,46 +458,49 @@ function scene:create(event)
     functions.nextlevel = function()
         properties.lastPickedHexForEnvironmentForestGenerator = 0
     end
-    functions.HUDtouch = function(event)
-        if event.phase == "ended" then
-            if event.target.name == "restart" then
-                properties.currentLevel = properties.currentLevel - 1
-                --        if properties.currentLevel < 1 then
-                --            properties.currentLevel = 1
-                --            end
-                functions.newLevel()
-            elseif event.target.name == "hexAxe" then
-                native.requestExit()
-            end
-        end
-    end
+--    functions.HUDtouch = function(event)
+--        if event.phase == "ended" then
+--            if event.target.name == "restart" then
+--                properties.currentLevel = properties.currentLevel - 1
+--                --        if properties.currentLevel < 1 then
+--                --            properties.currentLevel = 1
+--                --            end
+--                functions.newLevel()
+--            elseif event.target.name == "hexAxe" then
+--                native.requestExit()
+--            end
+--        end
+--    end
 
-    functions.HUDCreator = function()
-        if not hexAxe then
-            hexAxe = display.newImageRect(properties.hexTexturePath, 88, 77)
-            hexAxe.x = properties.width - hexAxe.width / 2
-            hexAxe.y = mainBoard[#mainBoard].y + hexAxe.height * 1.5
-            hexAxe.name = "hexAxe"
-            hexAxe.backGround = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
-            hexAxe.backGround.x = hexAxe.x
-            hexAxe.backGround.y = hexAxe.y
-            hexAxe:addEventListener("touch", functions.HUDtouch)
-            hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
-            hexRestart.name = "restart"
-            hexRestart.x = properties.x + hexRestart.width / 2
-            hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
-            hexRestart:addEventListener("touch", functions.HUDtouch)
-
-            hexRestart.isVisible = false
-            hexAxe.backGround.isVisible = false
-            hexAxe.isVisible = false
-        end
-    end
+--    functions.HUDCreator = function()
+--        if not hexAxe then
+--            hexAxe = display.newImageRect(properties.hexTexturePath, 88, 77)
+--            hexAxe.x = properties.width - hexAxe.width / 2
+--            hexAxe.y = mainBoard[#mainBoard].y + hexAxe.height * 1.5
+--            hexAxe.name = "hexAxe"
+--            hexAxe.backGround = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
+--            hexAxe.backGround.x = hexAxe.x
+--            hexAxe.backGround.y = hexAxe.y
+--            hexAxe:addEventListener("touch", functions.HUDtouch)
+--            hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
+--            hexRestart.name = "restart"
+--            hexRestart.x = properties.x + hexRestart.width / 2
+--            hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
+--            hexRestart:addEventListener("touch", functions.HUDtouch)
+--
+--            hexRestart.isVisible = false
+--            hexAxe.backGround.isVisible = false
+--            hexAxe.isVisible = false
+--        end
+--    end
 
     functions.playSoundRandom = function()
-        media.stopSound()
-        local a = math.random(1, 7)
-        media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
+        audio.stop()
+        local a = math.random(1,7)
+        local backgroundMusic = audio.loadStream( "sounds/backGroundSoundTrack/" ..a.. ".mp3" )
+        audio.play( backgroundMusic, { onComplete= functions.playSoundRandom }  )
+
+      --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
     end
 
     functions.startGame()
@@ -534,7 +541,7 @@ function scene:create(event)
 
     --
     --    timer.performWithDelay(1000, updateText, 0)
-    Runtime:addEventListener("enterFrame", enterframeFunc)
+  --  Runtime:addEventListener("enterFrame", enterframeFunc)
 
     Runtime:addEventListener("hexPressed", functions.hexPressed)
 end
@@ -554,7 +561,7 @@ end
 function scene:hide(event)
     if (event.phase == "did") then
         heroCanMove = false
-        media.pauseSound()
+        audio.pause()
     end
 end
 

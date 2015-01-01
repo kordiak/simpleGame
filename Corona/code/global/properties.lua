@@ -15,6 +15,7 @@ properties.cornerSize = 0
 properties.sizeOfButtons = 100
 
 
+
 --properties.font = "Comic Sans MS"
 --properties.font = "Debbie-Alternate Regular"
 if "Win" == system.getInfo( "platformName" ) then
@@ -30,8 +31,8 @@ properties.directionLeft = "left"
 properties.directionRight = "right"
 
 
-properties.firstSceneTextColor = {0.78,0.654,0.520};
-properties.firstSceneRectsColor = {0.16,0.55,0.47677};
+properties.firstSceneTextColor = {0,0,0};
+properties.firstSceneRectsColor = {0.86,0.85,0.87677};
 
 
 properties.buttonTransTime = 400
@@ -44,7 +45,7 @@ properties.mainBoard2HexesInRow = 20  --- was 5
 
 properties.firstRow = 0
 properties.lastRow = 0
-properties.textInHexesAlpha = 1  --- SET to 0 for game mode
+properties.textInHexesAlpha = 0  --- SET to 0 for game mode
 
 properties.numberOfForests= 3
 
@@ -64,8 +65,11 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 25
+properties.currentLevel = 1
 properties.saveFile = "saveFile.json"
+
+properties.bossScene1Chance = 50
+properties.bossScene2Chance = 50
 
 properties.enemiesNumber  = 0
 properties.miniDistanceHandler = properties.width + properties.height
