@@ -72,7 +72,7 @@ functions.endGamePopup = function (win)
             time = 1000,
         }
 
-        properties.bossSceneScore = bossHp
+        properties.bossSceneScore = math.rand(bossHp * 1.5)
 
         composer.gotoScene(prevScene, options)
         composer.removeScene(currScene)
