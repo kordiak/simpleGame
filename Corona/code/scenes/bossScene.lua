@@ -228,7 +228,7 @@ local nextDeathStep = function ()
     end
     media.stopSound()
     local winSound = ( "sounds/ghostBossLaugh.mp3" )
-    media.playSound( winSound, { onComplete= audioCompleted } )
+    media.playSound( winSound,  audioCompleted  )
 end
     local heroSmash = function ()
         transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2, onComplete = nextDeathStep})
@@ -647,7 +647,7 @@ functions.win = function()
         functions.timerCancel()
         media.stopSound()
         local winSound = ( "sounds/boss1Win.mp3" )
-        media.playSound( winSound, { onComplete= audioCompleted } )
+        media.playSound( winSound, audioCompleted )
 
 
         ---TODO what to do after we killed the boss?

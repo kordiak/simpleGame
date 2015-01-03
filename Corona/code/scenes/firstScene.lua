@@ -72,15 +72,17 @@ local function rectTouch( event )
 
 function scene:create( event )
     local sceneGroup = self.view
-    local testTabe = {
-       xxx = 10,
-       yyy = 20,
-       zzz = 30
-    }
 
-    --saveAndLoad.save (testTabe , properties.saveFile)
-  local filee =  saveAndLoad.load( properties.saveFile )
-    saveAndLoad.save (testTabe , properties.saveFile)
+
+--    --saveAndLoad.save (testTabe , properties.saveFile)
+  local fileToSave =  saveAndLoad.load( properties.saveFile )
+    if fileToSave then
+        logTable(fileToSave)
+        if (math.fmod(fileToSave.level, 5)) == 0 then
+            properties.currentLevel = fileToSave.level
+            end
+    end
+--    saveAndLoad.save (testTabe , properties.saveFile)
     local mainButtonsGroup = display.newGroup()
     local size = properties.sizeOfButtons
     local corners = properties.cornerSize -- SIZE OF CORNERS

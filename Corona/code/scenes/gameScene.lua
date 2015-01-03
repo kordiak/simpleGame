@@ -1,10 +1,10 @@
 display.setStatusBar(display.HiddenStatusBar)
 
 local popUp = require("code.popUps.popUp")
+local saveAndLoad = require("code.global.saveAndLoad")
 local composer = require("composer")
 local properties = require("code.global.properties")
 local boardCreator = require("code.boardLibrary.boardCreator")
-local saveFile = require("code.global.saveAndLoad")
 local boardCreator = require("code.boardLibrary.boardCreator")
 local properties = require("code.global.properties")
 local Enemy = require("code.classes.Enemy");
@@ -56,6 +56,28 @@ function scene:create(event)
     functions.afterGhostRemoveCallBack = function()
         popUpShown = false
     end
+    functions.saveIntoFiles = function ()
+        local tabToSave
+        local saveFile =  saveAndLoad.load( properties.saveFile )
+        if saveFile then
+            logTable (saveFile)
+            tabToSave = saveFile
+            if tabToSave.level < properties.currentLevel then
+                tabToSave.level = properties.currentLevel
+                end
+        else
+        tabToSave = {
+            level = properties.currentLevel,
+            heroTransTime =  properties.heroTransTime,
+            enemyTransTime = properties.enemyTransTime
+        }
+            end
+    --    tabToSave.level = 5
+
+        saveAndLoad.save (tabToSave , properties.saveFile)
+    end
+
+
     functions.removeGhosts = function(score)
         local transCounter = 0
         local GhostToRemove
@@ -243,6 +265,7 @@ function scene:create(event)
         end
     end
     functions.startGame = function()
+        functions.saveIntoFiles()
         functions.environmentGenerator = function()
             functions.forestGeneratorHelper()
             local numberOfForest = properties.numberOfForests - 1 + math.random(1,6)
@@ -334,6 +357,7 @@ function scene:create(event)
             end
         end
         properties.currentLevel = properties.currentLevel + 1
+
         functions.startGame()
         levelIndicator.text = "Level " .. properties.currentLevel
     end
@@ -495,10 +519,11 @@ function scene:create(event)
 --    end
 
     functions.playSoundRandom = function()
+
         local a = math.random(1,7)
         local backgroundMusic = ( "sounds/backGroundSoundTrack/" ..a.. ".mp3" )
-        media.stopSound()
-        media.playSound( backgroundMusic, { onComplete= functions.playSoundRandom }  )
+        print ("HAHAHAHAH",a,backgroundMusic)
+        media.playSound( backgroundMusic,  functions.playSoundRandom  )
 
       --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
     end
@@ -550,7 +575,6 @@ function scene:show(event)
     if (event.phase == "did") then
         heroCanMove = true
         functions.playSoundRandom()
-
         functions.afterBossFight()
         properties.started = true
     end
