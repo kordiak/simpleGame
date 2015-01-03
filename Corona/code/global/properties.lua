@@ -78,8 +78,8 @@ properties.miniDistanceHandler = properties.width + properties.height
 
 --- IN SETTINGS MENU
 
-properties.heroTransTime = 750
-properties.enemyTransTime = 750
+properties.heroTransTime = 550
+properties.enemyTransTime = 550
 
 
 

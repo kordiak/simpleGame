@@ -77,8 +77,7 @@ function scene:create( event )
 --    --saveAndLoad.save (testTabe , properties.saveFile)
   local fileToSave =  saveAndLoad.load( properties.saveFile )
     if fileToSave then
-        logTable(fileToSave)
-        if (math.fmod(fileToSave.level, 5)) == 0 then
+            if (math.fmod(fileToSave.level, 5)) == 0 then
             properties.currentLevel = fileToSave.level
             end
     end
