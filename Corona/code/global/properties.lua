@@ -66,7 +66,7 @@ properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
 properties.currentLevel = 1
-properties.saveFile = "saveFile.json"
+properties.saveFile = "saveFile.txt"
 
 properties.bossScene1Chance = 50
 properties.bossScene2Chance = 50

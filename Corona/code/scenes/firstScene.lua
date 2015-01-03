@@ -1,5 +1,6 @@
 local composer = require( "composer" )
 local properties = require("code.global.properties")
+local saveAndLoad = require("code.global.saveAndLoad")
 
 local scene = composer.newScene()
 
@@ -71,6 +72,15 @@ local function rectTouch( event )
 
 function scene:create( event )
     local sceneGroup = self.view
+    local testTabe = {
+       xxx = 10,
+       yyy = 20,
+       zzz = 30
+    }
+
+    --saveAndLoad.save (testTabe , properties.saveFile)
+  local filee =  saveAndLoad.load( properties.saveFile )
+    saveAndLoad.save (testTabe , properties.saveFile)
     local mainButtonsGroup = display.newGroup()
     local size = properties.sizeOfButtons
     local corners = properties.cornerSize -- SIZE OF CORNERS
