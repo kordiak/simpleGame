@@ -122,7 +122,20 @@ function scene:create( event )
 --        return true
 --
 --
+--
+--    local ads = require( "ads" )
+--
+--    local function adListener( event )
+--        if ( event.isError ) then
+--            --Failed to receive an ad
+--        end
 --    end
+--
+--    ads.init( "admob", "myAppId", adListener )
+--
+--    ads.show( "banner", { x=0, y=0, appId="otherAppId" } )
+
+
 
     sceneGroup.tittleBackGround = display.newRect (0,0, 400, 100)
     sceneGroup.tittleBackGround.isVisible = false
