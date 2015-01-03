@@ -213,7 +213,7 @@ function scene:create(event)
             if popUpShown == false then
                 popUpShown = true
                 functions.endGamePopup()
-                audio.pause()
+                media.stopSound()
             end
         end
         heroCanMove = true
@@ -495,10 +495,10 @@ function scene:create(event)
 --    end
 
     functions.playSoundRandom = function()
-        audio.stop()
         local a = math.random(1,7)
-        local backgroundMusic = audio.loadStream( "sounds/backGroundSoundTrack/" ..a.. ".mp3" )
-        audio.play( backgroundMusic, { onComplete= functions.playSoundRandom }  )
+        local backgroundMusic = ( "sounds/backGroundSoundTrack/" ..a.. ".mp3" )
+        media.stopSound()
+        media.playSound( backgroundMusic, { onComplete= functions.playSoundRandom }  )
 
       --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
     end
@@ -548,7 +548,6 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-
         heroCanMove = true
         functions.playSoundRandom()
 
@@ -561,7 +560,6 @@ end
 function scene:hide(event)
     if (event.phase == "did") then
         heroCanMove = false
-        audio.pause()
     end
 end
 

@@ -74,8 +74,15 @@ properties.bossScene2Chance = 50
 properties.enemiesNumber  = 0
 properties.miniDistanceHandler = properties.width + properties.height
 
+
+
+--- IN SETTINGS MENU
+
 properties.heroTransTime = 750
 properties.enemyTransTime = 750
+
+
+
 
 
 --- IMG SHEETS

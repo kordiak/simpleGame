@@ -83,7 +83,7 @@ functions.endGamePopup = function()
         twoLines = true,
     }
 
-    audio.stop()
+    media.stopSound()
     popUpOne = popUp.newPopUp1(params)
     sceneGroup:insert(popUpOne)
 end
@@ -387,12 +387,9 @@ function scene:create(event)
         diffucult = event.params.diff or nil
         maxElementCounterValue = event.params.cValue or 500
     end
-
-    local backgroundMusic = audio.loadStream( "sounds/boss2Sound.mp3" )
-    audio.play( backgroundMusic)
- --   media.playSound("sounds/boss2Sound.mp3")
-    -- physics.setDrawMode( "debug" )
-    -- physics.setScale( 5 )
+    media.stopSound()
+    local backgroundMusic = ( "sounds/boss2Sound.mp3" )
+    media.playSound( backgroundMusic)
     sceneLoaded = true
     touchRect = display.newImageRect("graphicsRaw/backGrounds/bgBoss3.png", properties.width, properties.height)
     touchRect.x, touchRect.y = properties.center.x, properties.center.y
@@ -416,7 +413,7 @@ end
 
 function scene:hide(event)
     if (event.phase == "did") then
-        audio.pause()
+
     end
 end
 

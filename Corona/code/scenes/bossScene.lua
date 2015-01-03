@@ -49,10 +49,6 @@ local holdDownMoveTimer
 local ScreenPosition = {}
 
 local scene = composer.newScene()
-local function stopAllAudio()
-    audio.stop()
-
-end
 
 functions.endGamePopup = function (win)
     local popUpOne
@@ -63,7 +59,7 @@ functions.endGamePopup = function (win)
         -- functions.endGamePopup()
         --  popUpOne = nil
         local win = win
-        audio.stop()
+        media.stopSound()
 
         local prevScene = composer.getSceneName("previous")
         local currScene = composer.getSceneName("current")
@@ -230,12 +226,9 @@ local nextDeathStep = function ()
     local function audioCompleted()
         gameOver()
     end
-    stopAllAudio()
-
-
-
-    local winSound = audio.loadSound( "sounds/ghostBossLaugh.mp3" )
-    audio.play( winSound, { onComplete= audioCompleted } )
+    media.stopSound()
+    local winSound = ( "sounds/ghostBossLaugh.mp3" )
+    media.playSound( winSound, { onComplete= audioCompleted } )
 end
     local heroSmash = function ()
         transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2, onComplete = nextDeathStep})
@@ -651,12 +644,10 @@ functions.win = function()
         local function audioCompleted()
         gameOver(true)
         end
-        audio.fadeOut( { channel=0, time=2500 } )
-
         functions.timerCancel()
-
-        local winSound = audio.loadSound( "sounds/boss1Win.mp3" )
-        audio.play( winSound, { onComplete= audioCompleted } )
+        media.stopSound()
+        local winSound = ( "sounds/boss1Win.mp3" )
+        media.playSound( winSound, { onComplete= audioCompleted } )
 
 
         ---TODO what to do after we killed the boss?
@@ -702,8 +693,9 @@ function scene:create(event)
     boss.y = properties.center.y
 
   --  functions.playSound()
-    local backgroundMusic = audio.loadStream( "sounds/boss1.mp3" )
-    audio.play( backgroundMusic, { onComplete= functions.playSoundRandom }  )
+    media.stopSound()
+    local backgroundMusic = ( "sounds/boss1.mp3" )
+    media.playSound(backgroundMusic)
 --
     functions.initation(boss)
 
