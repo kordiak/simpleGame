@@ -56,25 +56,25 @@ function scene:create(event)
     functions.afterGhostRemoveCallBack = function()
         popUpShown = false
     end
-    functions.saveIntoFiles = function ()
+    functions.saveIntoFiles = function()
         local tabToSave
-        local saveFile =  saveAndLoad.load( properties.saveFile )
+        local saveFile = saveAndLoad.load(properties.saveFile)
         if saveFile then
-            logTable (saveFile)
+            logTable(saveFile)
             tabToSave = saveFile
             if tabToSave.level < properties.currentLevel then
                 tabToSave.level = properties.currentLevel
-                end
-        else
-        tabToSave = {
-            level = properties.currentLevel,
-            heroTransTime =  properties.heroTransTime,
-            enemyTransTime = properties.enemyTransTime
-        }
             end
-    --    tabToSave.level = 5
+        else
+            tabToSave = {
+                level = properties.currentLevel,
+                heroTransTime = properties.heroTransTime,
+                enemyTransTime = properties.enemyTransTime
+            }
+        end
+        --    tabToSave.level = 5
 
-        saveAndLoad.save (tabToSave , properties.saveFile)
+        saveAndLoad.save(tabToSave, properties.saveFile)
     end
 
 
@@ -146,10 +146,28 @@ function scene:create(event)
         local popUpOne
         local function popUpCallBack()
             popUpOne.removeMe()
+            --  mainBoard.removeMe()
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
+            local fileToSave = saveAndLoad.load(properties.saveFile)
+
+            if fileToSave then
+                if fileToSave.level > 4 then
+                    properties.currentLevel = fileToSave.level - (math.fmod(fileToSave.level, 5))
+                    if properties.startingFromBeggining then
+                    properties.currentLevel = 0
+                        end
+                end
+
+            else
+                properties.currentLevel = 0
+            end
+            print(" properties.currentLevel = 0", properties.currentLevel)
+            functions.newLevel()
+
             composer.gotoScene("code.scenes.firstScene", options)
-            composer.removeScene("code.scenes.gameScene")
+            --composer.removeScene("code.scenes.gameScene")
         end
+
         local params = {
             text = "You lost",
             text2 = "Boss was stronger",
@@ -165,12 +183,13 @@ function scene:create(event)
     end
     functions.afterBossFight = function()
         local score
+        print(properties.bossScene2Scor, properties.bossScene1Scor)
         if properties.started == true then
             if properties.bossScene2Score > 0 then
                 score = properties.bossScene2Score
                 properties.bossScene2Score = 0
             elseif properties.bossScene1Score > 0 then
-                score = properties.bossScene1Scor
+                score = properties.bossScene1Score
                 properties.bossScene1Scor = 0
             else
                 functions.lostGame()
@@ -197,7 +216,7 @@ function scene:create(event)
             popUpOne.removeMe()
             popUpShown = false
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
-            local rand = math.random(1,(properties.bossScene1Chance + properties.bossScene2Chance) )
+            local rand = math.random(1, (properties.bossScene1Chance + properties.bossScene2Chance))
             if rand < properties.bossScene1Chance then
                 properties.bossScene1Chance = properties.bossScene1Chance + 10
                 properties.bossScene2Chance = properties.bossScene2Chance - 10
@@ -205,9 +224,10 @@ function scene:create(event)
             else
                 properties.bossScene1Chance = properties.bossScene1Chance - 10
                 properties.bossScene2Chance = properties.bossScene2Chance + 10
-            composer.gotoScene("code.scenes.bossScene2", options)
+                composer.gotoScene("code.scenes.bossScene2", options)
             end
         end
+
         local params = {
             text = "You got blocked",
             text2 = "Boss fight awaits",
@@ -253,9 +273,9 @@ function scene:create(event)
         end
         sceneGroup:insert(levelGoal)
         sceneGroup:insert(mainHero)
-      --  sceneGroup:insert(hexAxe)
-       -- sceneGroup:insert(hexAxe.backGround)
-      --  sceneGroup:insert(hexRestart)
+        --  sceneGroup:insert(hexAxe)
+        -- sceneGroup:insert(hexAxe.backGround)
+        --  sceneGroup:insert(hexRestart)
     end
     functions.forestGeneratorHelper = function()
         forestOccupiedTab = forestGeneratorHelper.new()
@@ -268,7 +288,7 @@ function scene:create(event)
         functions.saveIntoFiles()
         functions.environmentGenerator = function()
             functions.forestGeneratorHelper()
-            local numberOfForest = properties.numberOfForests - 1 + math.random(1,6)
+            local numberOfForest = properties.numberOfForests - 1 + math.random(1, 6)
             for i = 1, properties.numberOfForests do
                 local r = math.random(1, 3)
                 local q = true
@@ -284,7 +304,7 @@ function scene:create(event)
                         properties.lastPickedHexForEnvironmentForestGenerator = i
                         q = false
                         sceneGroup:insert(smallForest)
-                        local eviCount = math.round((((( properties.currentLevel - properties.forestSize)^2)^(1/2))) / properties.numberOfForests)
+                        local eviCount = math.round(((((properties.currentLevel - properties.forestSize) ^ 2) ^ (1 / 2))) / properties.numberOfForests)
                         if eviCount < 3 then
                             eviCount = 3
                         end
@@ -327,7 +347,7 @@ function scene:create(event)
         elementCreator.new(mainBoard, functions.environmentGenerator, simpleGhostEnemiesTable, enemiesTable);
         mainHero, levelGoal = elementCreator.mainHeroCreator(mainHero, levelGoal)
         elementCreator.enemyCreator()
-    ---    functions.HUDCreator()
+        --- functions.HUDCreator()
         if not backGroundOfMainMap then
             backGroundOfMainMap = display.newImageRect("graphicsRaw/backGrounds/gameBackground.jpg", properties.width, properties.height)
             backGroundOfMainMap.x, backGroundOfMainMap.y = properties.center.x, properties.center.y
@@ -482,50 +502,51 @@ function scene:create(event)
     functions.nextlevel = function()
         properties.lastPickedHexForEnvironmentForestGenerator = 0
     end
---    functions.HUDtouch = function(event)
---        if event.phase == "ended" then
---            if event.target.name == "restart" then
---                properties.currentLevel = properties.currentLevel - 1
---                --        if properties.currentLevel < 1 then
---                --            properties.currentLevel = 1
---                --            end
---                functions.newLevel()
---            elseif event.target.name == "hexAxe" then
---                native.requestExit()
---            end
---        end
---    end
+    --    functions.HUDtouch = function(event)
+    --        if event.phase == "ended" then
+    --            if event.target.name == "restart" then
+    --                properties.currentLevel = properties.currentLevel - 1
+    --                --        if properties.currentLevel < 1 then
+    --                --            properties.currentLevel = 1
+    --                --            end
+    --                functions.newLevel()
+    --            elseif event.target.name == "hexAxe" then
+    --                native.requestExit()
+    --            end
+    --        end
+    --    end
 
---    functions.HUDCreator = function()
---        if not hexAxe then
---            hexAxe = display.newImageRect(properties.hexTexturePath, 88, 77)
---            hexAxe.x = properties.width - hexAxe.width / 2
---            hexAxe.y = mainBoard[#mainBoard].y + hexAxe.height * 1.5
---            hexAxe.name = "hexAxe"
---            hexAxe.backGround = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
---            hexAxe.backGround.x = hexAxe.x
---            hexAxe.backGround.y = hexAxe.y
---            hexAxe:addEventListener("touch", functions.HUDtouch)
---            hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
---            hexRestart.name = "restart"
---            hexRestart.x = properties.x + hexRestart.width / 2
---            hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
---            hexRestart:addEventListener("touch", functions.HUDtouch)
---
---            hexRestart.isVisible = false
---            hexAxe.backGround.isVisible = false
---            hexAxe.isVisible = false
---        end
---    end
+    --    functions.HUDCreator = function()
+    --        if not hexAxe then
+    --            hexAxe = display.newImageRect(properties.hexTexturePath, 88, 77)
+    --            hexAxe.x = properties.width - hexAxe.width / 2
+    --            hexAxe.y = mainBoard[#mainBoard].y + hexAxe.height * 1.5
+    --            hexAxe.name = "hexAxe"
+    --            hexAxe.backGround = display.newImageRect("graphicsRaw/items/axe.png", 90, 90)
+    --            hexAxe.backGround.x = hexAxe.x
+    --            hexAxe.backGround.y = hexAxe.y
+    --            hexAxe:addEventListener("touch", functions.HUDtouch)
+    --            hexRestart = display.newImageRect(properties.hexTexturePath, 88, 77)
+    --            hexRestart.name = "restart"
+    --            hexRestart.x = properties.x + hexRestart.width / 2
+    --            hexRestart.y = mainBoard[#mainBoard].y + hexRestart.height * 1.5
+    --            hexRestart:addEventListener("touch", functions.HUDtouch)
+    --
+    --            hexRestart.isVisible = false
+    --            hexAxe.backGround.isVisible = false
+    --            hexAxe.isVisible = false
+    --        end
+    --    end
 
     functions.playSoundRandom = function()
 
-        local a = math.random(1,7)
-        local backgroundMusic = ( "sounds/backGroundSoundTrack/" ..a.. ".mp3" )
-        print ("HAHAHAHAH",a,backgroundMusic)
-        media.playSound( backgroundMusic,  functions.playSoundRandom  )
 
-      --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
+        local a = math.random(1, 7)
+        local backgroundMusic = ("sounds/backGroundSoundTrack/" .. a .. ".mp3")
+        --       print ("HAHAHAHAH",a,backgroundMusic)
+        media.playSound(backgroundMusic, functions.playSoundRandom)
+
+        --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
     end
 
     functions.startGame()
@@ -566,7 +587,7 @@ function scene:create(event)
 
     --
     --    timer.performWithDelay(1000, updateText, 0)
-  --  Runtime:addEventListener("enterFrame", enterframeFunc)
+    --  Runtime:addEventListener("enterFrame", enterframeFunc)
 
     Runtime:addEventListener("hexPressed", functions.hexPressed)
 end

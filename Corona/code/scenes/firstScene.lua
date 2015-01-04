@@ -77,9 +77,12 @@ function scene:create( event )
 --    --saveAndLoad.save (testTabe , properties.saveFile)
   local fileToSave =  saveAndLoad.load( properties.saveFile )
     if fileToSave then
-            if (math.fmod(fileToSave.level, 5)) == 0 then
-            properties.currentLevel = fileToSave.level
-            end
+        if fileToSave.level > 4 then
+            properties.currentLevel = fileToSave.level - (math.fmod(fileToSave.level, 5))
+                        end
+    end
+    if properties.startingFromBeggining then
+        properties.currentLevel = 1
     end
 --    saveAndLoad.save (testTabe , properties.saveFile)
     local mainButtonsGroup = display.newGroup()
@@ -246,6 +249,7 @@ end
 function scene:show(event)
     goNextSceneFlag = false
     properties.started = false
+    media.stopSound()
 end
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )

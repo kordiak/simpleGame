@@ -65,7 +65,7 @@ properties.mainCharacterSkin = "graphicsRaw/characters/mainCharacter3.png"
 properties.missleBone = "graphicsRaw/missle/bone2.png"
 properties.forestSize = 10
 properties.lastPickedHexForEnvironmentForestGenerator = 1
-properties.currentLevel = 1
+properties.currentLevel = 30
 properties.saveFile = "saveFile.txt"
 
 properties.bossScene1Chance = 50
@@ -80,7 +80,7 @@ properties.miniDistanceHandler = properties.width + properties.height
 
 properties.heroTransTime = 550
 properties.enemyTransTime = 550
-
+properties.startingFromBeggining = false
 
 
 

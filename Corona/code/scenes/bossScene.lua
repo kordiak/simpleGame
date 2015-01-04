@@ -56,9 +56,7 @@ functions.endGamePopup = function (win)
     local function popUpCallBack()
         popUpOne.removeMe()
 
-        -- functions.endGamePopup()
-        --  popUpOne = nil
-        local win = win
+           local win = win
         media.stopSound()
 
         local prevScene = composer.getSceneName("previous")
@@ -68,7 +66,11 @@ functions.endGamePopup = function (win)
             time = 1000,
         }
 
-        properties.bossSceneScore = math.round(bossHp * 1.5)
+        if bossHp > 0 then
+        properties.bossScene1Score = math.round(bossHp * 1.5)
+        else
+            properties.bossScene1Score = 0
+        end
 
         composer.gotoScene(prevScene, options)
         composer.removeScene(currScene)
@@ -96,8 +98,8 @@ functions.endGamePopup = function (win)
 
 end
 
-local function gameOver(win)
-    functions.endGamePopup(win)
+local function gameOver(win, lost)
+    functions.endGamePopup(win, lost)
 end
 local function close()
     composer.gotoScene("")
@@ -224,7 +226,7 @@ functions.dead = function ()
     deadFunctionInvoked = true
 local nextDeathStep = function ()
     local function audioCompleted()
-        gameOver()
+        gameOver(false,true)
     end
     media.stopSound()
     local winSound = ( "sounds/ghostBossLaugh.mp3" )
