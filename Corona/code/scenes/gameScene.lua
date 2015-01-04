@@ -62,6 +62,9 @@ function scene:create(event)
         if saveFile then
             logTable(saveFile)
             tabToSave = saveFile
+            --
+            --            properties.heroTransTime = tabToSave.heroTransTime
+            --            properties.enemyTransTime = tabToSave.enemyTransTime
             if tabToSave.level < properties.currentLevel then
                 tabToSave.level = properties.currentLevel
             end
@@ -154,8 +157,8 @@ function scene:create(event)
                 if fileToSave.level > 4 then
                     properties.currentLevel = fileToSave.level - (math.fmod(fileToSave.level, 5))
                     if properties.startingFromBeggining then
-                    properties.currentLevel = 0
-                        end
+                        properties.currentLevel = 0
+                    end
                 end
 
             else
