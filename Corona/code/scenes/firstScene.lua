@@ -45,18 +45,19 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus( event.target )
             options={effect="crossFade",time=properties.firstSceneFadeTime,params={} }
             remover()
-            composer.gotoScene("code.scenes.achivmentsScene")
+          --  composer.gotoScene("code.scenes.achivmentsScene")
+            composer.gotoScene("code.scenes.optionsScene")
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect3) then
---           -- goNextSceneFlag = true
---
---
---            display.getCurrentStage():setFocus( event.target )
---            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
---            remover()
---           --- composer.gotoScene("code.scenes.bossScene",options)
---            display.getCurrentStage():setFocus(nil)
+           -- goNextSceneFlag = true
+
+
+            display.getCurrentStage():setFocus( event.target )
+            options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
+            remover()
+           composer.gotoScene("code.scenes.trutorialScene")
+            display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect4) then
             goNextSceneFlag = true
