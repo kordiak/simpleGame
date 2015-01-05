@@ -72,7 +72,8 @@ function scene:create(event)
             tabToSave = {
                 level = properties.currentLevel,
                 heroTransTime = properties.heroTransTime,
-                enemyTransTime = properties.enemyTransTime
+                enemyTransTime = properties.enemyTransTime,
+                startingFromBeggining = properties.startingFromBeggining
             }
         end
         --    tabToSave.level = 5

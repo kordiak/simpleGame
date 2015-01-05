@@ -12,6 +12,8 @@ local fsr2,fsrn2, fstr2
 
 local htranst, etranst
 
+local estar
+
 local function rectTouch(event)
     return true
 end
@@ -126,8 +128,34 @@ function scene:create(event)
 
         fstr2:addEventListener("touch", fstr2)
     end
+    local function firstCheckBox()
+        local firstCheckBox = display.newGroup()
+        local far3, far4
+        far3=display.newRect(0,0,125,125)
+        far4=display.newRect(0,0,far3.width + 15,far3.width + 15)
+
+       local fte = display.newText("Start from begining",   far3.width/2 + 15 , 0, properties.font, 65 )
+        fte:setFillColor(unpack(properties.firstSceneRectsColor))
+        fte.x = far3.width/2 + 15 + fte.width/2
+
+        far3:setFillColor(0,0,0)
+        far4:setFillColor(unpack(properties.firstSceneRectsColor))
+
+
+
+        firstCheckBox:insert(far4)
+        firstCheckBox:insert(far3)
+        firstCheckBox:insert(fte)
+
+        firstCheckBox.x = properties.center.x - properties.width/2 + far3.width/2 + 15
+        firstCheckBox.y = fsr2.y + properties.height/5
+
+        sceneGroup:insert(firstCheckBox)
+
+    end
     firstScrollBar()
     secondScrollBar()
+    firstCheckBox()
 
     local prevScene = composer.getSceneName( "previous" )
     local currScene = composer.getSceneName( "current" )
@@ -135,6 +163,20 @@ function scene:create(event)
     function sceneGroup.rect2:touch (event)
         if event.phase == "ended" then
             print ("FINAL VALUE ARE :  "..htranst,etranst)
+            properties.heroTransTime = htranst
+            properties.enemyTransTime = etranst
+            properties.startingFromBeggining = estar or false
+            fileToSave = {
+                level = properties.currentLevel,
+                heroTransTime = properties.heroTransTime,
+                enemyTransTime = properties.enemyTransTime,
+                startingFromBeggining = properties.startingFromBeggining
+            }
+
+        --   tabToSave.level = 5
+
+        saveAndLoad.save(fileToSave, properties.saveFile)
+
             end
 
         end
