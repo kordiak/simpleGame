@@ -46,7 +46,7 @@ local function rectTouch( event )
             options={effect="crossFade",time=properties.firstSceneFadeTime,params={} }
             remover()
           --  composer.gotoScene("code.scenes.achivmentsScene")
-            composer.gotoScene("code.scenes.optionsScene")
+            composer.gotoScene("code.scenes.optionsScene",options)
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect3) then
