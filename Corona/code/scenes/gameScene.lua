@@ -156,7 +156,7 @@ function scene:create(event)
 
             if fileToSave then
                 if fileToSave.level > 4 then
-                    properties.currentLevel = (fileToSave.level - (math.fmod(fileToSave.level, 5))) - 2
+                    properties.currentLevel = (fileToSave.level - (math.fmod(fileToSave.level, 5))) - 1
                     if properties.startingFromBeggining then
                         properties.currentLevel = 0
                     end

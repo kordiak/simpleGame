@@ -418,14 +418,14 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-        media.playSound()
+      --  media.playSound()
         end
 end
 
 
 function scene:hide(event)
     if (event.phase == "will") then
-        media.pauseSound()
+     --   media.pauseSound()
     end
 end
 
