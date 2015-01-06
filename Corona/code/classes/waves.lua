@@ -64,7 +64,7 @@ wavesObject.new = function(params)
 local transitions
     wavesGenerator()
 
-    print(waveTable[2].width)
+    --print(waveTable[2].width)
 
     local mask = graphics.newMask( maskFile )
     wavesGroup:setMask(mask)

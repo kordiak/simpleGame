@@ -37,9 +37,9 @@ myText:setFillColor(1,1,1)
 --mainBoard.mainBoardGroup.x = 50
 
 functions.hexPressed = function (params)
-    print (params.hexNumber)
-  print ("PRESSED HEX POS X",  mainBoard[tonumber(params.hexNumber)].x)
-    print ("GROUP POS X",mainBoard.mainBoardGroup.x)
+    --print (params.hexNumber)
+ -- print ("PRESSED HEX POS X",  mainBoard[tonumber(params.hexNumber)].x)
+   -- print ("GROUP POS X",mainBoard.mainBoardGroup.x)
     mainBoard.mainBoardGroup.x = - mainBoard[tonumber(params.hexNumber)].x
     mainBoard.mainBoardGroup.y = - mainBoard[tonumber(params.hexNumber)].y
 

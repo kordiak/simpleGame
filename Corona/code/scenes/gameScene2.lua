@@ -266,7 +266,7 @@ function scene:create(event)
 
     functions.testingAlgo = function()
         local startingHex = mainHero.currentHex
-        print(startingHex)
+        --print(startingHex)
     end
 
     functions.newLevel = function()
@@ -316,7 +316,7 @@ function scene:create(event)
                 local a = mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j]
                 -- print("Board Position", mainBoard[simpleGhostEnemiesTable[i].currentHex].coherentHexes[j])
                 distanceEnemyAndHero = (((((((mainBoard[a].x) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].x) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)) + ((((((mainBoard[a].y) ^ 2) ^ (1 / 2)) - (((mainBoard[mainHero.currentHex].y) ^ 2) ^ (1 / 2))) ^ 2) ^ (1 / 2)))
-                print("Distance", distanceEnemyAndHero)
+                --print("Distance", distanceEnemyAndHero)
                 if maxDistanceEnemyAndHero.distance < distanceEnemyAndHero then
                     if mainBoard[a].isFree == true then
                         if simpleGhostEnemiesTable[i].beforeHex then
@@ -342,9 +342,9 @@ function scene:create(event)
                     end
                 end
             end
-            print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
+            --print("Max distance", maxDistanceEnemyAndHero.distance, "on Hex :", maxDistanceEnemyAndHero.hexNumber)
 
-            print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
+            --print("Mini distance", miniDistanceEnemyAndHero.distance, "on Hex :", miniDistanceEnemyAndHero.hexNumber)
             if miniDistanceEnemyAndHero.hexNumber then
 
 

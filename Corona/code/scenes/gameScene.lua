@@ -90,7 +90,7 @@ function scene:create(event)
         else
             GhostToRemove = math.round(score / 2)
         end
-        print("GhostsToRemoveNumber is " .. GhostToRemove)
+      --  print("GhostsToRemoveNumber is " .. GhostToRemove)
         for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
             for j = 1, #simpleGhostEnemiesTable do
                 if mainBoard[mainHero.currentHex].coherentHexes[i] == simpleGhostEnemiesTable[j].currentHex then
@@ -126,7 +126,7 @@ function scene:create(event)
         functions.ghostToRemoveAgain = function()
             local flag = false
             if GhostToRemove > 0 then
-                print("GhostToRemove", GhostToRemove)
+               -- print("GhostToRemove", GhostToRemove)
                 local p = math.random(1, #simpleGhostEnemiesTable)
                 if not simpleGhostEnemiesTable[p].notHere then
                     simpleGhostEnemiesTable[p].notHere = true
@@ -165,7 +165,7 @@ function scene:create(event)
             else
                 properties.currentLevel = 0
             end
-            print(" properties.currentLevel = 0", properties.currentLevel)
+          --  print(" properties.currentLevel = 0", properties.currentLevel)
             functions.newLevel()
 
             composer.gotoScene("code.scenes.firstScene", options)
@@ -187,7 +187,7 @@ function scene:create(event)
     end
     functions.afterBossFight = function()
         local score
-        print(properties.bossScene2Scor, properties.bossScene1Scor)
+       -- print("BOSS SCORES",properties.bossScene2Scor, properties.bossScene1Scor)
         if properties.started == true then
             if properties.bossScene2Score > 0 then
                 score = properties.bossScene2Score
@@ -484,7 +484,7 @@ function scene:create(event)
             for i = 1, #mainBoard[mainHero.currentHex].coherentHexes do
                 if mainBoard[mainHero.currentHex].coherentHexes[i] == tonumber(params.hexNumber) then
                     if mainBoard[tonumber(params.hexNumber)].isWalkAble == true then
-                        print("MOVING TOOO", params.hexNumber)
+                     --   print("MOVING TOOO", params.hexNumber)
                         mainBoard[mainHero.currentHex].isFree = true
                         mainBoard[mainHero.currentHex].isWalkAble = true
                         mainHero.currentHex = tonumber(params.hexNumber)

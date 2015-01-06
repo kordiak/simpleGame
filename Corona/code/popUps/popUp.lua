@@ -94,7 +94,7 @@ functions.newPopUp1 = function(params)
     group.removeMe = function()
         popUpBg:removeSelf()
         frameFill:removeSelf()
-        print ("Removal")
+        --print ("Removal")
         if text2 then
             transition.cancel(text2)
         end

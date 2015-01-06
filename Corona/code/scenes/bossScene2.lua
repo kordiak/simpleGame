@@ -29,7 +29,10 @@ local hardCore = false --- - SET TO TRUE FOR HARDCORE MODE when every obstacle k
 
 local obstacleYPos = {}
 
-local numOfObstacles = math.random(4, 6) -- 7 is max
+local numOfObstacles = math.random(4, 7) -- 7 is max
+
+
+--print ("numOfDeadlObs",numOfDeadlObs)
 
 local sceneLoaded = false
 
@@ -272,7 +275,7 @@ functions.obstacleGenerator = function(isDeadly)
 
     --obstacle:rotate (math.random(15,60))
     functions.posYGerator()
-    logTable(obstacleYPos)
+   --- logTable(obstacleYPos)
     local xRand = math.random(1, 2)
     if xRand == 1 then
         obstacle.x = properties.x - obstacle.width
@@ -314,7 +317,7 @@ end
 functions.levelInitation = function()
 
 
-
+    numOfObstacles = math.random(4, 7)
     if timerInactive then
         timer.cancel(timerInactive)
     end
@@ -345,10 +348,18 @@ functions.levelInitation = function()
     gravityXFactor = math.random(-2, 2)
     physics.setGravity(gravityXFactor, 12)
     local flag
+
+    local numOfDeadlObs = math.round(properties.currentLevel/13)
+    if numOfDeadlObs < 1 then
+        numOfDeadlObs = 1
+    end
+
+    --print ( "numOfDeadlObs",numOfDeadlObs)
     for i = 1, numOfObstacles do
 
-        if i == 1 then
+        if numOfDeadlObs >= 1 then
             flag = true
+            numOfDeadlObs = numOfDeadlObs - 1
         else
             flag = false
         end
@@ -407,13 +418,14 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
+        media.playSound()
         end
 end
 
 
 function scene:hide(event)
-    if (event.phase == "did") then
-
+    if (event.phase == "will") then
+        media.pauseSound()
     end
 end
 

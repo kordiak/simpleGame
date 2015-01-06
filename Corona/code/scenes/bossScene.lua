@@ -33,9 +33,9 @@ local missleTab = {}
 local started = false
 local heroCanMove = true
 
-local timeOfShoots = 4500
+local timeOfShoots = 4500 - properties.currentLevel * 18
 local timeOfMainHeroMovment = (timeOfShoots - 1900 )/10
-local timeOfScene = 90 ---INSECONDS
+local timeOfScene = 90 + ((properties.currentLevel-10)*2) ---INSECONDS
 
 local generalShootGeneratorEnded = true
 
@@ -741,14 +741,14 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
---
+  media.playSound()
         end
 end
 
 
 function scene:hide(event)
-    if (event.phase == "did") then
-
+    if (event.phase == "will") then
+        media.pauseSound()
         end
 end
 

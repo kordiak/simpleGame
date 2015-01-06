@@ -50,22 +50,25 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect3) then
-           -- goNextSceneFlag = true
+             goNextSceneFlag = true
 
 
             display.getCurrentStage():setFocus( event.target )
             options={effect="crossFade",time=properties.firstSceneFadeTime,params={}}
             remover()
-           composer.gotoScene("code.scenes.trutorialScene")
+           composer.gotoScene("code.scenes.trutorialScene",options)
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect4) then
             goNextSceneFlag = true
             display.getCurrentStage():setFocus( event.target )
+--
 --            options={effect="crossFade",time=properties.firstSceneFadeTime}
---            composer.gotoScene("code.scenes.bossScene2",options)
+--           composer.gotoScene("code.scenes.bossScene2",options)
+
+
             display.getCurrentStage():setFocus(nil)
-            native.requestExit()
+           native.requestExit()
         end
     end
     end
@@ -78,8 +81,10 @@ function scene:create( event )
 --    --saveAndLoad.save (testTabe , properties.saveFile)
   local fileToSave =  saveAndLoad.load( properties.saveFile )
     if fileToSave then
+        if fileToSave.level then
         if fileToSave.level > 4 then
             properties.currentLevel = fileToSave.level - (math.fmod(fileToSave.level, 5))
+        end
         end
         if fileToSave.startingFromBeggining then
             properties.startingFromBeggining = fileToSave.startingFromBeggining
@@ -149,13 +154,23 @@ function scene:create( event )
     sceneGroup.tittleBackGround.isHitTestable = true
 
     sceneGroup:insert( sceneGroup.tittleBackGround)
-    sceneGroup.tittle1 = display.newText ("Ghost", -135, 115, properties.font, 90)
+    sceneGroup.tittle1 = display.newText ("Ghost", -135, 115, properties.font, 120)
+
+    if fileToSave then
+        if fileToSave.level then
+    sceneGroup.HiScore = display.newText("Hi score : "..fileToSave.level, properties.x, properties.y, properties.font, 75)
+    sceneGroup.HiScore.x = properties.x + sceneGroup.HiScore.width/2 + 15
+    sceneGroup.HiScore.y = properties.y + sceneGroup.HiScore.height/2 + 15
+    sceneGroup.HiScore:setFillColor(unpack(properties.firstSceneRectsColor))
+        end
+        end
+
 
     transition.to( sceneGroup.tittle1, { time=2500, alpha=1.0, x = properties.center.x - 100, transition=easing.outBounce} )
     sceneGroup:insert(sceneGroup.tittle1)
 
 
-    sceneGroup.tittle2 = display.newText ("War",properties.width+135, 115, properties.font, 90)
+    sceneGroup.tittle2 = display.newText ("War",properties.width+135, 115, properties.font, 120)
 
      transition.to( sceneGroup.tittle2, { time=2500, alpha=1.0, x = properties.center.x + 100, transition=easing.outBounce} )
     sceneGroup:insert(sceneGroup.tittle2)
@@ -190,6 +205,7 @@ function scene:create( event )
 
 
     sceneGroup.rect1nap:setFillColor(unpack(properties.firstSceneTextColor))
+
     sceneGroup.rect2nap:setFillColor(unpack(properties.firstSceneTextColor))
     sceneGroup.rect3nap:setFillColor(unpack(properties.firstSceneTextColor))
     sceneGroup.rect4nap:setFillColor(unpack(properties.firstSceneTextColor))
@@ -199,6 +215,10 @@ function scene:create( event )
     mainButtonsGroup:insert(sceneGroup.rect2)
     mainButtonsGroup:insert(sceneGroup.rect3)
     mainButtonsGroup:insert(sceneGroup.rect4)
+
+    if sceneGroup.HiScore then
+    mainButtonsGroup:insert(sceneGroup.HiScore)
+    end
 
 
     mainButtonsGroup:insert(sceneGroup.rect1nap)
