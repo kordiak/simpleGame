@@ -102,7 +102,9 @@ functions.generateWall = function(event)
 end
 
 functions.test = function(x)
+    if x then
     --  display.newImageRect ("graphicsRaw/environment/ghostPill.png",  50, 50)
+    local balX = x -- or math.round(math.random(properties.x + properties.width / 10, properties.width - properties.width / 10))
     ball = display.newCircle(x, 0, 25)
     --   ball = display.newImageRect ("graphicsRaw/environment/ghostPill.png",  80, 80) -- display.newCircle (x , 0,25)
     ball.x = x
@@ -111,6 +113,7 @@ functions.test = function(x)
     ball.type = "objective"
     physics.addBody(ball, { density = 0.8, friction = 0.1, bounce = 0.3, radius = 20 })
     levelContent:insert(ball)
+    end
 
     -- sceneGroup:rotate(-(gravityXFactor*15))
 end
