@@ -6,7 +6,7 @@ local functions = {}
 
 functions.newPopUp1 = function(params)
     if params then
-    logTable (params)
+    --logTable (params)
     end
     local callback, cancelcallback, fillcolor, text, textcolor, tapToContinue, twoLines, text2, popUpBg
 

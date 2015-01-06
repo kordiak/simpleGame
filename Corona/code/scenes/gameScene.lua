@@ -124,6 +124,7 @@ function scene:create(event)
             end
         end
         functions.ghostToRemoveAgain = function()
+            print (" MORE GHOSTS TO REMOVE", heroCanMove,GhostToRemove )
             local flag = false
             if GhostToRemove > 0 then
                -- print("GhostToRemove", GhostToRemove)
@@ -131,7 +132,7 @@ function scene:create(event)
                 if not simpleGhostEnemiesTable[p].notHere then
                     simpleGhostEnemiesTable[p].notHere = true
                     GhostToRemove = GhostToRemove - 1
-                    transition.to(simpleGhostEnemiesTable[p], { time = 1200, rotation = 960, xScale = 0.1, yScale = 0.1, onComplete = function() removeEnemy(p, true) end })
+                    transition.to(simpleGhostEnemiesTable[p], { time = 1200, rotation = 960, xScale = 0.1, yScale = 0.1, onComplete = function()  removeEnemy(p, true) end })
                 else
                     for o = 1, #simpleGhostEnemiesTable do
                         if not simpleGhostEnemiesTable[o].notHere then
@@ -140,8 +141,13 @@ function scene:create(event)
                     end
                     if flag then
                         functions.ghostToRemoveAgain()
+                    else
+                        heroCanMove = true
                     end
                 end
+            else
+                heroCanMove = true
+                print ("NOT MORE GHOSTS TO REMOVE", heroCanMove,GhostToRemove )
             end
         end
         functions.ghostToRemoveAgain()
@@ -200,6 +206,7 @@ function scene:create(event)
             end
         end
         if score then
+            heroCanMove = false
             functions.removeGhosts(score)
         end
     end
@@ -221,7 +228,8 @@ function scene:create(event)
             popUpShown = false
             local options = { effect = "crossFade", time = properties.firstSceneFadeTime }
             local rand = math.random(1, (properties.bossScene1Chance + properties.bossScene2Chance))
-            if rand < properties.bossScene1Chance then
+            print ("CHANCES",properties.bossScene1Chance,properties.bossScene2Chance, rand)
+            if rand > properties.bossScene1Chance then
                 properties.bossScene1Chance = properties.bossScene1Chance + 10
                 properties.bossScene2Chance = properties.bossScene2Chance - 10
                 composer.gotoScene("code.scenes.bossScene", options)
@@ -297,7 +305,7 @@ function scene:create(event)
                 local r = math.random(1, 3)
                 local q = true
                 while q do
-                    local i = math.random(1, #mainBoard)
+                    local i = math.random(1, #mainBoard-1)
                     if mainBoard[i].isFree then
                         local smallForest = display.newImageRect(properties.environment[r], 90, 90)
                         smallForest.x = mainBoard[i].x

@@ -25,7 +25,7 @@ local missleDestination
 
 local shootGroup = display.newGroup()
 
-local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect
+local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect, timerIndicator
 local bossHp = 10
 local bossHpMax = bossHp
 local hpTab = {}
@@ -33,9 +33,12 @@ local missleTab = {}
 local started = false
 local heroCanMove = true
 
-local timeOfShoots = 4500 - properties.currentLevel * 12
+local timeText
+
+
+local timeOfShoots = 4500 - properties.currentLevel * 10
 local timeOfMainHeroMovment = (timeOfShoots - 1900 )/10
-local timeOfScene = 80 + ((properties.currentLevel-15)) ---INSECONDS
+local timeOfScene =  80 + ((properties.currentLevel-15)) ---INSECONDS
 
 local generalShootGeneratorEnded = true
 
@@ -90,7 +93,7 @@ functions.endGamePopup = function (win)
 
     }
 
-
+    timer.cancel( timeText )
     popUpOne = popUp.newPopUp1( params)
     sceneGroup:insert(popUpOne)
 
@@ -716,9 +719,27 @@ function scene:create(event)
     bossHpIndicator:scale(0.7, 0.7)
     bossHpIndicator.x, bossHpIndicator.y = display.screenOriginX + bossHpIndicator.contentWidth * 0.5 + 10, display.screenOriginY + bossHpIndicator.height / 2 + 10
     bossHpIndicator:setFillColor(1, 1, 1)
+
+
+local timeOfSceneCopy = timeOfScene
+    timerIndicator = display.newText({ text = "Time " .. timeOfSceneCopy, font = properties.font, fontSize = properties.resourcesUsageFont * 0.7 })
+    timerIndicator.x, timerIndicator.y = properties.x + properties.width- timerIndicator.contentWidth * 0.5 - 10, display.screenOriginY + timerIndicator.height / 2 + 10
+    timerIndicator:setFillColor(1, 1, 1)
+
+    local function addTimeText ()
+        timeOfSceneCopy = timeOfSceneCopy -1
+        if timeOfSceneCopy < 1 then
+            timeOfSceneCopy = 0
+            timer.cancel( timeText )
+        end
+        timerIndicator.text = "Time " .. timeOfSceneCopy
+    end
+     timeText = timer.performWithDelay ( 1000,addTimeText , 0)
+
     sceneGroup:insert   ( touchRect )
     sceneGroup:insert(boss)
     sceneGroup:insert   ( bossHpIndicator )
+    sceneGroup:insert   ( timerIndicator )
     sceneGroup:insert   ( shootGroup )
 
 

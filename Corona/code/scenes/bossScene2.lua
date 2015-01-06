@@ -278,9 +278,9 @@ functions.obstacleGenerator = function(isDeadly)
    --- logTable(obstacleYPos)
     local xRand = math.random(1, 2)
     if xRand == 1 then
-        obstacle.x = properties.x - obstacle.width
+        obstacle.x = properties.x - obstacle.width  + 25
     else
-        obstacle.x = properties.width + obstacle.width
+        obstacle.x = properties.width + obstacle.width  - 25
     end
     --obstacle.y = properties.center.y
     local yRand = math.random(1, #obstacleYPos)
