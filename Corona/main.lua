@@ -23,12 +23,13 @@ composer.gotoScene("code.scenes.firstScene");
 local function onKeyEvent( event )
     local returnValue = true
     local prevScene = composer.getSceneName("previous")
+    local currScene = composer.getSceneName("current")
 
     if (event.phase=="up" and event.keyName=="back") then
         local options={effect="crossFade",time=750,params={}}
    if prevScene then
-       if prevScene ~= "code.scenes.bossScene" and prevScene ~= "code.scenes.bossScene2" then
-           if prevScene == "code.scenes.firstScene" then
+       if currScene ~= "code.scenes.bossScene" and currScene ~= "code.scenes.bossScene2" then
+           if currScene == "code.scenes.firstScene" then
                native.requestExit()
                else
         composer.gotoScene(prevScene,options)
