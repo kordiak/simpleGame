@@ -27,12 +27,18 @@ local function onKeyEvent( event )
     if (event.phase=="up" and event.keyName=="back") then
         local options={effect="crossFade",time=750,params={}}
    if prevScene then
+       if prevScene ~= "code.scenes.bossScene" and prevScene ~= "code.scenes.bossScene2" then
+           if prevScene == "code.scenes.firstScene" then
+               native.requestExit()
+               else
         composer.gotoScene(prevScene,options)
+               end
        end
     end
 
     return returnValue
-end
+    end
+    end
 
 -- Add the key callback
 Runtime:addEventListener( "key", onKeyEvent )
