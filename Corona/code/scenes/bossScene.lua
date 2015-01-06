@@ -33,9 +33,9 @@ local missleTab = {}
 local started = false
 local heroCanMove = true
 
-local timeOfShoots = 4500 - properties.currentLevel * 18
+local timeOfShoots = 4500 - properties.currentLevel * 12
 local timeOfMainHeroMovment = (timeOfShoots - 1900 )/10
-local timeOfScene = 90 + ((properties.currentLevel-10)*2) ---INSECONDS
+local timeOfScene = 80 + ((properties.currentLevel-15)) ---INSECONDS
 
 local generalShootGeneratorEnded = true
 
