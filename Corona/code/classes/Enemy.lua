@@ -6,24 +6,14 @@
 -- To change this template use File | Settings | File Templates.
 --
 local properties = require("code.global.properties")
-
 local getRandom = function()
     local i = math.random(1,#properties.enemy);
     return i;
 end
-
 local Character = require("code.classes.Character");
-
 local Enemy = {}
---[[
-    --skin --width --height --type --xPostion --yPosition --currentHex
---]]
-
- -- 4 ma okulary
- -- 5 jest glupia
 Enemy.new = function(params)
     local rand =  getRandom()
-
     params.skin = params.skin or properties.enemy[rand];
     params.type= params.type or "enemy";
     params.diff = rand

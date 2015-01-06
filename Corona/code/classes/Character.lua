@@ -1,16 +1,6 @@
---
--- Created by IntelliJ IDEA.
--- User: acer
--- Date: 2014-10-13
--- Time: 22:20
--- To change this template use File | Settings | File Templates.
---
 
 local Character = {};
 
---[[
-    --skin --width --height --type --xPostion --yPosition --currentHex
---]]
 Character.new = function(params)
 
     local skin = params.skin or nil ;
