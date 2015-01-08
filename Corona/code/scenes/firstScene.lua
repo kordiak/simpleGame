@@ -193,7 +193,7 @@ function scene:create( event )
 
     sceneGroup.rect1nap = display.newText("Play", properties.center.x,properties.center.y-size*2, properties.font, size )
     sceneGroup.rect2nap = display.newText("Options", properties.center.x,properties.center.y, properties.font, size)
-    sceneGroup.rect3nap = display.newText("Trutorial", properties.center.x,properties.center.y+size*2, properties.font, size)
+    sceneGroup.rect3nap = display.newText("Tutorial", properties.center.x,properties.center.y+size*2, properties.font, size)
     sceneGroup.rect4nap = display.newText("Exit", properties.center.x,properties.center.y+size*4, properties.font, size*0.86)
 
 

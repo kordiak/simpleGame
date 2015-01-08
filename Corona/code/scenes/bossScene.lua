@@ -698,9 +698,12 @@ function scene:create(event)
     boss.y = properties.center.y
 
   --  functions.playSound()
-    media.stopSound()
-    local backgroundMusic = ( "sounds/boss1.mp3" )
-    media.playSound(backgroundMusic)
+ --   media.stopSound()
+    local hadfad = ("sounds/boss1.mp3")
+    if not hadfad then
+        hadfad = ("boss1.mp3")
+        end
+    media.playSound(hadfad)
 --
     functions.initation(boss)
 
