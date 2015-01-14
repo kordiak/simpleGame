@@ -36,9 +36,9 @@ local heroCanMove = true
 local timeText
 
 
-local timeOfShoots = 4500 - properties.currentLevel * 10
+local timeOfShoots = 4500 - properties.currentLevel * 14
 local timeOfMainHeroMovment = (timeOfShoots - 1900 )/10
-local timeOfScene =  80 + ((properties.currentLevel-15)) ---INSECONDS
+local timeOfScene =  65 + ((properties.currentLevel-15)) ---INSECONDS
 
 local generalShootGeneratorEnded = true
 
@@ -220,11 +220,6 @@ flash()
       --  transition.to( square, { time=1500, alpha=0, x=(w-50), y=(h-50), onComplete=listener1 } ))
 end
 
-functions.playSound = function()
-   local path  = system.pathForFile( "boss1.mp3" , system.ResourceDirectory )
-  --  print (path)
-
-end
 functions.dead = function ()
     deadFunctionInvoked = true
 local nextDeathStep = function ()
@@ -697,11 +692,10 @@ function scene:create(event)
     boss.x = properties.center.x
     boss.y = properties.center.y
 
-  --  functions.playSound()
- --   media.stopSound()
+
     local hadfad = ("sounds/boss1.mp3")
     if not hadfad then
-        hadfad = ("boss1.mp3")
+        local hadfad = ("sounds/boss1.mp3")
         end
     media.playSound(hadfad)
 --

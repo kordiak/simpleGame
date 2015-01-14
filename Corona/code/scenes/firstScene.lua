@@ -164,10 +164,14 @@ function scene:create( event )
     sceneGroup.HiScore:setFillColor(unpack(properties.firstSceneRectsColor))
         end
         end
+    sceneGroup.forSomeone = display.newText ("dla Piotra Koniecznego",0, 0, properties.font, 50)
+    sceneGroup.forSomeone.y = sceneGroup.tittle1.y + sceneGroup.forSomeone.height+5
+    sceneGroup.forSomeone.x = properties.center.x
 
 
     transition.to( sceneGroup.tittle1, { time=2500, alpha=1.0, x = properties.center.x - 100, transition=easing.outBounce} )
     sceneGroup:insert(sceneGroup.tittle1)
+    mainButtonsGroup:insert(sceneGroup.forSomeone)
 
 
     sceneGroup.tittle2 = display.newText ("War",properties.width+135, 115, properties.font, 120)
@@ -202,9 +206,11 @@ function scene:create( event )
     sceneGroup.rect2:setFillColor(unpack(properties.firstSceneRectsColor))
     sceneGroup.rect3:setFillColor(unpack(properties.firstSceneRectsColor))
     sceneGroup.rect4:setFillColor(unpack(properties.firstSceneRectsColor))
+    sceneGroup.forSomeone:setFillColor(unpack(properties.firstSceneRectsColor))
 
 
     sceneGroup.rect1nap:setFillColor(unpack(properties.firstSceneTextColor))
+
 
     sceneGroup.rect2nap:setFillColor(unpack(properties.firstSceneTextColor))
     sceneGroup.rect3nap:setFillColor(unpack(properties.firstSceneTextColor))

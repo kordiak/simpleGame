@@ -83,7 +83,7 @@ local function generateTableView(files)
         local rowHeight = row.contentHeight
         local rowWidth = row.contentWidth
 
-        local rowBackGround = display.newImageRect(row, "graphicsRaw/achivments/achivmentsBarDefault.png", properties.width - 10, properties.height/9 )
+        local rowBackGround = display.newImageRect(row, "", properties.width - 10, properties.height/9 )
         rowBackGround.x = rowWidth * 0.5
         rowBackGround.y = rowHeight * 0.5
         -- Cache the row "contentWidth" and "contentHeight" because the row bounds can change as children objects are added
