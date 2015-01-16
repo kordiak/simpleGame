@@ -8,6 +8,7 @@ local options ={}
 local rectsFILLcolor = {0.52,0.39,0.39 }
 local textCOLOR = {0.8,0.498039,0.372549 }
 local goNextSceneFlag = false
+local functions = {}
 local transCompleted = false
 
 local gameScene = "code.scenes.bossScene"
@@ -36,7 +37,7 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus( event.target )
             options={effect="crossFade",time=1500,params={ } }
             remover()
-            composer.gotoScene("code.scenes.gameScene",options)
+            composer.gotoScene("code.scenes.bossScene2",options)
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect2) then
@@ -72,8 +73,17 @@ local function rectTouch( event )
         end
     end
     end
-    end
+end
 
+functions.playSoundRandom = function()
+
+
+
+    local backgroundMusic = ("sounds/menuSound.mp3")
+
+    media.playSound(backgroundMusic, functions.playSoundRandom)
+
+end
 function scene:create( event )
     local sceneGroup = self.view
 
@@ -164,7 +174,7 @@ function scene:create( event )
     sceneGroup.HiScore:setFillColor(unpack(properties.firstSceneRectsColor))
         end
         end
-    sceneGroup.forSomeone = display.newText ("dla Piotra Koniecznego",0, 0, properties.font, 50)
+    sceneGroup.forSomeone = display.newText ("by Dirindon",0, 0, properties.font, 50)
     sceneGroup.forSomeone.y = sceneGroup.tittle1.y + sceneGroup.forSomeone.height+5
     sceneGroup.forSomeone.x = properties.center.x
 
@@ -279,7 +289,10 @@ end
 function scene:show(event)
     goNextSceneFlag = false
     properties.started = false
+    if event.phase =="did" then
     media.stopSound()
+    functions.playSoundRandom()
+end
 end
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )

@@ -14,7 +14,7 @@ local obstacleGroup = display.newGroup()
 local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
-local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic
+local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic,playSound
 local maxElementCounterValue = 550
 local points = 0
 
@@ -401,9 +401,11 @@ function scene:create(event)
         diffucult = event.params.diff or nil
         maxElementCounterValue = event.params.cValue or 500
     end
+    function playSound()
     media.stopSound()
     local backgroundMusic = ( "sounds/boss2Sound.mp3" )
-    media.playSound( backgroundMusic)
+    media.playSound( backgroundMusic, playSound)
+    end
     sceneLoaded = true
     touchRect = display.newImageRect("graphicsRaw/backGrounds/bgBoss3.png", properties.width, properties.height)
     touchRect.x, touchRect.y = properties.center.x, properties.center.y
@@ -421,7 +423,7 @@ end
 
 function scene:show(event)
     if (event.phase == "did") then
-      --  media.playSound()
+        playSound()
         end
 end
 

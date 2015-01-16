@@ -267,7 +267,7 @@ function scene:create(event)
             if popUpShown == false then
                 popUpShown = true
                 functions.endGamePopup()
-              --  media.stopSound()
+                media.stopSound()
             end
         end
         heroCanMove = true
@@ -553,12 +553,11 @@ function scene:create(event)
     functions.playSoundRandom = function()
 
 
-        local a = math.random(1, 7)
-      --  local backgroundMusic = ("sounds/backGroundSoundTrack/" .. a .. ".mp3")
-        --       print ("HAHAHAHAH",a,backgroundMusic)
-     --   media.playSound(backgroundMusic, functions.playSoundRandom)
 
-        --  media.playSound("sounds/backGroundSoundTrack/" .. a .. ".mp3")
+        local backgroundMusic = ("sounds/gameSceneSound.mp3")
+
+        media.playSound(backgroundMusic, functions.playSoundRandom)
+
     end
 
     functions.startGame()
