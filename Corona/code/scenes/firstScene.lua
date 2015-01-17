@@ -37,7 +37,7 @@ local function rectTouch( event )
             display.getCurrentStage():setFocus( event.target )
             options={effect="crossFade",time=1500,params={ } }
             remover()
-            composer.gotoScene("code.scenes.bossScene2",options)
+            composer.gotoScene("code.scenes.gameScene",options)
             display.getCurrentStage():setFocus(nil)
 
         elseif (event.target == scene.view.rect2) then
@@ -81,7 +81,7 @@ functions.playSoundRandom = function()
 
     local backgroundMusic = ("sounds/menuSound.mp3")
 
-    media.playSound(backgroundMusic, functions.playSoundRandom)
+   -- media.playSound(backgroundMusic, functions.playSoundRandom)
 
 end
 function scene:create( event )
@@ -98,6 +98,11 @@ function scene:create( event )
         end
         if fileToSave.startingFromBeggining then
             properties.startingFromBeggining = fileToSave.startingFromBeggining
+        end
+        if fileToSave.heroTransTime  then
+            properties.heroTransTime = fileToSave.heroTransTime
+            properties.enemyTransTime = fileToSave.enemyTransTime
+
             end
     end
     if properties.startingFromBeggining then
@@ -290,7 +295,7 @@ function scene:show(event)
     goNextSceneFlag = false
     properties.started = false
     if event.phase =="did" then
-    media.stopSound()
+   -- media.stopSound()
     functions.playSoundRandom()
 end
 end

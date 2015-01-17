@@ -25,7 +25,7 @@ local missleDestination
 
 local shootGroup = display.newGroup()
 
-local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect, timerIndicator
+local boss, sceneGroup, hero, bossHpIndicator, shootTimer, touchRect, timerIndicator,popupTimer
 local bossHp = 10
 local bossHpMax = bossHp
 local hpTab = {}
@@ -59,8 +59,11 @@ functions.endGamePopup = function (win)
     local function popUpCallBack()
         popUpOne.removeMe()
 
+        if   popupTimer then
+        timer.cancel( popupTimer )
+        end
            local win = win
-        media.stopSound()
+       -- media.stopSound()
 
         local prevScene = composer.getSceneName("previous")
         local currScene = composer.getSceneName("current")
@@ -98,6 +101,7 @@ functions.endGamePopup = function (win)
     sceneGroup:insert(popUpOne)
 
 
+        popupTimer = timer.performWithDelay( 5500,  function()  popUpCallBack()  end,1  )
 
 end
 
@@ -226,9 +230,10 @@ local nextDeathStep = function ()
     local function audioCompleted()
         gameOver(false,true)
     end
-    media.stopSound()
+   -- media.stopSound()
     local winSound = ( "sounds/ghostBossLaugh.mp3" )
-    media.playSound( winSound,  audioCompleted  )
+  --  media.playSound( winSound,  audioCompleted  )
+    audioCompleted()
 end
     local heroSmash = function ()
         transition.to ( hero, { time = 500, yScale = 0.1, y = hero.y + hero.height/2 + 2, onComplete = nextDeathStep})
@@ -645,10 +650,10 @@ functions.win = function()
         gameOver(true)
         end
         functions.timerCancel()
-        media.stopSound()
-        local winSound = ( "sounds/boss1Win.mp3" )
-        media.playSound( winSound, audioCompleted )
-
+      --  media.stopSound()
+     --   local winSound = ( "sounds/boss1Win.mp3" )
+     --   media.playSound( winSound, audioCompleted )
+        audioCompleted()
 
         ---TODO what to do after we killed the boss?
     end
@@ -697,7 +702,7 @@ function scene:create(event)
     if not hadfad then
         local hadfad = ("sounds/boss1.mp3")
         end
-    media.playSound(hadfad)
+--    media.playSound(hadfad)
 --
     functions.initation(boss)
 

@@ -31,6 +31,8 @@ local function onKeyEvent( event )
        if currScene ~= "code.scenes.bossScene" and currScene ~= "code.scenes.bossScene2" then
            if currScene == "code.scenes.firstScene" then
                native.requestExit()
+               elseif currScene == "code.scenes.gameScene" then
+               composer.gotoScene("code.scenes.firstScene",options)
                else
         composer.gotoScene(prevScene,options)
                end

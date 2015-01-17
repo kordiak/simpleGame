@@ -15,7 +15,7 @@ local wallGroup = display.newGroup()
 local levelContent = display.newGroup()
 
 local touchRect, text, elementCounter, arrow, gravityXFactor, sceneGroup, ball, levelGoal, pText, diffucult, LevelFail, timerInactive, levelGoalGraphic,playSound
-local maxElementCounterValue = 550
+local maxElementCounterValue = 300
 local points = 0
 
 local onCollision
@@ -54,10 +54,10 @@ local function close()
     local options = {
         effect = "crossFade",
         time = 1000,
-        params = { score = points }
+        params = { score = points * 2}
     }
 
-    properties.bossScene2Score = points
+    properties.bossScene2Score = points * 1.5
 
     composer.gotoScene(prevScene, options)
     composer.removeScene(currScene)
@@ -86,7 +86,7 @@ functions.endGamePopup = function()
         twoLines = true,
     }
 
-    media.stopSound()
+  --  media.stopSound()
     popUpOne = popUp.newPopUp1(params)
     sceneGroup:insert(popUpOne)
 end
@@ -402,9 +402,9 @@ function scene:create(event)
         maxElementCounterValue = event.params.cValue or 500
     end
     function playSound()
-    media.stopSound()
+  --  media.stopSound()
     local backgroundMusic = ( "sounds/boss2Sound.mp3" )
-    media.playSound( backgroundMusic, playSound)
+ --   media.playSound( backgroundMusic, playSound)
     end
     sceneLoaded = true
     touchRect = display.newImageRect("graphicsRaw/backGrounds/bgBoss3.png", properties.width, properties.height)
