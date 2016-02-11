@@ -29,11 +29,13 @@ board.new = function(params)
         boardTab[i] = {}
         for j = 1, width do
             local cell = display.newRect(0, 0, elementSize, elementSize)
+            cell.strokeWidth = 2
+            cell:setFillColor( 0,0,0 )
             cell.x = properties.x + (j - 1) * elementSizeIndicator + elementSizeIndicator * (0.5 + width * 0.025)
             cell.y = properties.y + (i - 1) * elementSizeIndicator + elementSizeIndicator * 0.5
             local cellIndicator = display.newText({ text = i .. "," .. j, font = "", fontSize = elementSizeIndicator/3, x = cell.x, y = cell.y })
             boardTab[i][j] = { cell = cell }
-            cellIndicator:setFillColor(0, 0, 0)
+         --   cellIndicator:setFillColor(0, 0, 0)
             group:insert(cell)
             group:insert(cellIndicator)
         end

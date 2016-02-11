@@ -8,11 +8,13 @@
 
 local algoRandom = require("code.algorythms.algoRandom")
 local algoRandomDecisive = require("code.algorythms.algoRandomDecisive")
+local algoAll = require("code.algorythms.algoAll")
 
 local algorythms = {
     algorythmList = {
        -- algoRandom = algoRandom.calculate,
-        algoRandomDecisive = algoRandomDecisive.calculate
+     --   algoRandomDecisive = algoRandomDecisive.calculate
+        algoAll = algoAll.calculate
     }
 }
 

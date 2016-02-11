@@ -18,20 +18,23 @@ end
 function scene:create(event)
     sceneGroup = self.view
 
-    local board, gridTab, elementSize = boardCreator.new({ width = 5, height = 10 })
+    local board, gridTab, elementSize = boardCreator.new({ width = 5, height = 5 })
     local enemy = enemyCreator.new(gridTab, elementSize, { 1, 1 })
-    local goal = enemyCreator.new(gridTab, elementSize, { 5, 5 })
+    local goal = enemyCreator.new(gridTab, elementSize, { 3, 3 }, true)
     local pickedAlgorythm, algorythmName = algorythms.chooseAlgorythm()
 
     local enemyMove = function()
         local movePosition, decisionTime = pickedAlgorythm(gridTab, enemy.positions, goal.positions)
-        gridTab[enemy.positions[1]][enemy.positions[2]].content = nil
-        enemy.positions = movePosition
-        transition.to(enemy, { x = gridTab[movePosition[1]][movePosition[2]].cell.x, y = gridTab[movePosition[1]][movePosition[2]].cell.y, time = 500 })
-        gridTab[enemy.positions[1]][enemy.positions[2]].content = enemy
+        if movePosition then
+            gridTab[enemy.positions[1]][enemy.positions[2]].content = nil
+            enemy.positions = movePosition
+            transition.to(enemy, { x = gridTab[movePosition[1]][movePosition[2]].cell.x, y = gridTab[movePosition[1]][movePosition[2]].cell.y, time = 500 })
+            gridTab[enemy.positions[1]][enemy.positions[2]].content = enemy
+        end
     end
 
-    timer.performWithDelay(800, enemyMove, -1)
+    enemyMove()
+  --  timer.performWithDelay(800, enemyMove, -1)
 
     sceneGroup:insert(board)
     sceneGroup:insert(enemy)
