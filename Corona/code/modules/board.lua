@@ -25,14 +25,14 @@ board.new = function(params)
 
     local elementSize = math.round(elementSizeIndicator * 0.95)
 
-    for i = 1, height do
+    for i = 1, width do
         boardTab[i] = {}
-        for j = 1, width do
+        for j = 1, height do
             local cell = display.newRect(0, 0, elementSize, elementSize)
             cell.strokeWidth = 2
             cell:setFillColor( 0,0,0 )
-            cell.x = properties.x + (j - 1) * elementSizeIndicator + elementSizeIndicator * (0.5 + width * 0.025)
-            cell.y = properties.y + (i - 1) * elementSizeIndicator + elementSizeIndicator * 0.5
+            cell.x = properties.x + (i - 1) * elementSizeIndicator + elementSizeIndicator * (0.5 + width * 0.025)
+            cell.y = properties.y + (j - 1) * elementSizeIndicator + elementSizeIndicator * 0.5
             local cellIndicator = display.newText({ text = i .. "," .. j, font = "", fontSize = elementSizeIndicator/3, x = cell.x, y = cell.y })
             boardTab[i][j] = { cell = cell }
          --   cellIndicator:setFillColor(0, 0, 0)
@@ -40,6 +40,8 @@ board.new = function(params)
             group:insert(cellIndicator)
         end
     end
+
+  --  shallowLogTable(boardTab,3)
 
 
 

@@ -11,51 +11,58 @@ local algorythm = {}
 algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
     local startTime = system.getTimer()
-    local startRow = enemyPos[1]
     local startColumn = enemyPos[2]
-    local goalRow = goalPos[1]
-    local goalColumn = goalPos[1]
+    local startRow = enemyPos[1]
 
+    local goalColumn = goalPos[1]
+    local goalRow = goalPos[2]
 
     local allResults = {}
     local logResults = false
 
-    local function checkField(tab, row, column)
+    local function checkField(tab, column, row)
         local isUsed = false
         for i = 1, #tab do
-            if tab[i].row == row and tab[i].column == column then
+            if tab[i].column == column and tab[i].row == row then
                 isUsed = true
             end
         end
         return isUsed
     end
 
-    local function checkPossibleMove(usedTab, currentTab, row, column)
+    local function checkPossibleMove(usedTab, currentTab, column, row)
         if not usedTab or #usedTab == 0 then
             return true
         end
 
         local possibleFields = {}
-        if gridTab[row][column - 1] and gridTab[row][column - 1] and not gridTab[row][column - 1].content then
-            table.insert(possibleFields, { row = row, column = column - 1 })
+        if gridTab[column][row - 1] and gridTab[column][row - 1] and not gridTab[column][row - 1].content then
+            table.insert(possibleFields, { column = column, row = row - 1 })
         end
-        if gridTab[row][column + 1] and gridTab[row][column + 1] and not gridTab[row][column + 1].content then
-            table.insert(possibleFields, { row = row, column = column + 1 })
+        if gridTab[column][row + 1] and gridTab[column][row + 1] and not gridTab[column][row + 1].content then
+            table.insert(possibleFields, { column = column, row = row + 1 })
         end
-        if gridTab[row - 1] then
-            if not gridTab[row - 1][column].content then
-                table.insert(possibleFields, { row = row - 1, column = column })
+        if gridTab[column - 1] then
+            if not gridTab[column - 1][row].content then
+                table.insert(possibleFields, { column = column - 1, row = row })
             end
         end
-        if gridTab[row + 1] then
-            if not gridTab[row + 1][column].content then
-                table.insert(possibleFields, { row = row + 1, column = column })
+        if gridTab[column + 1] then
+            if not gridTab[column + 1][row].content then
+                table.insert(possibleFields, { column = column + 1, row = row })
             end
         end
+
+        --        for i = #possibleFields, 1, -1 do
+        --            if possibleFields[i].column == goalColumn and possibleFields[i].row == goalRow then
+        --                table.remove(possibleFields, i)
+        --            end
+        --        end
+
         for i = 1, #usedTab do
             if #possibleFields > 0 then
                 for j = #possibleFields, 1, -1 do
-                    if possibleFields[j].row == usedTab[i].row and possibleFields[j].column == usedTab[i].column then
+                    if possibleFields[j].column == usedTab[i].column and possibleFields[j].row == usedTab[i].row then
                         table.remove(possibleFields, j)
                     end
                 end
@@ -64,7 +71,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         for i = 1, #currentTab do
             if #possibleFields > 0 then
                 for j = #possibleFields, 1, -1 do
-                    if possibleFields[j].row == currentTab[i].row and possibleFields[j].column == currentTab[i].column then
+                    if possibleFields[j].column == currentTab[i].column and possibleFields[j].row == currentTab[i].row then
                         table.remove(possibleFields, j)
                     end
                 end
@@ -77,58 +84,58 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         end
     end
 
-    local function checkAllFields(allTab, currentTab, row, column)
+    local function checkAllFields(allTab, currentTab, column, row)
         local possibleMove = true
         if allTab and #allTab > 0 then
             local usedPosition = {}
             for i = 1, #allTab do
-                if allTab[i].tab[#currentTab + 1] and allTab[i].tab[#currentTab + 1].column == column and allTab[i].tab[#currentTab + 1].row == row then
+                if allTab[i].tab[#currentTab + 1] and allTab[i].tab[#currentTab + 1].row == row and allTab[i].tab[#currentTab + 1].column == column then
                     if allTab[i].tab[#currentTab + 2] then
                         table.insert(usedPosition, allTab[i].tab[#currentTab + 2])
                     end
                 end
             end
             if usedPosition then
-                possibleMove = checkPossibleMove(usedPosition, currentTab, row, column)
+                possibleMove = checkPossibleMove(usedPosition, currentTab, column, row)
             end
         end
         return possibleMove
     end
 
-    local function checkGoal(row, column)
+    local function checkGoal(column, row)
         local won = false
-        if row == goalRow and column == goalColumn then
+        if column == goalRow and row == goalColumn then
             won = true
         end
         return won
     end
 
-    local addResult = function(possibleResults, allResults, row, column)
-        if gridTab[row][column - 1] and gridTab[row][column - 1] and not gridTab[row][column - 1].content then
-            if not checkField(possibleResults, row, column - 1) and checkAllFields(allResults, possibleResults, row, column - 1) then
-                table.insert(possibleResults, { row = row, column = column - 1 })
-                return true, checkGoal(row, column - 1)
+    local addResult = function(possibleResults, allResults, column, row)
+        if gridTab[column][row - 1] and gridTab[column][row - 1] and not gridTab[column][row - 1].content then
+            if not checkField(possibleResults, column, row - 1) and checkAllFields(allResults, possibleResults, column, row - 1) then
+                table.insert(possibleResults, { column = column, row = row - 1 })
+                return true, checkGoal(row - 1, column)
             end
         end
-        if gridTab[row][column + 1] and gridTab[row][column + 1] and not gridTab[row][column + 1].content then
-            if not checkField(possibleResults, row, column + 1) and checkAllFields(allResults, possibleResults, row, column + 1) then
-                table.insert(possibleResults, { row = row, column = column + 1 })
-                return true, checkGoal(row, column + 1)
+        if gridTab[column][row + 1] and gridTab[column][row + 1] and not gridTab[column][row + 1].content then
+            if not checkField(possibleResults, column, row + 1) and checkAllFields(allResults, possibleResults, column, row + 1) then
+                table.insert(possibleResults, { column = column, row = row + 1 })
+                return true, checkGoal(row + 1, column)
             end
         end
-        if gridTab[row - 1] then
-            if not gridTab[row - 1][column].content then
-                if not checkField(possibleResults, row - 1, column) and checkAllFields(allResults, possibleResults, row - 1, column) then
-                    table.insert(possibleResults, { row = row - 1, column = column })
-                    return true, checkGoal(row - 1, column)
+        if gridTab[column - 1] then
+            if not gridTab[column - 1][row].content then
+                if not checkField(possibleResults, column - 1, row) and checkAllFields(allResults, possibleResults, column - 1, row) then
+                    table.insert(possibleResults, { column = column - 1, row = row })
+                    return true, checkGoal(row, column - 1)
                 end
             end
         end
-        if gridTab[row + 1] then
-            if not gridTab[row + 1][column].content then
-                if not checkField(possibleResults, row + 1, column) and checkAllFields(allResults, possibleResults, row + 1, column) then
-                    table.insert(possibleResults, { row = row + 1, column = column })
-                    return true, checkGoal(row + 1, column)
+        if gridTab[column + 1] then
+            if not gridTab[column + 1][row].content then
+                if not checkField(possibleResults, column + 1, row) and checkAllFields(allResults, possibleResults, column + 1, row) then
+                    table.insert(possibleResults, { column = column + 1, row = row })
+                    return true, checkGoal(row, column + 1)
                 end
             end
         end
@@ -141,9 +148,9 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         local won
         local result = {}
         local function addPaths()
-            local row = (#result > 0) and result[#result].row or startRow
-            local column = (#result > 0) and result[#result].column or startColumn
-            continue, won = addResult(result, allResults, row, column)
+            local column = (#result > 0) and result[#result].column or startRow
+            local row = (#result > 0) and result[#result].row or startColumn
+            continue, won = addResult(result, allResults, column, row)
             if not continue or won then
                 if won then
                     atLeastOneWon = true
@@ -166,6 +173,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     end
 
 
+
     if atLeastOneWon then
         for i = #allResults, 1, -1 do
             if not allResults[i].won then
@@ -173,32 +181,21 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
             end
         end
     end
-    logTable(allResults)
+
 
     local bestResultLen = math.huge
     local bestResult
+
     for i = 1, #allResults do
-        if #allResults[i].tab < bestResultLen then
+        if #allResults[i].tab < bestResultLen and allResults[i].tab[1] and allResults[i].tab[1].column and allResults[i].tab[1].row then
             bestResultLen = #allResults[i].tab
             bestResult = allResults[i].tab
         end
     end
 
-    logTable(bestResult)
 
-
-
-
-
-
-
-    --  addPaths()
-
-
-
-
-    if bestResult and bestResult[1] and bestResult[1].row and bestResult[1].column then
-        return { bestResult[1].row, bestResult[1].column }, system.getTimer() - startTime
+    if bestResult and bestResult[1] and bestResult[1].column and bestResult[1].row then
+        return { bestResult[1].column, bestResult[1].row }, system.getTimer() - startTime
     end
 end
 

@@ -7,13 +7,15 @@
 --
 local enemy = {}
 
-enemy.new = function(gridTab, elementSize, positions, goal)
-    local enemy = display.newRect(gridTab[positions[1]][positions[2]].cell.x, gridTab[positions[1]][positions[2]].cell.y, elementSize * 0.8, elementSize * 0.8)
+enemy.new = function(gridTab, elementSize, column, row, goal)
+    local enemy = display.newRect(gridTab[column][row].cell.x, gridTab[column][row].cell.y, elementSize * 0.8, elementSize * 0.8)
     enemy:setFillColor(1, 0, 0)
-    if not goal then
-        gridTab[positions[1]][positions[2]].content = enemy
+    if goal then
+        enemy:setFillColor(0, 1, 0)
+    else
+        gridTab[column][row].content = enemy
     end
-    enemy.positions = positions
+    enemy.positions = { column, row }
     return enemy
 end
 

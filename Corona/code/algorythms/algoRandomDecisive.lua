@@ -10,30 +10,36 @@ local algorythm = {}
 
 algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
-    local row = enemyPos[1]
-    local column = enemyPos[2]
+    local column = enemyPos[1]
+    local row = enemyPos[2]
+
+
 
     local possibleResults = {}
 
-    if gridTab[row][column - 1] and gridTab[row][column - 1] and not gridTab[row][column - 1].content then
-        table.insert(possibleResults, { row, column - 1 })
-    end
-
-    if gridTab[row][column + 1] and gridTab[row][column + 1] and not gridTab[row][column + 1].content then
-        table.insert(possibleResults, { row, column + 1 })
-    end
-
-    if gridTab[row - 1] then
-        if not gridTab[row - 1][column].content then
-            table.insert(possibleResults, { row - 1, column })
+    local function isAvalible(c, r, excludesTab)
+        if c == goalPos[1] and r == goalPos[2] then
+            return false
         end
+        return not gridTab[c][r].content
     end
 
-    if gridTab[row + 1] then
-        if not gridTab[row + 1][column].content then
-            table.insert(possibleResults, { row + 1, column })
+    local function getNeighbours(column, row)
+        local neighboursTab = {}
+        for i = column - 1, column + 1 do
+            if gridTab[i] and gridTab[i][row] and isAvalible(i, row) and i ~= column then
+                table.insert(possibleResults, { i, row })
+            end
         end
+        for i = row - 1, row + 1 do
+            if gridTab[column] and gridTab[column][i] and isAvalible(column, i) and i ~= row then
+                table.insert(possibleResults, { column, i })
+            end
+        end
+        return neighboursTab
     end
+
+    getNeighbours(column, row)
 
 
     local bestResult
