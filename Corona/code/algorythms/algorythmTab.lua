@@ -14,9 +14,9 @@ local algoResults = require("code.algorythms.algoResults")
 local algorythms = {
     algorythmList = {
         -- algoRandom = algoRandom.calculate,
-          -- algoRandomDecisive = algoRandomDecisive.calculate
-        algoAll = algoAll.calculate,
-        --algoResults = algoResults.calculate
+         --  algoRandomDecisive = algoRandomDecisive.calculate
+        -- algoAll = algoAll.calculate,
+        algoResults = algoResults.calculate
     }
 }
 
@@ -26,7 +26,6 @@ algorythms.chooseAlgorythm = function(algorythm)
     local pickedAlgorythm = algorythms.algorythmList[algorythm]
     local algorythmName = algorythm
 
-    logTable(algorythms.algorythmList)
 
     if not pickedAlgorythm then
         local algorythmsNumber = 0

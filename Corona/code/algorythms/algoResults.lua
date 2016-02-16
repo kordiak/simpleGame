@@ -5,26 +5,32 @@
 -- Time: 21:57
 -- To change this template use File | Settings | File Templates.
 --
+local properties = require("code.global.properties")
 
 local algorythm = {}
 
 algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
     local startTime = system.getTimer()
-    local startRow = enemyPos[1]
-    local startColumn = enemyPos[2]
-    local goalRow = goalPos[1]
+    local startColumn = enemyPos[1]
+    local startRow = enemyPos[2]
     local goalColumn = goalPos[1]
+    local goalRow = goalPos[2]
 
-    local gridTab = {}
-    for i = 1, 2 do
-        gridTab[i] = {}
-        for j = 1, 3 do
-            gridTab[i][j] = {}
+    local checkIfAnyWon = function(tab)
+        for i = 1, #tab do
+            if tab[i][#tab[i]].won then
+                return true
+            end
         end
+        return false
     end
 
+
     local function isAvalible(c, r, excludesTab)
+        if gridTab[c][r].content then
+            return false
+        end
         return not excludesTab[tostring(c .. "." .. r)]
     end
 
@@ -64,8 +70,9 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     local ins = table.insert
 
     local function findPossibleChainsFrom(c, r, chain, exclude)
-        if iterationsAmount > 100000 then
+        if iterationsAmount > properties.allResultsSafeIterationsNumber then
             --- performance check for bigger grids it might not be possible to find all chains due to limiation of mobile devices memory
+            log:debug("MAX AMOUNT OF ITERATIONS REACHED!!")
             return
         end
         iterationsAmount = iterationsAmount + 1
@@ -79,7 +86,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
             ins(possibleChainFromHere, neighbour)
             local possibleChains
             local newExcludes = copyMap(exclude)
-            newExcludes[tostring(c .. "." .. r)] = true
+            newExcludes[tostring(nc .. "." .. nr)] = true
             possibleChains = findPossibleChainsFrom(nc, nr, possibleChainFromHere, newExcludes)
             if possibleChains then
                 for j = 1, #possibleChains do
@@ -96,8 +103,42 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         end
     end
 
-    local allChains = findPossibleChainsFrom(1, 1, {}, {})
-    logTable(allChains)
+    local allChains = findPossibleChainsFrom(startColumn, startRow, {}, {})
+
+    for i = 1, #allChains do
+        for j = 1, #allChains[i] do
+            if allChains[i][j].c == goalColumn and allChains[i][j].r == goalRow then
+                for k = #allChains[i], j+1,-1 do
+                    table.remove(allChains[i], k)
+                end
+                table.insert(allChains[i], { won = true })
+                break
+            end
+        end
+    end
+
+    if checkIfAnyWon(allChains) then
+        for i = #allChains, 1, -1 do
+            if not allChains[i][#allChains[i]].won then
+                table.remove(allChains, i)
+            end
+        end
+    end
+
+
+    local bestResult
+    local bestResultLenght = math.huge
+    -- get shortest path
+    for i = 1, #allChains do
+        if #allChains[i] < bestResultLenght and #allChains[i] > 2 then
+            bestResultLenght = #allChains[i]
+            bestResult = allChains[i]
+        end
+    end
+
+    logTable(bestResult)
+
+    return { bestResult[1].c, bestResult[1].r }, system.getTimer() - startTime
 end
 
 

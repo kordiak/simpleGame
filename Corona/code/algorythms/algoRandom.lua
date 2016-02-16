@@ -37,13 +37,13 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
                 table.insert(possibleResults, { column, i })
             end
         end
-        return neighboursTab
     end
 
     getNeighbours(column, row)
 
-
-    return possibleResults[math.random(#possibleResults)], system.getTimer() - startTime
+    if #possibleResults > 0 then
+        return possibleResults[math.random(#possibleResults)], system.getTimer() - startTime
+    end
 end
 
 

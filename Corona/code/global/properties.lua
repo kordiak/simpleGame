@@ -28,4 +28,8 @@ properties.startingFromBeggining = false
 
 properties.started = false
 
+
+--- ADD THIS DATA TO SETTINGS
+properties.allResultsSafeIterationsNumber = 125000
+
 return properties
