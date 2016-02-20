@@ -195,6 +195,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
 
     if bestResult and bestResult[1] and bestResult[1].column and bestResult[1].row then
+        logTable(bestResult)
         return { bestResult[1].column, bestResult[1].row }, system.getTimer() - startTime
     end
 end

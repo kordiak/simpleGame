@@ -12,6 +12,7 @@ enemy.new = function(gridTab, elementSize, column, row, goal)
     enemy:setFillColor(1, 0, 0)
     if goal then
         enemy:setFillColor(0, 1, 0)
+        gridTab[column][row].goal = enemy
     else
         gridTab[column][row].content = enemy
     end

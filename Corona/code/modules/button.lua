@@ -50,4 +50,28 @@ button.new = function(params)
     return group
 end
 
+button.mb = function(obj, cb)
+    function obj:touch(event)
+        if (event.phase == "began") then
+            -- set touch focus
+            display.getCurrentStage():setFocus(self)
+            self.isFocus = true
+
+            if cb then
+                cb(event.target)
+            end
+        elseif (self.isFocus) then
+            if (event.phase == "moved") then
+            elseif (event.phase == "ended" or event.phase == "cancelled") then
+                display.getCurrentStage():setFocus(nil)
+                self.isFocus = nil
+            end
+        end
+        return true
+    end
+
+    obj:addEventListener("touch", obj)
+
+end
+
 return button

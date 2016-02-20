@@ -9,6 +9,8 @@ local algorythms = require("code.algorythms.algorythmTab")
 local bestGoalPlace = require("code.algorythms.bestGoalPlace")
 local button = require("code.modules.button")
 
+-- [Nash A. & al. pseudocode](http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/)
+
 
 local scene = composer.newScene()
 local sceneGroup
@@ -26,23 +28,28 @@ function scene:create(event)
 
     local goalMovedTimes = 1
     local goalMoveAmount = 1
-    local moveTime = 8000
+    local moveTime = 500
     local enemies = {}
 
-    local board, gridTab, elementSize = boardCreator.new({ width = 5, height = 5 })
+    local board, gridTab, elementSize = boardCreator.new({ width = 8, height = 8 })
+    sceneGroup:insert(board)
+
+    local goal = enemyCreator.new(gridTab, elementSize, 5, 7, true)
+    sceneGroup:insert(goal)
 
     local enemy = enemyCreator.new(gridTab, elementSize, 1, 1)
+    sceneGroup:insert(enemy)
     table.insert(enemies, enemy)
---        local enemy = enemyCreator.new(gridTab, elementSize, 1, 2)
---        table.insert(enemies, enemy)
---        local enemy = enemyCreator.new(gridTab, elementSize, 1, 3)
---        table.insert(enemies, enemy)
---        local enemy = enemyCreator.new(gridTab, elementSize, 1, 4)
---        table.insert(enemies, enemy)
---        local enemy = enemyCreator.new(gridTab, elementSize, 1, 5)
---        table.insert(enemies, enemy)
+    --        local enemy = enemyCreator.new(gridTab, elementSize, 1, 2)
+    --        table.insert(enemies, enemy)
+    --        local enemy = enemyCreator.new(gridTab, elementSize, 1, 3)
+    --        table.insert(enemies, enemy)
+    --        local enemy = enemyCreator.new(gridTab, elementSize, 1, 4)
+    --        table.insert(enemies, enemy)
+    --        local enemy = enemyCreator.new(gridTab, elementSize, 1, 5)
+    --        table.insert(enemies, enemy)
 
-    local goal = enemyCreator.new(gridTab, elementSize, 4, 5, true)
+
 
     local pickedAlgorythm, algorythmName = algorythms.chooseAlgorythm()
 
@@ -57,15 +64,17 @@ function scene:create(event)
 
     local enemiesMoveCounter = 0
     function enemyMoveCompleted()
-        if true then
-            return true
-        end
+        --        if true then
+        --            return true
+        --        end
         enemiesMoveCounter = enemiesMoveCounter + 1
         if enemiesMoveCounter == #enemies then
             enemiesMoveCounter = 0
-            local movePosition, decisionTime = bestGoalPlace.calculate(gridTab, goal.positions, goal)
+            local movePosition, decisionTime, limitReached = bestGoalPlace.calculate(gridTab, goal.positions, goal) -- if limit is reached it means algorythm wasn't able to compute  all possible results in givin amount of iterations so result might not be actual best one out of all.
             if movePosition then
+                gridTab[goal.positions[1]][goal.positions[2]].goal = nil
                 goal.positions = movePosition
+                gridTab[goal.positions[1]][goal.positions[2]].goal = goal
                 moveCounter = moveCounter + 1
                 if moveTime <= 0 then
                     goal.x = gridTab[movePosition[1]][movePosition[2]].cell.x
@@ -108,9 +117,6 @@ function scene:create(event)
 
     enemyMove()
     --     timer.performWithDelay(800, enemyMove, -1)
-
-    sceneGroup:insert(board)
-    sceneGroup:insert(enemy)
 
     saveAndLoad.save({}, properties.saveFile)
 end

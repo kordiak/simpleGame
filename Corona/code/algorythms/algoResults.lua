@@ -11,6 +11,7 @@ local algorythm = {}
 
 algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
+    local limitReached = false
     local startTime = system.getTimer()
     local startColumn = enemyPos[1]
     local startRow = enemyPos[2]
@@ -72,7 +73,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     local function findPossibleChainsFrom(c, r, chain, exclude)
         if iterationsAmount > properties.allResultsSafeIterationsNumber then
             --- performance check for bigger grids it might not be possible to find all chains due to limiation of mobile devices memory
-            log:debug("MAX AMOUNT OF ITERATIONS REACHED!!")
+            limitReached = true
             return
         end
         iterationsAmount = iterationsAmount + 1
@@ -83,6 +84,10 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
             local neighbour = neighbours[i]
             local nc, nr = neighbour.c, neighbour.r
             local possibleChainFromHere = copyList(chain)
+            local won = false
+            if nc == goalColumn and nr == goalRow then
+                 won = true
+            end
             ins(possibleChainFromHere, neighbour)
             local possibleChains
             local newExcludes = copyMap(exclude)
@@ -93,9 +98,12 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
                     ins(possibleChainsFromHere, possibleChains[j])
                 end
             else
-                ins(possibleChainsFromHere, possibleChainFromHere)
+                if won then
+                    ins(possibleChainsFromHere, possibleChainFromHere)
+                end
             end
         end
+
         if #possibleChainsFromHere > 0 then
             return possibleChainsFromHere
         else
@@ -104,11 +112,12 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     end
 
     local allChains = findPossibleChainsFrom(startColumn, startRow, {}, {})
+    log:debug("ALL CHAIN POSSIBILITY : %s FOUND WITH ITERATIONS : %s",tostring(#allChains), tostring(iterationsAmount))
 
     for i = 1, #allChains do
         for j = 1, #allChains[i] do
             if allChains[i][j].c == goalColumn and allChains[i][j].r == goalRow then
-                for k = #allChains[i], j+1,-1 do
+                for k = #allChains[i], j + 1, -1 do
                     table.remove(allChains[i], k)
                 end
                 table.insert(allChains[i], { won = true })
@@ -138,7 +147,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
     logTable(bestResult)
 
-    return { bestResult[1].c, bestResult[1].r }, system.getTimer() - startTime
+    return { bestResult[1].c, bestResult[1].r }, system.getTimer() - startTime, limitReached
 end
 
 

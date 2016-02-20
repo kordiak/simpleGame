@@ -30,6 +30,7 @@ properties.started = false
 
 
 --- ADD THIS DATA TO SETTINGS
-properties.allResultsSafeIterationsNumber = 125000
+--properties.allResultsSafeIterationsNumber = 5525000
+properties.allResultsSafeIterationsNumber = 4000000
 
 return properties
