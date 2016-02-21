@@ -14,8 +14,8 @@ local popup = {}
 popup.new = function(data, callback)
     local group = display.newGroup()
     local overlay = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
-    overlay:setFillColor(0, 0, 0)
-    overlay.alpha = 0.75
+    overlay:setFillColor(1,1,1)
+
 
     local overlayTouch = function()
         return true
@@ -38,11 +38,12 @@ popup.new = function(data, callback)
 
 
     local movmentTimeBtn = button.addSubButton(0, 1500, nil, properties.movmentTime, "Movment Time")
-    movmentTimeBtn.x = properties.x + 50
+    movmentTimeBtn.x = properties.x + 100
     group:insert(movmentTimeBtn)
 
     local delayTimeBtn = button.addSubButton(0, 1500, nil, properties.delayTime, "Delay Time")
-    delayTimeBtn.x = properties.x + 290
+    delayTimeBtn.x = properties.x + 100
+    delayTimeBtn.y = movmentTimeBtn.y + 150
     group:insert(delayTimeBtn)
 
     local intervalBtn
@@ -51,21 +52,29 @@ popup.new = function(data, callback)
     end
 
     intervalBtn = button.addSubButton(10, 1500, 10, properties.intervalToChangeValues, "Value to change Settings", invervalCb)
-    intervalBtn.x = movmentTimeBtn.x + 50
-    intervalBtn.y = movmentTimeBtn.x + movmentTimeBtn.contentHeight *0.5 + delayTimeBtn.contentHeight * 0.5
+    intervalBtn.x = movmentTimeBtn.x
+    intervalBtn.y = movmentTimeBtn.x + movmentTimeBtn.contentHeight *0.5 + delayTimeBtn.contentHeight * 0.5 + 100
     group:insert(intervalBtn)
     logTable(data)
+
+    local pauseAfterMoveBtn = button.togBtn("Pause After Move", properties.pauseAfter)
+    pauseAfterMoveBtn.y =intervalBtn.y + intervalBtn.contentHeight * 0.5 + pauseAfterMoveBtn.contentHeight * 0.5 + 50
+    pauseAfterMoveBtn.x= properties.x + 100
+    group:insert(pauseAfterMoveBtn)
+
 
     local acceptCb = function()
         properties.movmentTime = movmentTimeBtn.getValue()
         properties.delayTime = delayTimeBtn.getValue()
         properties.intervalToChangeValues = intervalBtn.getValue()
+        properties.pauseAfter = pauseAfterMoveBtn.getValue()
 
         local settingsTab = data
         if not data.settings then data.settings = {} end
         data.settings.movmentTime = properties.movmentTime
         data.settings.delayTime = properties.delayTime
         data.settings.intervalToChangeValues = properties.intervalToChangeValues
+        data.settings.pauseAfter = properties.pauseAfter
 
         saveAndLoad.save(settingsTab, properties.saveFile)
         if callback then
@@ -79,6 +88,8 @@ popup.new = function(data, callback)
 
     button.mb(acceptButton, acceptCb)
     group:insert(acceptButton)
+
+
 
 
     return group

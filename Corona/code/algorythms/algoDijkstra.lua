@@ -18,6 +18,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
 
     local usedPos = {}
     local function isAvalible(c, r)
+
         if usedPos[tostring(c .. "." .. r)] then return false end
         return not gridTab[c][r].content
     end
@@ -64,22 +65,6 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     rTab[tostring(startingColumn .. "." .. startingColumn)] = {}
     table.insert(frontierQueue, { c = startingColumn, r = startingRow, rt = rTab[tostring(startingColumn .. "." .. startingColumn)] })
     usedPos[tostring(startingColumn .. "." .. startingColumn)] = true
-
-    local function copyList(listToCopy)
-        local newList = {}
-        for i = 1, #listToCopy do
-            table.insert(newList, listToCopy[i])
-        end
-        return newList
-    end
-
-    local function copyMap(mapToCopy)
-        local newMap = {}
-        for k, v in pairs(mapToCopy) do
-            newMap[k] = v
-        end
-        return newMap
-    end
 
     local moveCounter = 0
 
@@ -149,6 +134,9 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     if rTab and type(rTab) == "table" then
         bestResult = getGoalResult(rTab)
     end
+    usedPos = {}
+    frontierQueue = {}
+    rTab ={}
     if bestResult then
         return { bestResult[1], bestResult[2] }, system.getTimer() - startTime
     end

@@ -63,6 +63,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         end
     end
 
+    possibleResults = {}
     return bestResult
 end
 

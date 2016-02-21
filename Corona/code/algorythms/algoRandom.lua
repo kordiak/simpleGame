@@ -14,7 +14,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     local column = enemyPos[1]
     local row = enemyPos[2]
 
-    local possibleResults = {}
+
 
 
 
@@ -29,17 +29,19 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         local neighboursTab = {}
         for i = column - 1, column + 1 do
             if gridTab[i] and gridTab[i][row] and isAvalible(i, row) and i ~= column then
-                table.insert(possibleResults, { i, row })
+                table.insert(neighboursTab, { i, row })
             end
         end
         for i = row - 1, row + 1 do
             if gridTab[column] and gridTab[column][i] and isAvalible(column, i) and i ~= row then
-                table.insert(possibleResults, { column, i })
+                table.insert(neighboursTab, { column, i })
             end
         end
+
+        return neighboursTab
     end
 
-    getNeighbours(column, row)
+    local possibleResults = getNeighbours(column, row)
 
     if #possibleResults > 0 then
         return possibleResults[math.random(#possibleResults)], system.getTimer() - startTime

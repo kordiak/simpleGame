@@ -16,10 +16,10 @@ local algoDijkstra = require("code.algorythms.algoDijkstra")
 local algorythms = {
     algorythmList = {
         algoRandom = algoRandom.calculate,
-        algoRandomDecisive = algoRandomDecisive.calculate,
-        algoAll = algoAll.calculate,
-        algoResults = algoResults.calculate,
-        algoDijkstra = algoDijkstra.calculate
+      -- algoRandomDecisive = algoRandomDecisive.calculate,
+        --algoAll = algoAll.calculate,
+      --  algoResults = algoResults.calculate,
+       -- algoDijkstra = algoDijkstra.calculate
     }
 }
 

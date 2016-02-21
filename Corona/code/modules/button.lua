@@ -79,15 +79,15 @@ button.addSubButton = function(minValue, maxValue, interval, currentValue, descr
     local valueText
 
     local function minusCb()
-    if value-(interval or properties.intervalToChangeValues) >= minValue then
-        value = value - (interval or properties.intervalToChangeValues)
-        valueText.text = value
-        if cb then cb() end
+        if value - (interval or properties.intervalToChangeValues) >= minValue then
+            value = value - (interval or properties.intervalToChangeValues)
+            valueText.text = value
+            if cb then cb() end
         end
     end
 
     local function plusCb()
-        if value+(interval or properties.intervalToChangeValues) <= maxValue then
+        if value + (interval or properties.intervalToChangeValues) <= maxValue then
             value = value + (interval or properties.intervalToChangeValues)
             valueText.text = value
             if cb then cb() end
@@ -116,8 +116,48 @@ button.addSubButton = function(minValue, maxValue, interval, currentValue, descr
     group:insert(descriptionText)
 
 
-        descriptionText.y = valueText.y - minusButton.contentHeight * 0.5 - 10
+    descriptionText.y = valueText.y - minusButton.contentHeight * 0.5 - 10
 
+    valueText:setFillColor(0, 0, 0)
+    descriptionText:setFillColor(0, 0, 0)
+
+
+    return group
+end
+
+
+button.togBtn = function(descriptionText, value)
+    local group = display.newGroup()
+
+
+
+    local onButton, offButton
+    local state = value
+
+    group.getValue = function()
+    return state
+    end
+
+    local function toggleCb()
+        state = not state
+        onButton.isVisible = state
+        offButton.isVisible = not state
+    end
+
+    onButton = display.newImageRect("graphic/check_full.png", 96, 96)
+    onButton.isVisible = state
+    onButton.isHitTestable = true
+    button.mb(onButton, toggleCb)
+    group:insert(onButton)
+
+    offButton = display.newImageRect("graphic/check_empty.png", 96, 96)
+    offButton.isVisible = not state
+    group:insert(offButton)
+
+    local descriptionText = display.newText({ text = descriptionText, font = "", fontSize = 26, x = 0, y = 0 })
+    descriptionText:setFillColor(0, 0, 0)
+    descriptionText.x = onButton.x + onButton.contentWidth * 0.5 + descriptionText.contentWidth * 0.5 + 5
+    group:insert(descriptionText)
 
     return group
 end

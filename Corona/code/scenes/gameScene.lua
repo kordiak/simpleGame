@@ -25,10 +25,11 @@ function scene:create(event)
     sceneGroup = self.view
 
     local enemyMove, enemyMoveCompleted -- reference to function
-    local paused = false
+    local paused = true
     local readyToUnPause = true
-
+    local pauseButton, playButton
     local moveCounter = 0
+    local goalBlocked = false
 
     local moveTime = properties.movmentTime
     local enemies = {}
@@ -62,12 +63,24 @@ function scene:create(event)
     local function goalMoveCompleted()
         if paused then
             readyToUnPause = true
-            return true
+            return
+        end
+
+        if properties.pauseAfter then
+            playButton.isVisible = true
+            pauseButton.isVisible = false
+            paused = true
+            return
         end
         enemyMove()
     end
 
     local enemiesMoveCounter = 0
+
+    local function gameOver()
+        print("GAME OVER ", moveCounter)
+    end
+
     function enemyMoveCompleted()
 
         enemiesMoveCounter = enemiesMoveCounter + 1
@@ -79,6 +92,12 @@ function scene:create(event)
                 goal.positions = movePosition
                 gridTab[goal.positions[1]][goal.positions[2]].goal = goal
                 moveCounter = moveCounter + 1
+        print(moveCounter)
+                if moveCounter > properties.maxGoalMoves then
+                    gameOver()
+                    return
+                end
+
                 if moveTime <= 0 then
                     goal.x = gridTab[movePosition[1]][movePosition[2]].cell.x
                     goal.y = gridTab[movePosition[1]][movePosition[2]].cell.y
@@ -87,7 +106,8 @@ function scene:create(event)
                     transition.to(goal, { x = gridTab[movePosition[1]][movePosition[2]].cell.x, y = gridTab[movePosition[1]][movePosition[2]].cell.y, time = moveTime, onComplete = goalMoveCompleted })
                 end
             else
-                print("GAME OVER ", moveCounter)
+                goalBlocked = true
+                gameOver()
             end
         end
     end
@@ -128,20 +148,20 @@ function scene:create(event)
         settingsPopup.new(saveFileData, setSettingsCb)
     end
 
-    local started = false
-    local pauseButton, playButton
+
+
     local function playCb()
-        if not started and readyToUnPause then
+        print(paused, readyToUnPause)
+        if paused and readyToUnPause then
             board.blockBoard()
-            started = true
             paused = false
             playButton.isVisible = false
             pauseButton.isVisible = true
             enemyMove()
         else
+            print("PAUSING!")
             board.blockBoard()
             readyToUnPause = false
-            started = false
             paused = true
             playButton.isVisible = true
             pauseButton.isVisible = false
@@ -168,7 +188,7 @@ function scene:create(event)
     sceneGroup:insert(pauseButton)
 
 
- --   saveAndLoad.save({}, properties.saveFile)
+    --   saveAndLoad.save({}, properties.saveFile)
 end
 
 function scene:show(event)

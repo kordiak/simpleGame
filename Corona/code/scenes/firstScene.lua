@@ -41,6 +41,10 @@ function scene:create(event)
         if data.settings.intervalToChangeValues then
             properties.intervalToChangeValues = data.settings.intervalToChangeValues
         end
+
+        if data.settings.pauseAfter then
+            properties.pauseAfter = data.settings.pauseAfter
+        end
     end
 
     --    local sceneGroup = self.view

@@ -31,6 +31,8 @@ properties.enemyTransTime = 550
 properties.movmentTime = 500
 properties.delayTime = 500
 properties.intervalToChangeValues = 50
+properties.pauseAfter = false
+properties.maxGoalMoves = 5000 -- 5k for daikstra
 
 properties.startingFromBeggining = false
 
@@ -39,7 +41,7 @@ properties.started = false
 
 --- ADD THIS DATA TO SETTINGS
 
-properties.allResultsSafeIterationsNumber = 40000
+properties.allResultsSafeIterationsNumber = 10000
 --properties.allResultsSafeIterationsNumber = 4000000
 
 return properties
