@@ -26,14 +26,22 @@ board.new = function(params)
 
     local elementSize = math.round(elementSizeIndicator * 0.95)
     local blocked = false
+    local getCell = false
 
+    group.blockBoard = function()
+        blocked = not blocked
+        log:debug("BOARD IS BLOCKED : %s", tostring(blocked))
+    end
 
     local function setCell(target)
+        if getCell then
+            return target.column, target.row
+        end
         if not blocked then
             if not boardTab[target.column][target.row].goal then
                 if not boardTab[target.column][target.row].content then
                     local obstacle = display.newRect(0, 0, elementSize * 0.8, elementSize * 0.8)
-                    obstacle:setFillColor(0,0,1)
+                    obstacle:setFillColor(0, 0, 1)
                     obstacle.wall = true
                     obstacle.x = boardTab[target.column][target.row].cell.x
                     obstacle.y = boardTab[target.column][target.row].cell.y
@@ -52,16 +60,17 @@ board.new = function(params)
         for j = 1, height do
             local cell = display.newRect(0, 0, elementSize, elementSize)
             cell.strokeWidth = 2
-            cell:setFillColor(0, 0, 0)
+            cell:setFillColor(unpack(properties.contentColor))
+            cell:setStrokeColor(unpack(properties.borderColor))
             cell.x = properties.x + (i - 1) * elementSizeIndicator + elementSizeIndicator * (0.5 + width * 0.025)
             cell.y = properties.y + (j - 1) * elementSizeIndicator + elementSizeIndicator * 0.5
             cell.column = i
             cell.row = j
             local cellIndicator = display.newText({ text = i .. "," .. j, font = "", fontSize = elementSizeIndicator / 3, x = cell.x, y = cell.y + elementSizeIndicator * 0.25 })
             local stepText = display.newText({ text = "", font = "", fontSize = elementSizeIndicator / 3, x = cell.x, y = cell.y - elementSizeIndicator * 0.2 })
-         --   stepText:setFillColor(0.56, 0.76, 0.36)
+            cellIndicator:setFillColor(unpack(properties.borderColor))
+            stepText:setFillColor(unpack(properties.borderColor))
             boardTab[i][j] = { cell = cell, stepText = stepText }
-            --   cellIndicator:setFillColor(0, 0, 0)
             group:insert(cell)
             --  group:insert(cellIndicator)
             --  group:insert(stepText)

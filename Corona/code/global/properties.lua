@@ -8,6 +8,9 @@ properties.center = { x = properties.x + properties.width / 2, y = properties.y 
 properties.device = system.getInfo("model")
 properties.loadSceneFontSize = 30
 
+properties.borderColor = {0,0,0}
+properties.contentColor = {1,1,1}
+
 if "Win" == system.getInfo( "platformName" ) then
     properties.font = "Debbie"
 elseif "Android" == system.getInfo( "platformName" ) then
@@ -24,13 +27,15 @@ properties.sceneTitleColor = { r = 1, g = 1, b = 1, a = 1 }
 properties.saveFile = "saveFile.txt"
 properties.heroTransTime = 550
 properties.enemyTransTime = 550
+properties.movmentTime = 500
 properties.startingFromBeggining = false
 
 properties.started = false
 
 
 --- ADD THIS DATA TO SETTINGS
---properties.allResultsSafeIterationsNumber = 5525000
-properties.allResultsSafeIterationsNumber = 4000000
+
+properties.allResultsSafeIterationsNumber = 40000
+--properties.allResultsSafeIterationsNumber = 4000000
 
 return properties

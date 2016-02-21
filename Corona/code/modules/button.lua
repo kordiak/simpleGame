@@ -71,7 +71,53 @@ button.mb = function(obj, cb)
     end
 
     obj:addEventListener("touch", obj)
+end
 
+button.addSubButton = function(minValue, maxValue, interval, currentValue, descriptionText)
+    local value = currentValue
+    local group = display.newGroup()
+    local valueText
+
+    local function minusCb()
+    if value-interval >= minValue then
+        value = value - interval
+        valueText.text = value
+        end
+    end
+
+    local function plusCb()
+        if value+interval <= maxValue then
+            value = value + interval
+            valueText.text = value
+        end
+    end
+
+    group.getValue = function()
+        return value
+    end
+
+    local minusButton = display.newImageRect("graphic/minus.png", 96, 96)
+    button.mb(minusButton, minusCb)
+    group:insert(minusButton)
+
+    valueText = display.newText({ text = value, font = "", fontSize = 26, x = 0, y = 0 })
+    valueText.x = minusButton.x + minusButton.contentWidth * 0.5 + 50 * 0.5 + 5
+    group:insert(valueText)
+
+    local plusButton = display.newImageRect("graphic/plus.png", 74, 74)
+    plusButton.x = valueText.x + 50 * 0.5 + plusButton.contentWidth * 0.5 + 5
+    button.mb(plusButton, plusCb)
+    group:insert(plusButton)
+
+    local descriptionText = display.newText({ text = descriptionText, font = "", fontSize = 26, x = 0, y = 0 })
+    descriptionText.x = valueText.x
+    group:insert(descriptionText)
+
+
+        descriptionText.y = valueText.y - minusButton.contentHeight * 0.5 - 10
+
+
+    return group
 end
 
 return button

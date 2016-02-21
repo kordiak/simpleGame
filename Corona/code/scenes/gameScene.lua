@@ -8,28 +8,34 @@ local enemyCreator = require("code.modules.enemyCreator")
 local algorythms = require("code.algorythms.algorythmTab")
 local bestGoalPlace = require("code.algorythms.bestGoalPlace")
 local button = require("code.modules.button")
+local settingsPopup = require("code.modules.settingsPopup")
 
 -- [Nash A. & al. pseudocode](http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/)
 
 
 local scene = composer.newScene()
 local sceneGroup
+local saveFileData
 
 local function close()
 end
 
 function scene:create(event)
+    saveFileData = saveAndLoad.load(properties.saveFile)
     sceneGroup = self.view
 
     local enemyMove, enemyMoveCompleted -- reference to function
+    local paused = false
+    local readyToUnPause = true
 
     local moveCounter = 0
 
-
-    local goalMovedTimes = 1
-    local goalMoveAmount = 1
-    local moveTime = 500
+    local moveTime = properties.movmentTime
     local enemies = {}
+
+    local bg = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
+    bg:setFillColor(unpack(properties.contentColor))
+    sceneGroup:insert(bg)
 
     local board, gridTab, elementSize = boardCreator.new({ width = 8, height = 8 })
     sceneGroup:insert(board)
@@ -54,19 +60,16 @@ function scene:create(event)
     local pickedAlgorythm, algorythmName = algorythms.chooseAlgorythm()
 
     local function goalMoveCompleted()
-        goalMovedTimes = goalMovedTimes + 1
-        if goalMovedTimes > goalMoveAmount then
-            enemyMove()
-        else
-            enemyMoveCompleted()
+        if paused then
+            readyToUnPause = true
+            return true
         end
+        enemyMove()
     end
 
     local enemiesMoveCounter = 0
     function enemyMoveCompleted()
-        --        if true then
-        --            return true
-        --        end
+
         enemiesMoveCounter = enemiesMoveCounter + 1
         if enemiesMoveCounter == #enemies then
             enemiesMoveCounter = 0
@@ -90,7 +93,6 @@ function scene:create(event)
     end
 
     enemyMove = function()
-        goalMovedTimes = 1
         for i = 1, #enemies do
             local enemy = enemies[i]
             local movePosition, decisionTime = pickedAlgorythm(gridTab, enemy.positions, goal.positions)
@@ -115,10 +117,54 @@ function scene:create(event)
         end
     end
 
-    enemyMove()
+
     --     timer.performWithDelay(800, enemyMove, -1)
 
-    saveAndLoad.save({}, properties.saveFile)
+    local function settingsCb()
+        settingsPopup.new(saveFileData)
+    end
+
+    local started = false
+    local pauseButton, playButton
+    local function playCb()
+        if not started and readyToUnPause then
+            board.blockBoard()
+            started = true
+            paused = false
+            playButton.isVisible = false
+            pauseButton.isVisible = true
+            enemyMove()
+        else
+            board.blockBoard()
+            readyToUnPause = false
+            started = false
+            paused = true
+            playButton.isVisible = true
+            pauseButton.isVisible = false
+        end
+    end
+
+    local settingsIcon = display.newImageRect("graphic/settings.png", 128, 128)
+    settingsIcon.x = properties.x + settingsIcon.contentWidth * 0.5 + 5
+    settingsIcon.y = properties.y + properties.height - settingsIcon.contentHeight * 0.5 - 5
+    sceneGroup:insert(settingsIcon)
+    button.mb(settingsIcon, settingsCb)
+
+    playButton = display.newImageRect("graphic/play.png", 128, 128)
+    playButton.x = settingsIcon.x + playButton.contentWidth * 0.5 + settingsIcon.contentWidth * 0.5
+    playButton.y = settingsIcon.y
+    playButton.isHitTestable = true
+    button.mb(playButton, playCb)
+    sceneGroup:insert(playButton)
+
+    pauseButton = display.newImageRect("graphic/pause.png", 128, 128)
+    pauseButton.isVisible = false
+    pauseButton.x = playButton.x
+    pauseButton.y = playButton.y
+    sceneGroup:insert(pauseButton)
+
+
+ --   saveAndLoad.save({}, properties.saveFile)
 end
 
 function scene:show(event)

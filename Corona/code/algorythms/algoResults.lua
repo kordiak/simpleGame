@@ -145,8 +145,6 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         end
     end
 
-    logTable(bestResult)
-
     return { bestResult[1].c, bestResult[1].r }, system.getTimer() - startTime, limitReached
 end
 

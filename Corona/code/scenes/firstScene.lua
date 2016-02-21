@@ -56,6 +56,22 @@ function scene:create(event)
 --    sceneGroup:insert(mainButtonsGroup)
 --    sceneGroup:insert(creators)
 
+
+local function showMailPicker()
+    -- Create mail options --
+    local options =
+    {
+        to = { "me@me.com",},
+        subject = "Algorythms data from : ".. os.date( "%c" ) ,
+        body = "Email Body",
+        attachment =
+        {
+            { baseDir=system.DocumentsDirectory, filename=properties.saveFile, type="text" },
+        },
+    }
+    native.showPopup("mail", options)
+end
+
     composer.gotoScene("code.scenes.gameScene")
 end
 
