@@ -73,22 +73,24 @@ button.mb = function(obj, cb)
     obj:addEventListener("touch", obj)
 end
 
-button.addSubButton = function(minValue, maxValue, interval, currentValue, descriptionText)
+button.addSubButton = function(minValue, maxValue, interval, currentValue, descriptionText, cb)
     local value = currentValue
     local group = display.newGroup()
     local valueText
 
     local function minusCb()
-    if value-interval >= minValue then
-        value = value - interval
+    if value-(interval or properties.intervalToChangeValues) >= minValue then
+        value = value - (interval or properties.intervalToChangeValues)
         valueText.text = value
+        if cb then cb() end
         end
     end
 
     local function plusCb()
-        if value+interval <= maxValue then
-            value = value + interval
+        if value+(interval or properties.intervalToChangeValues) <= maxValue then
+            value = value + (interval or properties.intervalToChangeValues)
             valueText.text = value
+            if cb then cb() end
         end
     end
 

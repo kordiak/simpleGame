@@ -120,8 +120,12 @@ function scene:create(event)
 
     --     timer.performWithDelay(800, enemyMove, -1)
 
+    local function setSettingsCb()
+        moveTime = properties.movmentTime
+    end
+
     local function settingsCb()
-        settingsPopup.new(saveFileData)
+        settingsPopup.new(saveFileData, setSettingsCb)
     end
 
     local started = false

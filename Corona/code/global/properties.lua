@@ -27,7 +27,11 @@ properties.sceneTitleColor = { r = 1, g = 1, b = 1, a = 1 }
 properties.saveFile = "saveFile.txt"
 properties.heroTransTime = 550
 properties.enemyTransTime = 550
+
 properties.movmentTime = 500
+properties.delayTime = 500
+properties.intervalToChangeValues = 50
+
 properties.startingFromBeggining = false
 
 properties.started = false

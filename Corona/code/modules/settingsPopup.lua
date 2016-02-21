@@ -37,10 +37,48 @@ popup.new = function(data, callback)
     group:insert(closeButton)
 
 
-    local movmentTimeBtn = button.addSubButton(0,1500,50,properties.movmentTime,"Movment Time")
+    local movmentTimeBtn = button.addSubButton(0, 1500, nil, properties.movmentTime, "Movment Time")
     movmentTimeBtn.x = properties.x + 50
     group:insert(movmentTimeBtn)
+
+    local delayTimeBtn = button.addSubButton(0, 1500, nil, properties.delayTime, "Delay Time")
+    delayTimeBtn.x = properties.x + 290
+    group:insert(delayTimeBtn)
+
+    local intervalBtn
+    local function invervalCb()
+        properties.intervalToChangeValues = intervalBtn.getValue()
+    end
+
+    intervalBtn = button.addSubButton(10, 1500, 10, properties.intervalToChangeValues, "Value to change Settings", invervalCb)
+    intervalBtn.x = movmentTimeBtn.x + 50
+    intervalBtn.y = movmentTimeBtn.x + movmentTimeBtn.contentHeight *0.5 + delayTimeBtn.contentHeight * 0.5
+    group:insert(intervalBtn)
     logTable(data)
+
+    local acceptCb = function()
+        properties.movmentTime = movmentTimeBtn.getValue()
+        properties.delayTime = delayTimeBtn.getValue()
+        properties.intervalToChangeValues = intervalBtn.getValue()
+
+        local settingsTab = data
+        if not data.settings then data.settings = {} end
+        data.settings.movmentTime = properties.movmentTime
+        data.settings.delayTime = properties.delayTime
+        data.settings.intervalToChangeValues = properties.intervalToChangeValues
+
+        saveAndLoad.save(settingsTab, properties.saveFile)
+        if callback then
+            callback()
+        end
+        closeCb()
+    end
+    local acceptButton = display.newImageRect("graphic/accept.png", 96, 96)
+    acceptButton.x = closeButton.x
+    acceptButton.y = closeButton.y + closeButton.contentHeight * 0.5 + acceptButton.contentHeight * 0.5 + 5
+
+    button.mb(acceptButton, acceptCb)
+    group:insert(acceptButton)
 
 
     return group
