@@ -9,7 +9,7 @@
 local algorythm = {}
 
 algorythm.calculate = function(gridTab, enemyPos, goalPos)
-
+    local startTime = system.getTimer()
     local column = enemyPos[1]
     local row = enemyPos[2]
 
@@ -64,7 +64,7 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
     end
 
     possibleResults = {}
-    return bestResult
+    return bestResult, system.getTimer() - startTime
 end
 
 return algorythm

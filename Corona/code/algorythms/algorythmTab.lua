@@ -16,10 +16,10 @@ local algoDijkstra = require("code.algorythms.algoDijkstra")
 local algorythms = {
     algorythmList = {
         algoRandom = algoRandom.calculate,
-      -- algoRandomDecisive = algoRandomDecisive.calculate,
-        --algoAll = algoAll.calculate,
-      --  algoResults = algoResults.calculate,
-       -- algoDijkstra = algoDijkstra.calculate
+        algoRandomDecisive = algoRandomDecisive.calculate,
+        algoAll = algoAll.calculate,
+        algoResults = algoResults.calculate,
+       algoDijkstra = algoDijkstra.calculate
     }
 }
 
@@ -31,17 +31,12 @@ algorythms.chooseAlgorythm = function(algorythm)
     if not algorythm then algorythm = "" end
     local pickedAlgorythm = algorythms.algorythmList[algorythm]
     local algorythmName = algorythm
-
-
     if not pickedAlgorythm then
         local algorythmsNumber = 0
-
         for k, v in pairs(algorythms.algorythmList) do
             algorythmsNumber = algorythmsNumber + 1
         end
-
         algorythmsNumber = math.random(algorythmsNumber)
-
         local algorythmInterval = 0
         for k, v in pairs(algorythms.algorythmList) do
             algorythmInterval = algorythmInterval + 1
@@ -51,7 +46,6 @@ algorythms.chooseAlgorythm = function(algorythm)
             end
         end
     end
-
     return pickedAlgorythm, algorythmName
 end
 

@@ -31,6 +31,38 @@ function scene:create(event)
     local moveCounter = 0
     local goalBlocked = false
 
+    local statistics = {}
+
+    local function initalizeStatisticis()
+        statistics = nil
+        statistics = {
+            won = false,
+            maxDecisionTime = 0,
+            minimalDecisionTime = math.huge,
+            avarageDecisionTime = 0,
+            totalDecisionTimes = 0,
+            algorythmName = "",
+            decisionTimes = {}
+        }
+        statistics.gridWidth = 6
+        statistics.girdHeight = 6
+    end
+    initalizeStatisticis()
+
+    local function addStatistics(decisionTime)
+        if decisionTime then
+        if statistics.minimalDecisionTime > decisionTime then
+            statistics.minimalDecisionTime = decisionTime
+        end
+        if statistics.maxDecisionTime < decisionTime then
+            statistics.maxDecisionTime = decisionTime
+        end
+
+
+        table.insert(statistics.decisionTimes, decisionTime)
+            end
+    end
+
     local moveTime = properties.movmentTime
     local enemies = {}
 
@@ -38,10 +70,49 @@ function scene:create(event)
     bg:setFillColor(unpack(properties.contentColor))
     sceneGroup:insert(bg)
 
-    local board, gridTab, elementSize = boardCreator.new({ width = 8, height = 8 })
+    local function ratePopup()
+        local rateGroup = display.newGroup()
+
+        local function rated(rate)
+            statistics.rating= rate
+            rateGroup:removeSelf()
+            rateGroup=nil
+
+            saveAndLoad.save(statistics,statistics.algorythmName.."_"..os.date("%Y_%m_%d")..system.getTimer()..".txt")
+            initalizeStatisticis()
+        end
+
+        local bg = display.newRect(properties.center.x, properties.center.y, properties.width, properties.height)
+        bg.alpha = 0.8
+        rateGroup:insert(bg)
+
+        local b1 = button.togBtn(1,false,rated)
+        b1.x = properties.width * 0.33
+        b1.y = 150
+        rateGroup:insert(b1)
+        local b2 = button.togBtn(2,false,rated)
+        b2.y = b1.y
+        b2.x = properties.width * 0.66
+        rateGroup:insert(b2)
+        local b3 = button.togBtn(3,false,rated)
+        b3.y = b1.y + 150
+        b3.x = properties.width * 0.25
+        rateGroup:insert(b3)
+        local b4 = button.togBtn(4,false,rated)
+        b4.y = b3.y
+        b4.x = properties.width * 0.5
+        rateGroup:insert(b4)
+        local b5 = button.togBtn(5,false,rated)
+        b5.y = b4.y
+        b5.x = properties.width * 0.75
+        rateGroup:insert(b5)
+
+    end
+
+    local board, gridTab, elementSize = boardCreator.new({ width = statistics.gridWidth, height = statistics.girdHeigh })
     sceneGroup:insert(board)
 
-    local goal = enemyCreator.new(gridTab, elementSize, 5, 7, true)
+    local goal = enemyCreator.new(gridTab, elementSize, 3, 4, true)
     sceneGroup:insert(goal)
 
     local enemy = enemyCreator.new(gridTab, elementSize, 1, 1)
@@ -79,6 +150,14 @@ function scene:create(event)
 
     local function gameOver()
         print("GAME OVER ", moveCounter)
+        for i = 1, #statistics.decisionTimes do
+            statistics.totalDecisionTimes = statistics.totalDecisionTimes + statistics.decisionTimes[i]
+        end
+        statistics.avarageDecisionTime = statistics.totalDecisionTimes / #statistics.decisionTimes
+
+
+
+        ratePopup()
     end
 
     function enemyMoveCompleted()
@@ -92,7 +171,7 @@ function scene:create(event)
                 goal.positions = movePosition
                 gridTab[goal.positions[1]][goal.positions[2]].goal = goal
                 moveCounter = moveCounter + 1
-        print(moveCounter)
+                print(moveCounter)
                 if moveCounter > properties.maxGoalMoves then
                     gameOver()
                     return
@@ -116,6 +195,7 @@ function scene:create(event)
         for i = 1, #enemies do
             local enemy = enemies[i]
             local movePosition, decisionTime = pickedAlgorythm(gridTab, enemy.positions, goal.positions)
+            addStatistics(decisionTime)
             if movePosition then
                 if (movePosition[1] == goal.positions[1]) and (movePosition[2] == goal.positions[2]) then
                     enemyMoveCompleted()

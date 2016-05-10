@@ -172,6 +172,8 @@ algorythm.calculate = function(gridTab, enemyPos, goalPos)
         calcaultePaths()
     end
 
+    print(counter)
+
 
 
     if atLeastOneWon then

@@ -32,7 +32,7 @@ properties.movmentTime = 500
 properties.delayTime = 500
 properties.intervalToChangeValues = 50
 properties.pauseAfter = false
-properties.maxGoalMoves = 5000 -- 5k for daikstra
+properties.maxGoalMoves = 50 -- 5k for daikstra
 
 properties.startingFromBeggining = false
 

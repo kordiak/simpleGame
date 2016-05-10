@@ -126,13 +126,15 @@ button.addSubButton = function(minValue, maxValue, interval, currentValue, descr
 end
 
 
-button.togBtn = function(descriptionText, value)
+button.togBtn = function(descriptionText, value, callback)
     local group = display.newGroup()
 
 
 
     local onButton, offButton
     local state = value
+
+    local textValue = descriptionText
 
     group.getValue = function()
     return state
@@ -142,6 +144,7 @@ button.togBtn = function(descriptionText, value)
         state = not state
         onButton.isVisible = state
         offButton.isVisible = not state
+        if callback then callback(textValue) end
     end
 
     onButton = display.newImageRect("graphic/check_full.png", 96, 96)
